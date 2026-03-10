@@ -1,0 +1,3916 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjogIlNwYW5pc2ggVUEiLCAic2hvcnRfbmFtZSI6ICJTcGFuaXNoIFVBIiwgInN0YXJ0X3VybCI6ICIuLyIsICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLCAiYmFja2dyb3VuZF9jb2xvciI6ICIjMTgxMDBhIiwgInRoZW1lX2NvbG9yIjogIiNGMEEwNDAifQ==">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>🇪🇸 Іспанська</title>
+<style>
+:root{
+  --bg:#18100a;--surf:#22160c;--card:#2c1e10;--bord:#4a3520;
+  --txt:#f2ead8;--es:#FFD84D;--tr:#6FFFEE;--uk:#FF9F6B;
+  --acc:#F0A040;--str:#FFCC00;--red:#e05050;--grn:#50c878;
+  --fs-es:1.55em;--fs-tr:1.2em;--fs-uk:1.05em;
+  --fw-es:800;--fw-tr:600;--fw-uk:500;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--txt);
+  display:flex;flex-direction:column;height:100dvh;overflow:hidden}
+
+/* TABS */
+.tabs{display:flex;background:var(--surf);border-bottom:2px solid var(--bord);flex-shrink:0}
+.tab{flex:1;padding:9px 2px;font-size:.68em;text-align:center;cursor:pointer;
+  color:var(--uk);border:none;background:none;line-height:1.3;transition:color .15s}
+.tab.on{color:var(--acc);border-bottom:2.5px solid var(--acc);margin-bottom:-2px;font-weight:800}
+
+/* SCREENS */
+.scr{display:none;flex:1;flex-direction:column;overflow:hidden}
+.scr.on{display:flex}
+
+/* ══ ПЛЕЄР ══ */
+.breadcrumb{font-size:.72em;color:var(--acc);padding:5px 14px;flex-shrink:0;cursor:pointer;font-weight:600;
+  display:flex;align-items:center;gap:6px;cursor:pointer}
+.breadcrumb span{color:var(--acc)}
+.breadcrumb:active{opacity:.7}
+
+.card-area{flex:1;display:flex;flex-direction:column;justify-content:center;
+  align-items:center;padding:10px 20px;text-align:center;gap:8px;min-height:0}
+.c-es{font-size:var(--fs-es);font-weight:var(--fw-es);color:var(--es);line-height:1.3;transition:opacity .2s}
+.c-tr{font-size:var(--fs-tr);font-weight:var(--fw-tr);color:var(--tr);letter-spacing:.05em;min-height:1.2em;transition:opacity .2s}
+.c-tr .S{color:var(--str);font-weight:900;font-size:1.15em}
+.c-uk{font-size:var(--fs-uk);font-weight:var(--fw-uk);color:var(--uk);line-height:1.5;transition:opacity .2s}
+.c-rep{font-size:.65em;color:var(--bord);margin-top:2px}
+
+/* підсвічування */
+.lit-es .c-tr{opacity:1}.lit-es .c-uk{opacity:.15}.lit-es .c-es{opacity:1}
+.lit-uk .c-es{opacity:.15}.lit-uk .c-tr{opacity:1}.lit-uk .c-uk{opacity:1}
+
+/* режим вгадай */
+.mode-quiz .c-es{opacity:.06}
+.mode-quiz .c-es.revealed{opacity:1}
+
+/* ПРОГРЕС */
+.prog{padding:0 14px 3px;flex-shrink:0}
+.prog-bg{height:3px;background:var(--bord);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--acc),var(--tr));border-radius:2px;transition:width .3s}
+.prog-row{display:flex;justify-content:space-between;font-size:.63em;color:var(--bord);padding:2px 0}
+
+/* КОНТРОЛІ */
+.ctrl{background:var(--surf);border-top:1px solid var(--bord);padding:8px 10px 14px;flex-shrink:0}
+.ctrl-main{display:flex;justify-content:center;align-items:center;gap:7px;margin-bottom:7px}
+.btn{background:var(--card);border:1.5px solid var(--bord);border-radius:10px;
+  color:var(--txt);cursor:pointer;padding:8px 12px;font-size:.88em;transition:all .12s;white-space:nowrap}
+.btn:active{transform:scale(.87)}
+.btn.play{background:var(--acc);color:#18100a;font-size:1.35em;padding:10px 26px;font-weight:900;border-color:var(--acc);border-radius:14px}
+.btn.sm{font-size:.7em;padding:5px 9px;color:var(--uk)}
+.btn.on{border-color:var(--acc);color:var(--acc)}
+.btn.danger{border-color:var(--red);color:var(--red)}
+.ctrl-row{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-top:5px}
+
+/* Панель швидкості */
+.speed-panel{background:var(--card);border:1px solid var(--bord);border-radius:12px;
+  padding:9px 12px;margin:0 0 7px;display:none}
+.speed-panel.open{display:block}
+.sp-row{display:flex;align-items:center;gap:7px;margin-bottom:5px;font-size:.75em;color:var(--uk)}
+.sp-row:last-child{margin-bottom:0}
+.sp-label{width:150px;flex-shrink:0}
+.sp-val{width:34px;text-align:right;color:var(--acc);font-weight:700}
+input[type=range]{flex:1;accent-color:var(--acc);height:3px}
+
+/* Панель сесії */
+.sess-panel{background:var(--card);border:1px solid var(--bord);border-radius:12px;
+  padding:9px 12px;margin:0 0 7px;display:none}
+.sess-panel.open{display:block}
+.sess-row{display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap}
+.sess-row:last-child{margin-bottom:0}
+.sess-lbl{font-size:.72em;color:var(--uk);width:100%;margin-bottom:3px}
+.cnt-btn{background:var(--card);border:1.5px solid var(--bord);border-radius:8px;
+  color:var(--uk);padding:5px 10px;font-size:.72em;cursor:pointer}
+.cnt-btn.on{border-color:var(--acc);color:var(--acc);background:rgba(240,160,64,.12)}
+.rep-num{display:flex;gap:4px;flex-wrap:wrap}
+.rep-btn{background:var(--card);border:1.5px solid var(--bord);border-radius:7px;
+  color:var(--uk);padding:4px 9px;font-size:.72em;cursor:pointer;min-width:28px;text-align:center}
+.rep-btn.on{border-color:var(--acc);color:var(--acc);background:rgba(240,160,64,.12)}
+
+/* Вибір за номерами */
+.num-input{background:var(--card);border:1px solid var(--bord);border-radius:8px;
+  color:var(--txt);padding:6px 10px;font-size:.8em;width:100%;margin-top:4px}
+.num-hint{font-size:.63em;color:var(--bord);margin-top:3px}
+
+/* ══ СПИСОК ══ */
+.list-hdr{display:flex;align-items:center;gap:5px;padding:6px 8px;
+  background:var(--surf);border-bottom:1px solid var(--bord);flex-shrink:0}
+.list-hdr input{flex:1;background:var(--card);border:1px solid var(--bord);
+  border-radius:8px;padding:6px 10px;color:var(--txt);font-size:.83em;min-width:0}
+.list-hdr select{background:var(--card);border:1px solid var(--bord);color:var(--uk);
+  border-radius:8px;padding:5px 4px;font-size:.68em;font-family:inherit;flex-shrink:0;max-width:105px}
+#scr-list{overflow-y:auto}
+.li{display:flex;align-items:flex-start;padding:8px 10px;border-bottom:1px solid var(--bord);gap:5px}
+.li-n{font-size:.6em;color:var(--bord);width:26px;text-align:right;flex-shrink:0;padding-top:3px;font-weight:600}
+.li-body{flex:1;cursor:pointer;min-width:0}
+.li-es{font-size:.87em;color:var(--es);font-weight:700;line-height:1.3}
+.li-tr{font-size:.72em;color:var(--tr);margin-top:1px;font-weight:500}
+.li-tr .S{color:var(--str);font-weight:700}
+.li-uk{font-size:.76em;color:var(--uk);margin-top:1px}
+.li-fav{font-size:1em;flex-shrink:0;cursor:pointer;padding:2px 3px;align-self:center}
+
+/* ══ ТЕМИ ══ */
+#scr-themes{overflow-y:auto}
+.th{margin:6px 8px;background:var(--card);border:1px solid var(--bord);
+  border-radius:12px;padding:11px 13px;display:flex;justify-content:space-between;align-items:center;gap:7px}
+.th-i{flex:1;cursor:pointer}
+.th-lbl{font-size:.87em;font-weight:700}
+.th-cnt{font-size:.66em;color:var(--uk);margin-top:2px}
+.th-actions{display:flex;gap:5px;align-items:center;flex-shrink:0}
+.th-play{background:var(--acc);color:#18100a;border:none;border-radius:8px;
+  padding:8px 14px;font-weight:800;font-size:.82em;cursor:pointer}
+.th-play:active{transform:scale(.9)}
+
+/* ══ ВИБРАНІ ══ */
+#scr-fav{overflow-y:auto}
+.fav-empty{text-align:center;padding:50px 20px;color:var(--bord);font-size:.88em;line-height:2}
+
+/* ══ НАЛАШТУВАННЯ ══ */
+#scr-settings{overflow-y:auto}
+.set-section{font-size:.7em;color:var(--acc);font-weight:700;
+  text-transform:uppercase;letter-spacing:.08em;padding:13px 0 5px}
+.set-row{display:flex;align-items:center;gap:9px;padding:5px 0;border-bottom:1px solid var(--bord)}
+.set-lbl{font-size:.77em;color:var(--uk);flex:1;min-width:100px}
+.set-val{color:var(--acc);font-weight:700;font-size:.82em;width:30px;text-align:right}
+.clr{width:42px;height:30px;border:2px solid var(--bord);border-radius:8px;cursor:pointer;background:none;padding:2px}
+.set-sel{background:var(--card);border:1px solid var(--bord);color:var(--txt);
+  border-radius:8px;padding:4px 7px;font-family:inherit;font-size:.76em}
+.theme-presets{display:flex;flex-wrap:wrap;gap:5px;padding:5px 0}
+.tpre{background:var(--card);border:1.5px solid var(--bord);border-radius:9px;
+  color:var(--txt);padding:6px 11px;font-size:.76em;cursor:pointer}
+.tpre.on{border-color:var(--acc);color:var(--acc)}
+.help-card{background:var(--card);border:1px solid var(--bord);border-radius:12px;
+  padding:13px 15px;font-size:.78em;line-height:1.95;color:var(--txt)}
+.help-card b{color:var(--acc)}
+
+/* Toast */
+#toast{display:none;position:fixed;bottom:76px;left:50%;transform:translateX(-50%);
+  background:#240808;border:1px solid var(--red);color:#fbb;padding:7px 15px;
+  border-radius:10px;font-size:.76em;z-index:99;white-space:nowrap;box-shadow:0 4px 18px #0009}
+
+/* ═══ ДОДАВАННЯ СЛІВ ═══ */
+.add-field{margin-bottom:8px}
+.add-lbl{display:block;font-size:.72em;color:var(--acc);font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.add-inp{width:100%;background:var(--card);border:1.5px solid var(--bord);
+  border-radius:10px;padding:10px 12px;color:var(--txt);font-size:.9em;
+  font-family:inherit;outline:none;transition:border .15s}
+.add-inp:focus{border-color:var(--acc)}
+textarea.add-inp{display:block}
+
+/* Вікно сесії */
+.sess-window{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:center;
+  padding:6px 0}
+.sw-btn{background:var(--card);border:1.5px solid var(--bord);border-radius:9px;
+  color:var(--uk);padding:6px 11px;font-size:.75em;cursor:pointer;transition:all .12s}
+.sw-btn:active{transform:scale(.88)}
+.sw-btn.acc{background:var(--acc);color:#18100a;border-color:var(--acc);font-weight:800}
+.sw-info{font-size:.75em;color:var(--acc);font-weight:700;padding:4px 8px;
+  background:var(--card);border:1px solid var(--bord);border-radius:8px;
+  min-width:80px;text-align:center}
+
+/* Мої теми список */
+.my-theme-row{display:flex;align-items:center;gap:8px;padding:8px 10px;
+  background:var(--card);border:1px solid var(--bord);border-radius:10px;margin-bottom:6px}
+.my-theme-info{flex:1}
+.my-theme-lbl{font-size:.85em;font-weight:700;color:var(--es)}
+.my-theme-cnt{font-size:.7em;color:var(--uk)}
+
+</style>
+</head>
+<body>
+
+<div class="tabs">
+  <button class="tab on"  onclick="showTab('player')">▶ Плеєр</button>
+  <button class="tab"     onclick="showTab('list')">📋 Слова</button>
+  <button class="tab"     onclick="showTab('themes')">🗂 Теми</button>
+  <button class="tab"     onclick="showTab('fav')">⭐ Вибрані</button>
+  <button class="tab"     onclick="showTab('settings')">⚙️</button>
+  <button class="tab"     onclick="showTab('add')">➕</button>
+</div>
+
+<!-- ══ ПЛЕЄР ══ -->
+<div class="scr on" id="scr-player">
+  <!-- Хлібні крихти / кнопка назад -->
+  <div class="breadcrumb" id="breadcrumb" onclick="showTab('themes')">
+    ⬅️ <span id="bc-theme">Теми</span>
+  </div>
+  <div class="sess-window" id="sess-window" style="display:none">
+    <button class="sw-btn" onclick="sessMoveBy(-SESS.size*2)">⏮</button>
+    <button class="sw-btn" onclick="sessMoveBy(-SESS.size)">◀</button>
+    <span class="sw-info" id="sess-win-info">1-10</span>
+    <button class="sw-btn acc" onclick="sessMoveBy(SESS.size)">▶</button>
+    <button class="sw-btn acc" onclick="sessMoveBy(SESS.size*2)">⏭</button>
+  </div>
+
+  <div class="card-area" id="card-area">
+    <div class="c-es" id="c-es">—</div>
+    <div class="c-tr" id="c-tr"></div>
+    <div class="c-uk" id="c-uk">—</div>
+    <div class="c-rep" id="c-rep"></div>
+  </div>
+
+  <div class="prog">
+    <div class="prog-bg"><div class="prog-fill" id="pfill"></div></div>
+    <div class="prog-row">
+      <span id="pnum">0 / 0</span>
+      <span id="pstat"></span>
+      <span id="pstar"></span>
+    </div>
+  </div>
+
+  <div class="ctrl">
+    <!-- Панель сесії -->
+    <div class="sess-panel" id="sess-panel">
+      <div class="sess-row">
+        <span class="sess-lbl">📦 Кількість слів у сесії:</span>
+        <div style="display:flex;gap:4px;flex-wrap:wrap">
+          <button class="cnt-btn on" data-cnt="0"  onclick="setCnt(0)">Всі</button>
+          <button class="cnt-btn"    data-cnt="1"   onclick="setCnt(1)">1</button>
+          <button class="cnt-btn"    data-cnt="5"   onclick="setCnt(5)">5</button>
+          <button class="cnt-btn"    data-cnt="10"  onclick="setCnt(10)">10</button>
+          <button class="cnt-btn"    data-cnt="20"  onclick="setCnt(20)">20</button>
+          <button class="cnt-btn"    data-cnt="50"  onclick="setCnt(50)">50</button>
+        </div>
+      </div>
+      <div class="sess-row">
+        <span class="sess-lbl">🔁 Повтор ES (разів):</span>
+        <div class="rep-num" id="rep-es-btns">
+          <button class="rep-btn on" data-r="1" onclick="setRep('es',1)">1</button>
+          <button class="rep-btn"    data-r="2" onclick="setRep('es',2)">2</button>
+          <button class="rep-btn"    data-r="3" onclick="setRep('es',3)">3</button>
+          <button class="rep-btn"    data-r="4" onclick="setRep('es',4)">4</button>
+          <button class="rep-btn"    data-r="5" onclick="setRep('es',5)">5</button>
+        </div>
+      </div>
+      <div class="sess-row">
+        <span class="sess-lbl">🔁 Повтор UKR (разів):</span>
+        <div class="rep-num" id="rep-ukr-btns">
+          <button class="rep-btn on" data-r="1" onclick="setRep('ukr',1)">1</button>
+          <button class="rep-btn"    data-r="2" onclick="setRep('ukr',2)">2</button>
+          <button class="rep-btn"    data-r="3" onclick="setRep('ukr',3)">3</button>
+          <button class="rep-btn"    data-r="4" onclick="setRep('ukr',4)">4</button>
+          <button class="rep-btn"    data-r="5" onclick="setRep('ukr',5)">5</button>
+        </div>
+      </div>
+      <div class="sess-row">
+        <span class="sess-lbl">🔢 Конкретні номери слів:</span>
+        <input class="num-input" id="num-input" type="text"
+          placeholder="напр: 1-20 або 5,12,34,100"
+          autocomplete="off" autocorrect="off" spellcheck="false">
+        <div class="num-hint">Формат: діапазон (1-20) або список (5,12,34)</div>
+      </div>
+      <div class="sess-row">
+        <button class="btn sm on" onclick="applyNumInput()">✓ Застосувати номери</button>
+        <button class="btn sm"    onclick="toggleShuffle()" id="shuf-btn">🔀 Перемішати</button>
+      </div>
+    </div>
+
+    <!-- Панель швидкості -->
+    <div class="speed-panel" id="spd-panel">
+      <div class="sp-row">
+        <span class="sp-label">🗣 Швидкість голосу</span>
+        <input type="range" id="sl-spd" min="0.5" max="1.5" step="0.05" value="0.85"
+          oninput="document.getElementById('v-spd').textContent=parseFloat(this.value).toFixed(2);AR.ttsRate=parseFloat(this.value)">
+        <span class="sp-val" id="v-spd">0.85</span>
+      </div>
+      <div class="sp-row">
+        <span class="sp-label">⏱ Пауза між ES і UKR (мс)</span>
+        <input type="range" id="sl-gap" min="200" max="3000" step="100" value="700"
+          oninput="document.getElementById('v-gap').textContent=this.value;AR.gapMs=parseInt(this.value)">
+        <span class="sp-val" id="v-gap">700</span>
+      </div>
+      <div class="sp-row">
+        <span class="sp-label">⏸ Пауза між словами (мс)</span>
+        <input type="range" id="sl-pause" min="300" max="5000" step="100" value="1200"
+          oninput="document.getElementById('v-pause').textContent=this.value;AR.pauseMs=parseInt(this.value)">
+        <span class="sp-val" id="v-pause">1200</span>
+      </div>
+      <div class="sp-row">
+        <span class="sp-label">🖼 Показ без звуку (мс)</span>
+        <input type="range" id="sl-show" min="500" max="6000" step="100" value="2000"
+          oninput="document.getElementById('v-show').textContent=this.value;AR.showMs=parseInt(this.value)">
+        <span class="sp-val" id="v-show">2000</span>
+      </div>
+    </div>
+
+    <div class="ctrl-main">
+      <button class="btn" onclick="doPrev()">⏮</button>
+      <button class="btn play" id="play-btn" onclick="doToggle()">▶</button>
+      <button class="btn" onclick="doNext()">⏭</button>
+    </div>
+    <div class="ctrl-row">
+      <button class="btn sm" id="lang-btn"  onclick="cycleLang()">🇪🇸🇺🇦</button>
+      <button class="btn sm" id="mode-btn"  onclick="cycleMode()">📖 Читання</button>
+      <button class="btn sm" id="rep-btn"   onclick="toggleRepeat()">🔁</button>
+      <button class="btn sm" id="fav-btn"   onclick="toggleCurFav()">☆</button>
+      <button class="btn sm" id="sess-btn"  onclick="toggleSessPanel()">📦 Сесія</button>
+      <button class="btn sm" id="spd-btn"   onclick="toggleSpeedPanel()">⚙️</button>
+      <button class="btn sm"                onclick="doRestart()">↺</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ СПИСОК ══ -->
+<div class="scr" id="scr-list">
+  <div class="list-hdr">
+    <input id="srch" placeholder="🔍 Пошук..." oninput="filterList()"
+      autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    <select id="fl-th" onchange="filterList()"><option value="">Всі теми</option></select>
+  </div>
+  <div id="list-body"></div>
+</div>
+
+<!-- ══ ТЕМИ ══ -->
+<div class="scr" id="scr-themes">
+  <div id="th-body" style="padding-bottom:20px"></div>
+</div>
+
+<!-- ══ ВИБРАНІ ══ -->
+<div class="scr" id="scr-fav">
+  <div id="fav-body"></div>
+</div>
+
+<!-- ══ НАЛАШТУВАННЯ ══ -->
+<div class="scr" id="scr-settings">
+<div style="overflow-y:auto;flex:1;padding:10px 12px 30px">
+  <div class="set-section">🎨 Тема</div>
+  <div class="theme-presets" id="theme-presets">
+    <button class="tpre on" data-theme="dark"   onclick="applyTheme('dark')">🌑 Темна</button>
+    <button class="tpre"    data-theme="coffee" onclick="applyTheme('coffee')">☕ Кава</button>
+    <button class="tpre"    data-theme="night"  onclick="applyTheme('night')">🌌 Ніч</button>
+    <button class="tpre"    data-theme="forest" onclick="applyTheme('forest')">🌿 Ліс</button>
+    <button class="tpre"    data-theme="light"  onclick="applyTheme('light')">☀️ Світла</button>
+    <button class="tpre"    data-theme="ocean"  onclick="applyTheme('ocean')">🌊 Океан</button>
+  </div>
+  <div class="set-section">🎨 Кольори</div>
+  <div class="set-row"><span class="set-lbl">Фон</span><input type="color" class="clr" id="c-bg"   onchange="setVar('--bg',this.value)"></div>
+  <div class="set-row"><span class="set-lbl">Поверхня</span><input type="color" class="clr" id="c-surf" onchange="setVar('--surf',this.value)"></div>
+  <div class="set-row"><span class="set-lbl">🇪🇸 Іспанське</span><input type="color" class="clr" id="c-es"  onchange="setVar('--es',this.value)"></div>
+  <div class="set-row"><span class="set-lbl">🔤 Транскрипція</span><input type="color" class="clr" id="c-tr"  onchange="setVar('--tr',this.value)"></div>
+  <div class="set-row"><span class="set-lbl">🔸 Наголос</span><input type="color" class="clr" id="c-str" onchange="setVar('--str',this.value)"></div>
+  <div class="set-row"><span class="set-lbl">🇺🇦 Переклад</span><input type="color" class="clr" id="c-uk"  onchange="setVar('--uk',this.value)"></div>
+  <div class="set-row"><span class="set-lbl">Акцент/кнопки</span><input type="color" class="clr" id="c-acc" onchange="setVar('--acc',this.value)"></div>
+  <div class="set-section">🔤 Розмір шрифту</div>
+  <div class="set-row"><span class="set-lbl">🇪🇸 Іспанське</span>
+    <input type="range" min="0.8" max="3" step="0.05" value="1.55" id="fs-es"
+      oninput="setFontSize('--fs-es',this.value,'fv-es')">
+    <span class="set-val" id="fv-es">1.55</span>em</div>
+  <div class="set-row"><span class="set-lbl">🔤 Транскрипція</span>
+    <input type="range" min="0.7" max="2.5" step="0.05" value="1.2" id="fs-tr"
+      oninput="setFontSize('--fs-tr',this.value,'fv-tr')">
+    <span class="set-val" id="fv-tr">1.20</span>em</div>
+  <div class="set-row"><span class="set-lbl">🇺🇦 Переклад</span>
+    <input type="range" min="0.7" max="2.5" step="0.05" value="1.05" id="fs-uk"
+      oninput="setFontSize('--fs-uk',this.value,'fv-uk')">
+    <span class="set-val" id="fv-uk">1.05</span>em</div>
+  <div class="set-section">💪 Жирність</div>
+  <div class="set-row"><span class="set-lbl">🇪🇸 Іспанське</span>
+    <select onchange="setVar('--fw-es',this.value)" class="set-sel">
+      <option value="400">Звичайний</option><option value="600">Напівжирний</option>
+      <option value="700">Жирний</option><option value="800" selected>Дуже жирний</option><option value="900">Максимум</option>
+    </select></div>
+  <div class="set-row"><span class="set-lbl">🔤 Транскрипція</span>
+    <select onchange="setVar('--fw-tr',this.value)" class="set-sel">
+      <option value="400">Звичайний</option><option value="500">Середній</option>
+      <option value="600" selected>Напівжирний</option><option value="700">Жирний</option><option value="800">Дуже жирний</option>
+    </select></div>
+  <div class="set-row"><span class="set-lbl">🇺🇦 Переклад</span>
+    <select onchange="setVar('--fw-uk',this.value)" class="set-sel">
+      <option value="400">Звичайний</option><option value="500" selected>Середній</option>
+      <option value="600">Напівжирний</option><option value="700">Жирний</option>
+    </select></div>
+  <div class="set-section">✈️ Офлайн режим</div>
+<div style="font-size:.78em;color:var(--uk);margin-bottom:8px;line-height:1.7">
+  Натисни кнопку <b style="color:var(--acc)">один раз при наявності інтернету</b> — 
+  всі аудіо файли збережуться на телефоні і будуть доступні в літаку без інтернету.
+</div>
+<div class="set-row">
+  <button class="btn play" id="cache-btn" onclick="startCaching()"
+    style="flex:1;font-size:.85em;padding:10px">
+    ⬇️ Зберегти аудіо офлайн
+  </button>
+</div>
+<div class="set-row" style="justify-content:center">
+  <span style="font-size:.72em;color:var(--bord)">Збережено: </span>
+  <span style="font-size:.72em;color:var(--acc);margin-left:4px" id="cache-count">перевірка...</span>
+</div>
+
+<div class="set-section">📖 Інструкція</div>
+  <div class="help-card">
+<b>▶ Плеєр</b> — головний екран для прослуховування слів.<br><br>
+
+<b>⬅️ Назва теми</b> (зверху) — натисни щоб повернутись до списку тем.<br><br>
+
+<b>⏮ ⏭ кнопки навігації по сесії</b> — з'являються коли обрано обмежену кількість слів. Переміщують вікно по всій темі: ◀ -N переходить на попередній блок, +N ▶ на наступний. Так можна пройти всю тему порціями.<br><br>
+
+<b>⏮ ⏭ (основні)</b> — попереднє / наступне слово.<br><br>
+
+<b>🇪🇸🇺🇦 Обидві</b> — режим мови. Натисни щоб перемкнути:<br>
+&nbsp;&nbsp;• 🇪🇸🇺🇦 Обидві — спочатку іспанською, потім українською<br>
+&nbsp;&nbsp;• 🇪🇸 Лише ES — тільки іспанська<br>
+&nbsp;&nbsp;• 🇺🇦 Лише UKR — тільки українська<br><br>
+
+<b>📖 Читання / 🧠 Вгадай ES</b> — режим картки:<br>
+&nbsp;&nbsp;• Читання — показує ES і переклад одразу<br>
+&nbsp;&nbsp;• Вгадай ES — показує лише переклад, іспанське приховано. Натисни на картку щоб відкрити.<br><br>
+
+<b>🔁</b> — повтор теми по колу (після останнього слова починає знову).<br><br>
+
+<b>☆ / ⭐</b> — додати/прибрати слово з Вибраних.<br><br>
+
+<b>⚙️ Швидкість</b> — розгортає панель з 4 регуляторами:<br>
+&nbsp;&nbsp;• 🗣 Швидкість голосу (0.5× — 1.5×)<br>
+&nbsp;&nbsp;• ⏱ Пауза між ES і UKR (200–3000 мс)<br>
+&nbsp;&nbsp;• ⏸ Пауза між словами (300–5000 мс)<br>
+&nbsp;&nbsp;• 🖼 Час показу без звуку (500–6000 мс)<br><br>
+
+<b>📦 Кількість слів у сесії</b> — Всі / 1 / 5 / 10 / 20 / 50. Якщо обрано N — плеєр відтворює лише N слів, потім зупиняється. Навігаційні кнопки ◀ ▶ дозволяють перейти до наступного блоку.<br><br>
+
+<b>🔁 Повтор ES / UKR</b> — скільки разів повторювати іспанське (1–5) і переклад (1–5) перед переходом до наступного слова.<br><br>
+
+<b>🔢 Конкретні номери</b> — введи номери через кому або діапазон: <span style="color:var(--acc)">1-20</span> або <span style="color:var(--acc)">5,12,34,100</span>. Натисни ✓ Застосувати — плеєр відтворить лише ці слова.<br><br>
+
+<b>🔀 Перемішати</b> — відтворює слова в довільному порядку.<br><br>
+
+<b>↺</b> — повернутись на початок поточної сесії.<br><br>
+
+<b>📋 Слова</b> — повний список з пошуком і фільтром по темі. Натисни на слово — плеєр почне з нього. Номер зліва = глобальний номер слова (для вибору за номером).<br><br>
+
+<b>🗂 Теми</b> — всі теми. ▶ слухати тему, назва — переглянути слова теми.<br><br>
+
+<b>⭐ Вибрані</b> — збережені слова. Можна слухати окремо.<br><br>
+
+<b>⚙️ Налаштування</b> — зміна теми оформлення, кольорів і розміру шрифтів. 6 готових тем + ручне налаштування кожного кольору.<br><br>
+
+<b>➕ Додати слова</b> — додавання власних слів і тем:<br>
+&nbsp;&nbsp;• Форма: введи іспанське слово → транскрипція генерується автоматично → введи переклад → обери або створи тему<br>
+&nbsp;&nbsp;• Масовий імпорт: вставляй список у форматі <span style="color:var(--acc)">hacer = робити</span> (або з | — :) — кожен рядок стає окремим словом<br>
+&nbsp;&nbsp;• Мої теми зберігаються між сесіями і доступні в плеєрі як звичайні теми<br><br>
+
+<b>Транскрипція</b> — вимова українськими літерами завжди видима. <span style="color:var(--tr)">ВЕЛИКА</span> <span style="color:var(--str);font-weight:900">помаранчева</span> літера = наголос. Наприклад: <span style="color:var(--tr)">де д<span style="color:var(--str);font-weight:900">О</span>нде</span>.<br><br>
+
+<b>Без інтернету</b> — звук недоступний, але всі слова показуються з транскрипцією. Плеєр автоматично переходить до наступного слова.
+</div>
+  <div style="margin-top:12px;display:flex;gap:7px;flex-wrap:wrap">
+    <button class="btn sm" onclick="saveSettings()">💾 Зберегти</button>
+    <button class="btn sm danger" onclick="resetSettings()">↺ Скинути</button>
+  </div>
+</div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+var DATA={
+'questions':{label:'❓ Питальні слова',pairs:[
+['¿Dónde?','дОнде?','Де?'],
+['¿Adónde?','адОнде?','Куди?'],
+['¿De dónde?','дЕ дОнде?','Звідки?'],
+['¿Quién?','кьЕн?','Хто?'],
+['¿Quiénes?','кьЕнес?','Хто? (мн.)'],
+['¿Qué?','кЕ?','Що? / Який?'],
+['¿Cuál?','куАль?','Який? / Котрий?'],
+['¿Cuáles?','куАлес?','Які? / Котрі?'],
+['¿Cuándo?','куАндо?','Коли?'],
+['¿Cuánto?','куАнто?','Скільки?'],
+['¿Cómo?','кОмо?','Як?'],
+['¿Por qué?','пОр кЕ?','Чому?'],
+['¿Para qué?','пАра кЕ?','Навіщо?'],
+['¿Con quién?','кОн кьЕн?','З ким?'],
+['¿A quién?','А кьЕн?','Кому? / Кого?'],
+['¿De quién?','дЕ кьЕн?','Чий?'],
+['¿Cuánto tiempo?','куАнто тьЕмпо?','Скільки часу?'],
+['¿Cuántas veces?','куАнтас бЕсес?','Скільки разів?'],
+['¿A qué hora?','А кЕ Ора?','О котрій годині?'],
+['¿Qué tipo de?','кЕ тІпо дЕ?','Який тип?'],
+]},
+'numbers':{label:'🔢 Числа та порядкові',pairs:[
+['cero','сЕро','0'],
+['uno','Уно','1'],
+['dos','дОс','2'],
+['tres','трЕс','3'],
+['cuatro','куАтро','4'],
+['cinco','сІнко','5'],
+['seis','сЕіс','6'],
+['siete','сьЕте','7'],
+['ocho','Очо','8'],
+['nueve','нуЕбе','9'],
+['diez','дьЕс','10'],
+['once','Онсе','11'],
+['doce','дОсе','12'],
+['trece','трЕсе','13'],
+['catorce','катОрсе','14'],
+['quince','кІнсе','15'],
+['dieciséis','діесісЕіс','16'],
+['diecisiete','діесісіЕте','17'],
+['dieciocho','діесіОчо','18'],
+['diecinueve','діесінуЕбе','19'],
+['veinte','беІнте','20'],
+['veintiuno','беінтіУно','21'],
+['veintidós','беінтідОс','22'],
+['treinta','треІнта','30'],
+['cuarenta','куарЕнта','40'],
+['cincuenta','сінкуЕнта','50'],
+['sesenta','сесЕнта','60'],
+['setenta','сетЕнта','70'],
+['ochenta','очЕнта','80'],
+['noventa','нобЕнта','90'],
+['cien','сьЕн','100'],
+['ciento uno','сіЕнто Уно','101'],
+['doscientos','доссіЕнтос','200'],
+['quinientos','кініЕнтос','500'],
+['mil','мІль','1.000'],
+['dos mil','дОс мІль','2.000'],
+['diez mil','дІес мІль','10.000'],
+['cien mil','сІен мІль','100.000'],
+['un millón','Ун мілйОн','1.000.000'],
+['primero','прімЕро','1-й перший'],
+['segundo','сеґУндо','2-й другий'],
+['tercero','терсЕро','3-й третій'],
+['cuarto','куАрто','4-й четвертий'],
+['quinto','кІнто','5-й п\'ятий'],
+['la mitad','лА мітАд','половина 1/2'],
+['un tercio','Ун терсІо','третина 1/3'],
+['un cuarto','Ун куАрто','чверть 1/4'],
+['el doble','Ель дОбле','вдвічі більше'],
+]},
+'directions':{label:'🧭 Напрямки та орієнтація',pairs:[
+['a la derecha','А лА дерЕча','праворуч'],
+['a la izquierda','А лА іскіЕрда','ліворуч'],
+['todo recto','тОдо рЕкто','прямо'],
+['recto','рЕкто','прямо вперед'],
+['al norte','Аль нОрте','на північ'],
+['al sur','Аль сУр','на південь'],
+['al este','Аль Есте','на схід'],
+['al oeste','Аль оЕсте','на захід'],
+['arriba','аррІба','вгору / вище'],
+['abajo','абАхо','вниз / нижче'],
+['adelante','аделАнте','вперед'],
+['atrás','атрАс','назад'],
+['dentro','дЕнтро','всередині'],
+['fuera','фуЕра','зовні'],
+['cerca','сЕрка','близько / поруч'],
+['lejos','лЕхос','далеко'],
+['al lado de','Аль ладО дЕ','поруч з'],
+['enfrente de','енфрентЕ дЕ','навпроти'],
+['detrás de','детрАс дЕ','позаду'],
+['debajo de','дебахО дЕ','під'],
+['encima de','енсімА дЕ','над / зверху'],
+['entre','Єнтре','між'],
+['a través de','А трабЕс дЕ','через / крізь'],
+['hacia','Асья','до / у напрямку'],
+['desde','дЕсде','від / з (місця)'],
+['hasta','Аста','до (місця/часу)'],
+['girar a la derecha','хірАр А лА дерЕча','повернути праворуч'],
+['girar a la izquierda','хірАр А лА іскіЕрда','повернути ліворуч'],
+['cruzar','крусАр','перетнути / перейти'],
+['la esquina','лА ескІна','кут / куток вулиці'],
+]},
+'colors':{label:'🎨 Кольори (50+)',pairs:[
+['rojo','рОхо','червоний'],
+['azul','асУль','синій'],
+['verde','бЕрде','зелений'],
+['amarillo','амарІльо','жовтий'],
+['naranja','нарАнха','помаранчевий'],
+['morado','морАдо','фіолетовий'],
+['violeta','біолЕта','фіалковий'],
+['rosa','рОса','рожевий'],
+['blanco','блАнко','білий'],
+['negro','нЕґро','чорний'],
+['gris','ґрІс','сірий'],
+['marrón','маррОн','коричневий'],
+['beige','беІхе','бежевий'],
+['celeste','селЕсте','блакитний'],
+['turquesa','туркЕса','бірюзовий'],
+['índigo','Індіґо','індиго'],
+['carmesí','кармесІ','малиновий'],
+['escarlata','ескарлАта','яскраво-червоний'],
+['granate','ґранАте','гранатовий'],
+['burdeos','бурдЕос','бордовий'],
+['coral','корАль','кораловий'],
+['salmón','салмОн','лососевий'],
+['melocotón','мелокотОн','персиковий'],
+['dorado','дорАдо','золотий'],
+['plateado','платеАдо','срібний'],
+['bronce','брОнсе','бронзовий'],
+['cobre','кОбре','мідний'],
+['ocre','Окре','вохра / охристий'],
+['oliva','олІба','оливковий'],
+['lima','лІма','лаймовий'],
+['menta','мЕнта','м\'ятний'],
+['esmeralda','есмерАлда','смарагдовий'],
+['aguamarina','аґуамарІна','аквамарин'],
+['azul marino','асУль марІно','темно-синій'],
+['azul cielo','асУль сіЕло','небесно-блакитний'],
+['azul rey','асУль рЕі','яскраво-синій'],
+['lila','лІла','бузковий'],
+['lavanda','лабАнда','лавандовий'],
+['magenta','махЕнта','маджента'],
+['fucsia','фуксІа','фуксія'],
+['marfil','марфІль','слонова кістка'],
+['crema','крЕма','кремовий'],
+['perla','пЕрла','перловий'],
+['gris claro','ґрІс клАро','світло-сірий'],
+['gris oscuro','ґрІс оскУро','темно-сірий'],
+['antracita','антрасІта','антрацит'],
+['castaño','кастАньо','каштановий'],
+['café','кафЕ','кавовий'],
+['terracota','терракОта','теракота'],
+['canela','канЕла','корицевий'],
+]},
+'opposites':{label:'⚡ Антоніми (110+)',pairs:[
+['inteligente ↔ estúpido','інтеліхЕнте ↔ естУпідо','розумний ↔ тупий'],
+['sabio ↔ ignorante','сАбіо ↔ іґнорАнте','мудрий ↔ невіглас'],
+['valiente ↔ cobarde','балІЕнте ↔ кобАрде','хоробрий ↔ боягуз'],
+['honesto ↔ deshonesto','онЕсто ↔ десонЕсто','чесний ↔ нечесний'],
+['leal ↔ traidor','леАль ↔ траідОр','відданий ↔ зрадник'],
+['generoso ↔ tacaño','хенерОсо ↔ такАньо','щедрий ↔ скупий'],
+['humilde ↔ arrogante','умІлде ↔ арроґАнте','скромний ↔ зарозумілий'],
+['paciente ↔ impaciente','пасіЕнте ↔ імпасіЕнте','терплячий ↔ нетерплячий'],
+['amable ↔ grosero','амАбле ↔ ґросЕро','ввічливий ↔ грубий'],
+['sincero ↔ hipócrita','сінсЕро ↔ іпОкріта','щирий ↔ лицемір'],
+['optimista ↔ pesimista','оптімІста ↔ песімІста','оптиміст ↔ песиміст'],
+['curioso ↔ indiferente','куріОсо ↔ індіферЕнте','допитливий ↔ байдужий'],
+['maduro ↔ inmaduro','мадУро ↔ інмадУро','зрілий ↔ незрілий'],
+['hermoso ↔ feo','ермОсо ↔ фЕо','красивий ↔ потворний'],
+['elegante ↔ descuidado','елеґАнте ↔ дескуідАдо','елегантний ↔ неохайний'],
+['delgado ↔ gordo','делґАдо ↔ ґОрдо','худий ↔ товстий'],
+['alto ↔ bajo','Алто ↔ бАхо','високий ↔ низький'],
+['joven ↔ viejo','хОбен ↔ біЕхо','молодий ↔ старий'],
+['sano ↔ enfermo','сАно ↔ енфЕрмо','здоровий ↔ хворий'],
+['fuerte ↔ débil','фуЕрте ↔ дЕбіль','сильний ↔ слабкий'],
+['vivo ↔ muerto','бІбо ↔ муЕрто','живий ↔ мертвий'],
+['sobrio ↔ borracho','собріо ↔ боррАчо','тверезий ↔ п\'яний'],
+['satisfecho ↔ hambriento','сатісфЕчо ↔ амбріЕнто','ситий ↔ голодний'],
+['alegre ↔ triste','алЕґре ↔ трІсте','радісний ↔ сумний'],
+['tranquilo ↔ nervioso','транкІло ↔ нербіОсо','спокійний ↔ нервовий'],
+['contento ↔ descontento','контЕнто ↔ десконтЕнто','задоволений ↔ незадоволений'],
+['enamorado ↔ desamorado','енаморАдо ↔ десаморАдо','закоханий ↔ розлюблений'],
+['orgulloso ↔ avergonzado','орґулйОсо ↔ аберґонсАдо','гордий ↔ присоромлений'],
+['relajado ↔ estresado','релахАдо ↔ естресАдо','розслаблений ↔ в стресі'],
+['seguro ↔ inseguro','сеґУро ↔ інсеґУро','впевнений ↔ невпевнений'],
+['nuevo ↔ viejo','нуЕбо ↔ біЕхо','новий ↔ старий'],
+['limpio ↔ sucio','лІмпіо ↔ сусІо','чистий ↔ брудний'],
+['útil ↔ inútil','Утіль ↔ інУтіль','корисний ↔ марний'],
+['seguro ↔ peligroso','сеґУро ↔ пеліґрОсо','безпечний ↔ небезпечний'],
+['caro ↔ barato','кАро ↔ барАто','дорогий ↔ дешевий'],
+['real ↔ falso','реАль ↔ фАлсо','справжній ↔ фальшивий'],
+['fácil ↔ difícil','фАсіль ↔ діфІсіль','легкий ↔ важкий'],
+['moderno ↔ anticuado','модЕрно ↔ антікуАдо','сучасний ↔ застарілий'],
+['grande ↔ pequeño','ґрАнде ↔ пекЕньо','великий ↔ маленький'],
+['largo ↔ corto','лАрґо ↔ кОрто','довгий ↔ короткий'],
+['ancho ↔ estrecho','Анчо ↔ естрЕчо','широкий ↔ вузький'],
+['profundo ↔ superficial','профУндо ↔ суперфісіАль','глибокий ↔ поверхневий'],
+['pesado ↔ ligero','песАдо ↔ ліхЕро','важкий ↔ легкий'],
+['lleno ↔ vacío','лйЕно ↔ басІо','повний ↔ порожній'],
+['rápido ↔ lento','рАпідо ↔ лЕнто','швидкий ↔ повільний'],
+['temprano ↔ tarde','темпрАно ↔ тАрде','рано ↔ пізно'],
+['antes ↔ después','Антес ↔ деспуЕс','до ↔ після'],
+['permanente ↔ temporal','перманЕнте ↔ темпорАль','постійний ↔ тимчасовий'],
+['cerca ↔ lejos','сЕрка ↔ лЕхос','близько ↔ далеко'],
+['dentro ↔ fuera','дЕнтро ↔ фуЕра','всередині ↔ зовні'],
+['arriba ↔ abajo','аррІба ↔ абАхо','вгорі ↔ внизу'],
+['abierto ↔ cerrado','абіЕрто ↔ серрАдо','відкритий ↔ закритий'],
+['rico ↔ pobre','рІко ↔ пОбре','багатий ↔ бідний'],
+['culpable ↔ inocente','кулпАбле ↔ іносЕнте','винний ↔ невинний'],
+['legal ↔ ilegal','леґАль ↔ ілеґАль','законний ↔ незаконний'],
+['público ↔ privado','пУбліко ↔ прібАдо','публічний ↔ приватний'],
+['amar ↔ odiar','амАр ↔ одіАр','любити ↔ ненавидіти'],
+['hablar ↔ callar','аблАр ↔ калйАр','говорити ↔ мовчати'],
+['reír ↔ llorar','реІр ↔ лйорАр','сміятись ↔ плакати'],
+['nacer ↔ morir','насЕр ↔ морІр','народитись ↔ померти'],
+['dar ↔ recibir','дАр ↔ ресібІр','давати ↔ отримувати'],
+['comprar ↔ vender','компрАр ↔ бендЕр','купувати ↔ продавати'],
+['ganar ↔ perder','ґанАр ↔ пердЕр','вигравати ↔ програвати'],
+['empezar ↔ terminar','емпесАр ↔ термінАр','починати ↔ закінчувати'],
+['entrar ↔ salir','ентрАр ↔ салІр','входити ↔ виходити'],
+['subir ↔ bajar','субІр ↔ бахАр','підніматись ↔ спускатись'],
+['abrir ↔ cerrar','абрІр ↔ серрАр','відкривати ↔ закривати'],
+['encender ↔ apagar','енсендЕр ↔ апаґАр','вмикати ↔ вимикати'],
+['construir ↔ destruir','конструІр ↔ деструІр','будувати ↔ руйнувати'],
+['recordar ↔ olvidar','рекордАр ↔ олбідАр','памятати ↔ забувати'],
+['unir ↔ separar','унІр ↔ сепарАр','єднати ↔ розлучати'],
+['atacar ↔ defender','атакАр ↔ дефендЕр','атакувати ↔ захищати'],
+['preguntar ↔ responder','преґунтАр ↔ респондЕр','питати ↔ відповідати'],
+['aceptar ↔ rechazar','асептАр ↔ речасАр','приймати ↔ відкидати'],
+['confiar ↔ desconfiar','конфіАр ↔ десконфіАр','довіряти ↔ не довіряти'],
+['mejorar ↔ empeorar','мехорАр ↔ емпеорАр','покращувати ↔ погіршувати'],
+['verdad ↔ mentira','бердАд ↔ ментІра','правда ↔ брехня'],
+['amor ↔ odio','амОр ↔ одІо','любов ↔ ненависть'],
+['paz ↔ guerra','пАс ↔ ґЕрра','мир ↔ війна'],
+['éxito ↔ fracaso','Ексіто ↔ фракАсо','успіх ↔ невдача'],
+['esperanza ↔ desesperación','есперАнса ↔ десесперасіОн','надія ↔ відчай'],
+['libertad ↔ esclavitud','лібертАд ↔ есклабітУд','свобода ↔ рабство'],
+['justicia ↔ injusticia','хустісІа ↔ інхустісІа','справедливість ↔ несправедливість'],
+['orden ↔ caos','Орден ↔ кАос','порядок ↔ хаос'],
+['luz ↔ oscuridad','лУс ↔ оскурідАд','світло ↔ темрява'],
+['vida ↔ muerte','бІда ↔ муЕрте','життя ↔ смерть'],
+['conocimiento ↔ ignorancia','коносіміЕнто ↔ іґнорансІа','знання ↔ невігластво'],
+['confianza ↔ desconfianza','конфіАнса ↔ десконфіАнса','довіра ↔ недовіра'],
+['coraje ↔ cobardía','корАхе ↔ кобардІа','мужність ↔ боягузство'],
+]},
+'idioms':{label:'💡 Ідіоми та крилаті вирази',pairs:[
+['No hay mal que por bien no venga','нО Ай мАль кЕ пОр бьЕн нО бЕнга','Немає лиха без добра'],
+['Más vale tarde que nunca','мАс бАле тАрде кЕ нУнка','Краще пізно ніж ніколи'],
+['No todo lo que brilla es oro','нО тОдо лО кЕ брІлья Ес Оро','Не все те золото що блищить'],
+['Ojos que no ven, corazón que no siente','Охос кЕ нО бЕн — корасОн кЕ нО сьЕнте','З очей геть — з серця геть'],
+['Dime con quién andas y te diré quién eres','дІме кОн кьЕн Андас...','Скажи хто твій друг — скажу хто ти'],
+['Querer es poder','керЕр Ес подЕр','Хотіти — значить могти'],
+['El que mucho abarca, poco aprieta','Ель кЕ мУчо абАрка, пОко апрьЕта','За двома зайцями...'],
+['Al mal tiempo, buena cara','Аль мАль тьЕмпо, буЕна кАра','Тримайся всупереч негараздам'],
+['costar un ojo de la cara','костАр Ун Охо дЕ лА кАра','коштувати цілий статок'],
+['meter la pata','метЕр лА пАта','облажатись / вляпатись'],
+['tomar el pelo','томАр Ель пЕло','морочити голову / дурити'],
+['ponerse las pilas','понЕрсе лАс пІлас','взятись до роботи / зібратись'],
+['estar en las nubes','естАр Ен лАс нУбес','витати в хмарах / мріяти'],
+['no pegar ojo','нО пеґАр Охо','не зімкнути ока / не спати'],
+['romper el hielo','ромпЕр Ель іЕло','зламати лід / розрядити обстановку'],
+['matar dos pájaros de un tiro','матАр дОс пАхарос дЕ Ун тІро','вбити двох зайців одним пострілом'],
+['dar en el clavo','дАр Ен Ель клАбо','влучити в точку / вгадати'],
+['llover a cántaros','льобЕр А кАнтарос','лити як з відра'],
+['estar hecho polvo','естАр Ечо пОльбо','бути повністю знесиленим'],
+['ser pan comido','сЕр пАн комІдо','раз плюнути / дуже легко'],
+['hablar por los codos','аблАр пОр лОс кОдос','базікати без угаву'],
+['perro que ladra no muerde','пЕрро кЕ лАдра нО муЕрде','собака що гавкає не кусає'],
+['a buen hambre no hay pan duro','А буЕн Амбре нО Ай пАн дУро','голодному й чорний хліб білий'],
+['el tiempo es oro','Ель тьЕмпо Ес Оро','час — це гроші'],
+['no hay mal que dure cien años','нО Ай мАль кЕ дУре сьЕн Аньос','все минає / ніщо не вічне'],
+['la práctica hace al maestro','лА прАктіка Асе Аль маЕстро','практика — мати майстерності'],
+['no se ganó Zamora en una hora','нО сЕ ґанО самОра Ен Уна Ора','Рим не одразу будувався'],
+['quien busca, halla','кьЕн бУска, Алья','хто шукає — той знаходить'],
+['más vale pájaro en mano que ciento volando','мАс бАле пАхаро Ен мАно...','краще синиця в руках'],
+['en boca cerrada no entran moscas','Ен бОка серрАда нО ентрАн мОскас','мовчання — золото'],
+['no dejes para mañana lo que puedas hacer hoy','нО дЕхес пАра маньАна...','не відкладай на завтра'],
+['a grandes males, grandes remedios','А ґрАндес мАлес, ґрАндес ремЕдьос','на великі негаразди — великі ліки'],
+['lo que no mata, engorda','лО кЕ нО мАта, енґОрда','що не вбиває — робить сильнішим'],
+['caras vemos, corazones no sabemos','кАрас бЕмос, корасОнес нО сабЕмос','обличчя бачимо — серця не знаємо'],
+['cada oveja con su pareja','кАда обЕха кОн сУ парЕха','рівний до рівного тягнеться'],
+['el hábito no hace al monje','Ель Абіто нО Асе Аль мОнхе','одяг не робить людину'],
+['agua pasada no mueve molino','Аґуа пасАда нО муЕбе молІно','що пройшло — того не вернеш'],
+['a otro perro con ese hueso','А Отро пЕрро кОн Есе уЕсо','мене не обдуриш'],
+['antes que te cases, mira lo que haces','Антес кЕ тЕ кАсес...','сім разів відміряй'],
+['más sabe el diablo por viejo que por diablo','мАс сАбе Ель дьАбло пОр бьЕхо...','досвід — найкращий вчитель'],
+['A caballo regalado no le mires el diente','А кабАльо реґалАдо...','дарованому коню в зуби не дивляться'],
+['Camarón que se duerme se lo lleva la corriente','камарОн кЕ сЕ дуЕрме...','не зівай — течія підхопить'],
+['más vale prevenir que curar','мАс бАле пребенІр кЕ курАр','краще запобігти ніж лікувати'],
+['no hay rosa sin espinas','нО Ай рОса сІн еспІнас','немає троянди без шипів'],
+['el que ríe último ríe mejor','Ель кЕ рІе УльтімО рІе мехОр','сміється той хто сміється останнім'],
+]},
+'business':{label:'💼 Ділова іспанська',pairs:[
+['Nos ponemos en contacto','нос понЕмос ен контАкто','Ми зв\'яжемося'],
+['Quedamos en eso','кедАмос Ен Есо','Домовились'],
+['¿Podemos agendar una reunión?','подЕмос ахендАр Уна реунйОн','Можемо запланувати зустріч?'],
+['Le envío los detalles por correo','лЕ енбІо лОс детАльес пОр корЕо','Надішлю деталі поштою'],
+['Estamos trabajando en ello','естАмос трабахАндо Ен Ельо','Ми працюємо над цим'],
+['Necesito su aprobación','несесІто сУ апробасьОн','Мені потрібне ваше схвалення'],
+['Déjeme consultarlo','дЕхеме консультАрло','Дозвольте уточнити'],
+['¿Me puede repetir eso?','мЕ пуЕде репетІр Есо','Могли б ви повторити?'],
+['El plazo de entrega es...','Ель плАсо дЕ ентрЕґа Ес','Термін доставки...'],
+['¿Cuáles son sus condiciones?','куАлес сОн сУс кондісьОнес','Які ваші умови?'],
+['Estamos dispuestos a negociar','естАмос діспуЕстос А неґосьАр','Ми готові до переговорів'],
+['El presupuesto está aprobado','Ель пресупуЕсто естА апробАдо','Бюджет затверджено'],
+['Firmamos el contrato','фірмАмос Ель контрАто','Підписуємо контракт'],
+['El trato está hecho','Ель трАто естА Ечо','Угода укладена'],
+['Hay que recortar gastos','Ай кЕ рекортАр ґАстос','Треба скоротити витрати'],
+['Somos líderes del mercado','сОмос лІдерес дЕль меркАдо','Ми лідери ринку'],
+['Buscamos inversores','бускАмос інберсОрес','Шукаємо інвесторів'],
+['Necesito el informe para el lunes','несесІто Ель інфОрме пАра Ель лУнес','Мені потрібен звіт на понеділок'],
+['Revisemos los términos','ребісЕмос лОс тЕрмінос','Давайте переглянемо умови'],
+['¿Puedo hablar con el responsable?','пуЕдо аблАр кОн Ель респонсАбле','Можу поговорити з відповідальним?'],
+['Le dejo mi tarjeta','лЕ дЕхо мІ тархЕта','Залишаю вам свою візитку'],
+['¿Cuál es el margen de beneficio?','куАль Ес Ель мАрхен дЕ бенефІсьо','Яка маржа прибутку?'],
+['¿Cuánto facturáis al año?','куАнто фактурАіс Аль Аньо','Який ваш річний оборот?'],
+['Lanzamos el producto en enero','лансАмос Ель продУкто Ен енЕро','Запускаємо продукт у січні'],
+['Estamos en proceso de expansión','естАмос Ен просЕсо дЕ експансьОн','Ми в процесі розширення'],
+['¿Cuál es su disponibilidad?','куАль Ес сУ діспонібілідАд','Коли вам зручно?'],
+['la propuesta de valor','лА пропуЕста дЕ балОр','ціннісна пропозиція'],
+['el flujo de caja','Ель флУхо дЕ кАха','грошовий потік / cash flow'],
+['la tasa de conversión','лА тАса дЕ конберсьОн','коефіцієнт конверсії'],
+['el punto de equilibrio','Ель пУнто дЕ екілІбрьо','точка беззбитковості'],
+]},
+'medical':{label:'🏥 Медична іспанська',pairs:[
+['Me duele la cabeza','мЕ дуЕле лА кабЕса','У мене болить голова'],
+['Tengo fiebre alta','тЕнґо фьЕбре Альта','У мене висока температура'],
+['Me cuesta respirar','мЕ куЕста респірАр','Мені важко дихати'],
+['Tengo náuseas','тЕнґо нАусеас','Мене нудить'],
+['Me duele el pecho','мЕ дуЕле Ель пЕчо','Болить груди'],
+['Soy alérgico a...','сОй алЕрхіко А','Я алергік на...'],
+['Tomo medicación','тОмо медікасьОн','Я приймаю ліки'],
+['¿Dónde está urgencias?','дОнде естА урхЕнсьяс','Де знаходиться швидка?'],
+['Necesito un médico','несесІто Ун мЕдіко','Мені потрібен лікар'],
+['¿Qué síntomas tiene?','кЕ сІнтомас тьЕне','Які у вас симптоми?'],
+['Hace tres días que me siento mal','Асе трЕс дІас кЕ мЕ сьЕнто мАль','Три дні я почуваюсь погано'],
+['¿Cuántas veces al día?','куАнтас бЕсес Аль дІа','Скільки разів на день?'],
+['en ayunas','Ен аюнАс','натщесерце'],
+['después de las comidas','деспуЕс дЕ лАс комІдас','після їди'],
+['Tengo el azúcar alto','тЕнґо Ель асУкар Альто','У мене підвищений цукор'],
+['presión arterial alta','пресьОн артерьАль Альта','підвищений тиск'],
+['Me he torcido el tobillo','мЕ Е торсІдо Ель тобІльо','Я підвернув щиколотку'],
+['¿Hay que hospitalizarme?','Ай кЕ оспіталісАрме','Мене треба госпіталізувати?'],
+['los resultados del análisis','лОс ресультАдос дЕль аналІсіс','результати аналізів'],
+['la receta médica','лА ресЕта мЕдіка','медичний рецепт'],
+['el jarabe para la tos','Ель харАбе пАра лА тОс','сироп від кашлю'],
+['pastillas para el dolor','пастІльяс пАра Ель долОр','знеболювальні таблетки'],
+['Tome dos comprimidos cada ocho horas','тОме дОс компрімІдос кАда Очо Орас','Приймайте дві таблетки кожні 8 год'],
+['¿Es contagioso?','Ес контахьОсо','Це заразно?'],
+['hacerse un análisis de sangre','асЕрсе Ун аналІсіс дЕ сАнґре','здати аналіз крові'],
+['sala de espera','сАла дЕ еспЕра','зала очікування'],
+['el seguro médico','Ель сеґУро мЕдіко','медична страховка'],
+['la operación','лА операСьОн','операція'],
+['la ambulancia','лА амбулАнсья','швидка допомога'],
+['el diagnóstico','Ель діаґнОстіко','діагноз'],
+]},
+'travel':{label:'✈️ Подорожі та туризм',pairs:[
+['Quisiera reservar un vuelo','кісьЕра ресербАр Ун буЕло','Хотів би забронювати рейс'],
+['¿A qué hora sale el avión?','А кЕ Ора сАле Ель абьОн','О котрій вилітає літак?'],
+['¿Cuánto dura el vuelo?','куАнто дУра Ель буЕло','Скільки триває переліт?'],
+['Tengo equipaje de mano','тЕнґо екіпАхе дЕ мАно','У мене ручна поклажа'],
+['¿Dónde está la puerta de embarque?','дОнде естА лА пуЕрта дЕ ембАрке','Де знаходиться гейт?'],
+['El vuelo está retrasado','Ель буЕло естА ретрасАдо','Рейс затримується'],
+['Quisiera una habitación individual','кісьЕра Уна абітасьОн індібідуАль','Хочу одномісний номер'],
+['¿Está incluido el desayuno?','естА інклуІдо Ель десАюно','Сніданок включено?'],
+['¿A qué hora es el check-out?','А кЕ Ора Ес Ель чЕк аУт','О котрій виселення?'],
+['¿Dónde se cambia dinero?','дОнде сЕ кАмбья дінЕро','Де обміняти гроші?'],
+['¿Qué recomienda visitar?','кЕ рекомьЕнда бісітАр','Що порадите відвідати?'],
+['¿Hay visita guiada?','Ай бісІта ґіАда','Є екскурсія з гідом?'],
+['Quiero alquilar un coche','кьЕро алкілАр Ун кОче','Хочу орендувати авто'],
+['Perdone, ¿cómo se llega a...?','пердОне, кОмо сЕ льЕґа А','Вибачте, як дістатися до...?'],
+['¿Hay que pagar entrada?','Ай кЕ паґАр ентрАда','Треба платити за вхід?'],
+['Se me ha perdido el pasaporte','сЕ мЕ А пердІдо Ель пасапОрте','Я загубив паспорт'],
+['¿Dónde está la embajada?','дОнде естА лА ембахАда','Де знаходиться посольство?'],
+['¿Dónde recojo el equipaje?','дОнде рекОхо Ель екіпАхе','Де отримати багаж?'],
+['Mi vuelo de conexión','мІ буЕло дЕ конексьОн','Мій стикувальний рейс'],
+['¿Está permitido fumar aquí?','естА пермітІдо фумАр акІ','Тут можна курити?'],
+['la aduana','лА адуАна','митниця'],
+['el pasaporte','Ель пасапОрте','паспорт'],
+['la visa','лА бІса','віза'],
+['el billete de ida y vuelta','Ель більЕте дЕ Іда І буЕлта','квиток туди-назад'],
+['el seguro de viaje','Ель сеґУро дЕ бьАхе','страховка подорожі'],
+['la conexión wifi','лА конексьОн уІфі','підключення до wifi'],
+['¿Tienen habitaciones disponibles?','тьЕнен абітасьОнес діспонІблес','Є вільні номери?'],
+['el tipo de cambio','Ель тІпо дЕ кАмбьо','курс обміну валют'],
+['la propina','лА пропІна','чайові'],
+['¿Qué hay para ver aquí?','кЕ Ай пАра бЕр акІ','Що тут варто побачити?'],
+]},
+'emotions':{label:'🧠 Емоції та психологія',pairs:[
+['Me siento solo/a','мЕ сьЕнто сОло','Мені самотньо'],
+['Estoy agobiado/a','естОй аґобьАдо','Я перевантажений / пригнічений'],
+['Necesito desahogarme','несесІто десаоґАрме','Мені потрібно виговоритись'],
+['Me cuesta concentrarme','мЕ куЕста консентрАрме','Мені важко зосередитись'],
+['Tengo miedo al fracaso','тЕнґо мьЕдо Аль фракАсо','Я боюсь невдачі'],
+['Estoy en un momento difícil','естОй Ен Ун момЕнто діфІсіль','Я зараз у важкому моменті'],
+['Necesito espacio','несесІто еспАсьо','Мені потрібен простір'],
+['Tengo ansiedad','тЕнґо ансьедАд','У мене тривожність'],
+['Me siento vacío/a','мЕ сьЕнто басІо','Відчуваю порожнечу'],
+['Estoy trabajando en mí mismo','естОй трабахАндо Ен мІ мІсмо','Я працюю над собою'],
+['Necesito poner límites','несесІто понЕр лімІтес','Мені треба встановити межі'],
+['Tengo baja autoestima','тЕнґо бАха аутоестІма','У мене занижена самооцінка'],
+['Estoy en terapia','естОй Ен терАпья','Я ходжу до терапевта'],
+['Necesito apoyo emocional','несесІто апОйо емосьонАль','Мені потрібна емоційна підтримка'],
+['Me cuesta dormir','мЕ куЕста дормІр','Мені важко спати'],
+['Tengo ataques de pánico','тЕнґо атАкес дЕ пАніко','У мене панічні атаки'],
+['la resiliencia','лА ресільЕнсья','стійкість / резильєнтність'],
+['el agotamiento emocional','Ель аґотамьЕнто емосьонАль','емоційне виснаження'],
+['la zona de confort','лА сОна дЕ конфОрт','зона комфорту'],
+['salir de la zona de confort','салІр дЕ лА сОна дЕ конфОрт','вийти із зони комфорту'],
+['la inteligencia emocional','лА інтелІхенсья емосьонАль','емоційний інтелект'],
+['el pensamiento crítico','Ель пенсамьЕнто крітІко','критичне мислення'],
+['la autoestima','лА аутоестІма','самооцінка'],
+['la autoconfianza','лА аутоконфьАнса','самовпевненість'],
+['el estrés','Ель естрЕс','стрес'],
+['el burnout','Ель бЕрнаут','вигорання'],
+['la meditación','лА медітасьОн','медитація'],
+['el bienestar','Ель бьенестАр','добробут / благополуччя'],
+['la gratitud','лА ґратітУд','вдячність'],
+['el propósito de vida','Ель пропОсіто дЕ бІда','сенс / мета життя'],
+]},
+'relationships':{label:'❤️ Стосунки та спілкування',pairs:[
+['¿Quedamos mañana?','кедАмос маньАна','Зустрінемось завтра?'],
+['Te echo de menos','тЕ Ечо дЕ мЕнос','Я за тобою скучив'],
+['No quiero discutir','нО кьЕро діскутІр','Не хочу сваритись'],
+['Tenemos que hablar','тенЕмос кЕ аблАр','Нам треба поговорити'],
+['Me has decepcionado','мЕ Ас десепсьонАдо','Ти мене розчарував'],
+['Te perdono','тЕ пердОно','Я тебе прощаю'],
+['Lo siento de verdad','лО сьЕнто дЕ бердАд','Мені справді шкода'],
+['Necesito que me escuches','несесІто кЕ мЕ ескУчес','Мені потрібно щоб ти вислухав'],
+['¿Puedo contar contigo?','пуЕдо контАр контІґо','Я можу на тебе розраховувати?'],
+['Confío en ti','конфІо Ен тІ','Я тобі довіряю'],
+['Eres muy importante para mí','Ерес мУй імпортАнте пАра мІ','Ти дуже важливий для мене'],
+['No te entiendo','нО тЕ ентьЕндо','Я тебе не розумію'],
+['¿Qué necesitas de mí?','кЕ несесІтас дЕ мІ','Що тобі від мене потрібно?'],
+['Estoy aquí para lo que necesites','естОй акІ пАра лО кЕ несесІтес','Я тут для тебе'],
+['¿Podemos empezar de cero?','подЕмос емпесАр дЕ сЕро','Можемо почати з нуля?'],
+['Te quiero tal como eres','тЕ кьЕро тАль кОмо Ерес','Люблю тебе таким яким ти є'],
+['Respeto tu decisión','респЕто тУ десісьОн','Я поважаю твоє рішення'],
+['Pongamos las cartas sobre la mesa','понґАмос лАс кАртас сОбре лА мЕса','Говоримо відверто'],
+['Me haces sentir seguro/a','мЕ Асес сентІр сеґУро','З тобою я почуваюсь захищеним'],
+['Gracias por estar a mi lado','ґрАсьяс пОр естАр А мІ лАдо','Дякую що ти поруч'],
+['Nos hemos distanciado','нОс Емос дістансьАдо','Ми віддалились один від одного'],
+['Quiero que seamos honestos','кьЕро кЕ сеАмос онЕстос','Хочу щоб ми були чесними'],
+['Me alegra verte','мЕ алЕґра бЕрте','Радий тебе бачити'],
+['¿Estás bien?','естАс бьЕн','Ти в порядку?'],
+['¿En qué piensas?','Ен кЕ пьЕнсас','Про що думаєш?'],
+['la comunicación asertiva','лА комунікасьОн асертІба','асертивна комунікація'],
+['poner límites sanos','понЕр лімІтес сАнос','встановлювати здорові межі'],
+['el lenguaje no verbal','Ель ленґуАхе нО бербАль','невербальна мова'],
+['la escucha activa','лА ескУча актІба','активне слухання'],
+['la empatía','лА емпатІа','емпатія'],
+]},
+'tech':{label:'💻 Технології та інтернет',pairs:[
+['el algoritmo','Ель алґорІтмо','алгоритм'],
+['la inteligencia artificial','лА інтеліхенсІа артіфісіАль','штучний інтелект'],
+['el aprendizaje automático','Ель апрендісАхе аутомАтіко','машинне навчання'],
+['los datos','лОс дАтос','дані'],
+['la nube','лА нУбе','хмара / cloud'],
+['el cifrado','Ель сіфрАдо','шифрування'],
+['la red neuronal','лА рЕд неуронАль','нейронна мережа'],
+['el servidor','Ель сербідОр','сервер'],
+['la aplicación','лА аплікасіОн','застосунок / додаток'],
+['la contraseña','лА контрасЕньа','пароль'],
+['el cortafuegos','Ель кортафуЕґос','фаєрвол'],
+['la copia de seguridad','лА копІа дЕ сеґурідАд','резервна копія'],
+['el ancho de banda','Ель Анчо дЕ бАнда','пропускна здатність'],
+['la latencia','лА латенсІа','затримка / latency'],
+['actualizar','актуалісАр','оновити'],
+['sincronizar','сінкронісАр','синхронізувати'],
+['el teclado','Ель теклАдо','клавіатура'],
+['la pantalla táctil','лА пантАлйа тАктіль','сенсорний екран'],
+['sin conexión','сІн конексіОн','офлайн'],
+['en línea','Ен лІнеа','онлайн'],
+['la experiencia de usuario','лА експеріенсІа дЕ усуарІо','UX — досвід користувача'],
+['el código fuente','Ель кОдіґо фуЕнте','вихідний код'],
+['depurar','депурАр','налагоджувати / дебажити'],
+['el parche de seguridad','Ель пАрче дЕ сеґурідАд','патч безпеки'],
+['la cadena de bloques','лА кадЕна дЕ блОкес','блокчейн'],
+['el phishing','Ель пісІнґ','фішинг'],
+['el virus informático','ель бірус інформАтіко','комп\'ютерний вірус'],
+['la inteligencia artificial generativa','лА інтеліхенсІа артіфісіАль хенератІба','генеративний ШІ'],
+['el prompt','Ель прОмпт','промпт / запит до ШІ'],
+['el machine learning','Ель мачІне леарнІнґ','машинне навчання'],
+]},
+'food_adv':{label:'🍷 Ресторан та кулінарія',pairs:[
+['poco hecho','пОко Ечо','з кров\'ю (стейк)'],
+['al punto','Аль пУнто','середня прожарка'],
+['bien hecho','бьЕн Ечо','добре прожарений'],
+['a la brasa','А лА брАса','на грилі / на вугіллі'],
+['al horno','Аль Орно','запечений у духовці'],
+['al vapor','Аль бапОр','на пару'],
+['rehogado','реоґАдо','пасерований'],
+['la guarnición','лА ґуарнісьОн','гарнір'],
+['el aliño','Ель алІньо','заправка для салату'],
+['está en su punto','естА Ен сУ пУнто','приготовлено ідеально'],
+['¿Tiene ingredientes alérgenos?','тьЕне інґредьЕнтес алЕрхенос','Є алергени у складі?'],
+['sin gluten','сІн ґлУтен','без глютену'],
+['de temporada','дЕ темпорАда','сезонний'],
+['ecológico','еколОхіко','органічний / еко'],
+['la carta de vinos','лА кАрта дЕ бІнос','винна карта'],
+['seco','сЕко','сухе (вино)'],
+['semiseco','семісЕко','напівсухе'],
+['dulce','дУльсе','солодке'],
+['espumoso','еспумОсо','ігристе'],
+['¿Me recomienda el vino de la casa?','мЕ рекомьЕнда Ель бІно дЕ лА кАса','Порадите домашнє вино?'],
+['La cuenta, por favor','лА куЕнта, пОр фабОр','Рахунок, будь ласка'],
+['¿Está incluido el servicio?','естА інклуІдо Ель сербІсьо','Обслуговування включено?'],
+['¿Puedo ver la carta?','пуЕдо бЕр лА кАрта','Можу подивитись меню?'],
+['el menú del día','Ель менУ дЕль дІа','бізнес-ланч / меню дня'],
+['para llevar','пАра льебАр','на виніс'],
+['reservar una mesa','ресербАр Уна мЕса','забронювати столик'],
+['Estaba delicioso','естАба деліСьОсо','Було дуже смачно'],
+['¿Qué recomienda?','кЕ рекомьЕнда','Що порекомендуєте?'],
+['la especialidad de la casa','лА еспесьялідАд дЕ лА кАса','фірмова страва закладу'],
+['tengo intolerancia a la lactosa','тЕнґо інтолерАнсья А лА лактОса','у мене непереносимість лактози'],
+]},
+'grammar':{label:'🔧 Службові слова та граматика',pairs:[
+['y','І','і / та'],
+['o','О','або'],
+['pero','пЕро','але'],
+['sino','сІно','а / а навпаки'],
+['aunque','аУнке','хоча / незважаючи на'],
+['porque','поркЕ','тому що'],
+['para','пАра','для / щоб'],
+['por','пОр','за / через / по'],
+['con','кОн','з (разом)'],
+['sin','сІн','без'],
+['sobre','сОбре','про / над'],
+['bajo','бАхо','під / за (керівництва)'],
+['entre','Єнтре','між'],
+['hasta','Аста','до (місця/часу)'],
+['desde','дЕсде','від / з (моменту)'],
+['hacia','Асья','до / у напрямку'],
+['según','сеґУн','згідно / відповідно до'],
+['durante','дурАнте','під час / протягом'],
+['mediante','медіАнте','за допомогою'],
+['a pesar de','А песАр дЕ','незважаючи на'],
+['además','адемАс','крім того / до того ж'],
+['sin embargo','сІн ембАрґо','проте / однак'],
+['por lo tanto','пОр лО тАнто','тому / отже'],
+['es decir','Ес десІр','тобто / тоді є'],
+['por ejemplo','пОр ехЕмпло','наприклад'],
+['en cambio','Ен камбІо','натомість / а от'],
+['a menos que','А менОс кЕ','якщо тільки не'],
+['siempre que','сіемпрЕ кЕ','завжди коли / за умови'],
+['en cuanto','Ен куАнто','як тільки'],
+['mientras que','міентрАс кЕ','тоді як'],
+['tan pronto como','тАн прОнто кОмо','щойно / як тільки'],
+]},
+'feelings':{label:'😊 Почуття та стани',pairs:[
+['alegre','алЕґре','радісний / веселий'],
+['triste','трІсте','сумний'],
+['emocionado','емосіонАдо','схвильований / збуджений'],
+['aburrido','абуррІдо','нудний / нудьгуючий'],
+['asustado','асустАдо','наляканий'],
+['tranquilo','транкІло','спокійний'],
+['nervioso','нербіОсо','нервовий'],
+['relajado','релахАдо','розслаблений'],
+['cansado','кансАдо','втомлений'],
+['descansado','дескансАдо','відпочилий'],
+['hambriento','амбріЕнто','голодний'],
+['satisfecho','сатісфЕчо','ситий / задоволений'],
+['sediento','седіЕнто','спраглий'],
+['enfadado','енфадАдо','злий / роздратований'],
+['celoso','селОсо','ревнивий'],
+['avergonzado','аберґонсАдо','присоромлений'],
+['orgulloso','орґулйОсо','гордий'],
+['agradecido','аґрадесІдо','вдячний'],
+['esperanzado','есперансАдо','сповнений надій'],
+['desesperado','десесперАдо','відчайдушний'],
+['confundido','конфундІдо','збентежений'],
+['sorprendido','сорпрендІдо','здивований'],
+['decepcionado','десепсіонАдо','розчарований'],
+['entusiasmado','ентусіасмАдо','ентузіазований'],
+['inseguro','інсеґУро','невпевнений'],
+['seguro','сеґУро','впевнений'],
+['curioso','куріОсо','допитливий'],
+['aburrido','абуррІдо','нудьгуючий'],
+['distraído','дістраІдо','розсіяний'],
+['concentrado','консентрАдо','зосереджений'],
+]},
+'home':{label:'🏠 Дім та побут',pairs:[
+['la habitación','лА абітасіОн','кімната'],
+['el dormitorio','Ель дорміторІо','спальня'],
+['la cocina','лА косІна','кухня'],
+['el baño','Ель бАньо','ванна кімната'],
+['el salón','Ель салОн','вітальня'],
+['el comedor','Ель комедОр','їдальня'],
+['el pasillo','Ель пасІлйо','коридор'],
+['la escalera','лА ескалЕра','сходи'],
+['el ascensor','Ель ассенсОр','ліфт'],
+['el garaje','Ель ґарАхе','гараж'],
+['el jardín','Ель хардІн','сад'],
+['la terraza','лА террАса','тераса'],
+['el balcón','Ель балкОн','балкон'],
+['el sótano','Ель сОтано','підвал'],
+['el ático','Ель Атіко','мансарда / горище'],
+['la cama','лА кАма','ліжко'],
+['el sofá','Ель софА','диван'],
+['la silla','лА сІлья','стілець'],
+['la mesa','лА мЕса','стіл'],
+['el armario','Ель армарІо','шафа'],
+['la estantería','лА естантерІа','полиця'],
+['la lámpara','лА лАмпара','лампа'],
+['la nevera','лА небЕра','холодильник'],
+['el horno','Ель Орно','духовка'],
+['la lavadora','лА лабадОра','пральна машина'],
+['el lavavajillas','Ель лабабахІлйас','посудомийна машина'],
+['el microondas','Ель мікроОндас','мікрохвильова піч'],
+['la aspiradora','лА аспірадОра','пилосос'],
+['el grifo','Ель ґрІфо','кран'],
+['la calefacción','лА калефаксіОн','опалення'],
+]},
+'work':{label:'👔 Робота та кар\'єра',pairs:[
+['el currículum','Ель куррІкулум','резюме'],
+['la entrevista de trabajo','лА ентребІста дЕ трабАхо','співбесіда'],
+['el contrato','Ель контрАто','контракт'],
+['el salario','Ель саларІо','зарплата'],
+['el aumento de sueldo','Ель аумЕнто дЕ суЕлдо','підвищення зарплати'],
+['la promoción','лА промосіОн','підвищення на посаді'],
+['el despido','Ель деспІдо','звільнення'],
+['la renuncia','лА ренунсІа','відставка / звільнення за власним бажанням'],
+['el turno','Ель тУрно','зміна / черга'],
+['las horas extra','лАс Орас Екстра','понаднормові години'],
+['el teletrabajo','Ель телетрабАхо','дистанційна робота'],
+['la reunión','лА реуніОн','зустріч / нарада'],
+['el informe','Ель інфОрме','звіт'],
+['el proyecto','Ель проіЕкто','проект'],
+['el plazo','Ель плАсо','дедлайн'],
+['el jefe','Ель хЕфе','начальник'],
+['el compañero de trabajo','Ель компаньЕро дЕ трабАхо','колега'],
+['el departamento','Ель департамЕнто','відділ'],
+['la empresa','лА емпрЕса','компанія'],
+['el cliente','Ель кліЕнте','клієнт'],
+['el proveedor','Ель пробеедОр','постачальник'],
+['la factura','лА фактУра','рахунок-фактура'],
+['el presupuesto','Ель пресупуЕсто','бюджет'],
+['las vacaciones','лАс бакасіОнес','відпустка'],
+['la baja por enfermedad','лА бАха пОр енфермедАд','лікарняний'],
+['la formación','лА формасіОн','навчання / підготовка'],
+['las habilidades','лАс абілідАдес','навички'],
+['la experiencia laboral','лА експеріенсІа лаборАль','досвід роботи'],
+['el puesto','Ель пуЕсто','посада / вакансія'],
+['la empresa emergente','лА емпрЕса емерхЕнте','стартап'],
+]},
+'weather':{label:'🌤 Погода та клімат',pairs:[
+['Hace calor','Асе калОр','Спекотно'],
+['Hace frío','Асе фрІо','Холодно'],
+['Hace sol','Асе сОль','Сонячно'],
+['Está nublado','естА нублАдо','Хмарно'],
+['Está lloviendo','естА лйобіЕндо','Іде дощ'],
+['Está nevando','естА небАндо','Іде сніг'],
+['Hay niebla','Аі ніЕбла','Туман'],
+['Hay tormenta','Аі тормЕнта','Гроза'],
+['Hace viento','Асе біЕнто','Вітряно'],
+['Está despejado','естА деспехАдо','Ясно / безхмарно'],
+['la temperatura','лА температУра','температура'],
+['la humedad','лА умедАд','вологість'],
+['el pronóstico del tiempo','Ель пронОстіко дЕль тьЕмпо','прогноз погоди'],
+['las precipitaciones','лАс пресіпітасіОнес','опади'],
+['la helada','лА елАда','мороз / заморозки'],
+['la ola de calor','лА Ола дЕ калОр','хвиля спеки'],
+['la sequía','лА секІа','посуха'],
+['la inundación','лА інундасіОн','повінь'],
+['el huracán','Ель уракАн','ураган'],
+['el terremoto','Ель терремОто','землетрус'],
+['el tsunami','Ель тсунАмі','цунамі'],
+['el clima','Ель клІма','клімат'],
+['el cambio climático','Ель камбІо клімАтіко','зміна клімату'],
+['la contaminación','лА контамінасіОн','забруднення'],
+['renovable','ренобАбле','відновлювальний'],
+['sostenible','состенІбле','стійкий / сталий'],
+['el efecto invernadero','Ель ефЕкто інбернадЕро','парниковий ефект'],
+['la huella de carbono','лА уЕлйа дЕ карбОно','вуглецевий слід'],
+['la energía solar','лА енерхІа солАр','сонячна енергія'],
+['el reciclaje','Ель ресіклАхе','переробка / рециклінг'],
+]},
+'100-sustantivos':{label:'📗 100 іменників',pairs:[
+['el hombre','Ель Омбре','чоловік'],
+['la mujer','лА мухЕр','жінка'],
+['el niño','Ель нІньо','дитина (хлопчик)'],
+['la niña','лА нІнья','дитина (дівчинка)'],
+['la persona','лА персОна','особа'],
+['la gente','лА хЕнте','люди'],
+['el amigo','Ель амІґо','друг'],
+['la amiga','лА амІґа','подруга'],
+['la familia','лА фамІлья','родина'],
+['el padre','Ель пАдре','батько'],
+['la madre','лА мАдре','мати'],
+['el hijo','Ель Іхо','син'],
+['la hija','лА Іха','дочка'],
+['el hermano','Ель ермАно','брат'],
+['la hermana','лА ермАна','сестра'],
+['el trabajo','Ель трабАхо','робота'],
+['la casa','лА кАса','дім'],
+['el coche','Ель кОче','авто'],
+['el día','Ель дІа','день'],
+['la noche','лА нОче','ніч'],
+['el año','Ель Аньо','рік'],
+['el tiempo','Ель тьЕмпо','час, погода'],
+['la vez','лА бЕс','раз'],
+['la cosa','лА кОса','річ'],
+['la vida','лА бІда','життя'],
+['la muerte','лА муЕрте','смерть'],
+['el mundo','Ель мУндо','світ'],
+['el país','Ель паІс','країна'],
+['la ciudad','лА сьудАд','місто'],
+['el lugar','Ель луґАр','місце'],
+['la calle','лА кАлье','вулиця'],
+['el agua','Ель Аґуа','вода'],
+['el fuego','Ель фуЕґо','вогонь'],
+['el aire','Ель аІре','повітря'],
+['la comida','лА комІда','їжа'],
+['el pan','Ель пАн','хліб'],
+['la leche','лА лЕче','молоко'],
+['el vino','Ель бІно','вино'],
+['la carne','ла кАрне','м\'ясо'],
+['el pescado','Ель пескАдо','риба'],
+['la fruta','лА фрУта','фрукти'],
+['el perro','Ель пЕрро','собака'],
+['el gato','Ель ґАто','кіт'],
+['el animal','Ель анімАль','тварина'],
+['la puerta','лА пуЕрта','двері'],
+['la ventana','лА бентАна','вікно'],
+['la mesa','лА мЕса','стіл'],
+['la silla','лА сІлья','стілець'],
+['la cama','лА кАма','ліжко'],
+['el libro','Ель лІбро','книга'],
+['el bolígrafo','Ель болІґрафо','ручка'],
+['el teléfono','Ель телЕфоно','телефон'],
+['el ordenador','ель орденадОр','комп\'ютер'],
+['el dinero','Ель дінЕро','гроші'],
+['el problema','Ель проблЕма','проблема'],
+['la solución','лА солусіОн','рішення'],
+['la verdad','лА бердАд','правда'],
+['la mentira','лА ментІра','брехня'],
+['el amor','Ель амОр','кохання'],
+['la amistad','лА амістАд','дружба'],
+['el odio','Ель одІо','ненависть'],
+['la felicidad','лА фелісідАд','щастя'],
+['la tristeza','лА трістЕса','сум'],
+['el miedo','Ель міЕдо','страх'],
+['la esperanza','лА есперАнса','надія'],
+['el momento','Ель момЕнто','момент'],
+['la hora','лА Ора','година'],
+['el minuto','Ель мінУто','хвилина'],
+['el segundo','Ель сеґУндо','секунда'],
+['la mañana','лА маньАна','ранок'],
+['la tarde','лА тАрде','день, вечір'],
+['el sol','Ель сОль','сонце'],
+['la luna','лА лУна','місяць'],
+['el cielo','Ель сьЕло','небо'],
+['la estrella','лА естрЕлья','зірка'],
+['el mar','Ель мАр','море'],
+['el río','Ель рІо','річка'],
+['la montaña','лА монтАнья','гора'],
+['el camino','Ель камІно','шлях'],
+['la palabra','лА палАбра','слово'],
+]},
+'100-verbos':{label:'🔰 100 дієслів',pairs:[
+['ser','сЕр','бути'],
+['estar','естАр','бути (тимчасово)'],
+['tener','тенЕр','мати'],
+['haber','абЕр','мати (допоміжне)'],
+['hacer','асЕр','робити'],
+['poder','подЕр','могти'],
+['decir','десІр','казати'],
+['ir','Ір','іти'],
+['ver','бЕр','бачити'],
+['saber','сабЕр','знати'],
+['querer','керЕр','хотіти'],
+['llegar','льеґАр','прибувати'],
+['pasar','пасАр','проходити'],
+['deber','дебЕр','мусити'],
+['hablar','аблАр','говорити'],
+['llevar','льебАр','носити'],
+['dejar','дехАр','залишати'],
+['seguir','сеґІр','слідувати'],
+['encontrar','енконтрАр','знаходити'],
+['llamar','льамАр','кликати'],
+['pensar','пенсАр','думати'],
+['creer','креЕр','вірити'],
+['comer','комЕр','їсти'],
+['beber','бебЕр','пити'],
+['vivir','вібІр','жити'],
+['morir','морІр','помирати'],
+['nacer','насЕр','народжуватися'],
+['conocer','коносЕр','знати (бути знайомим)'],
+['entender','ентендЕр','розуміти'],
+['comprar','компрАр','купувати'],
+['vender','бендЕр','продавати'],
+['pagar','паґАр','платити'],
+['costar','костАр','коштувати'],
+['dar','дАр','давати'],
+['recibir','ресібІр','отримувати'],
+['poner','понЕр','класти'],
+['sacar','сакАр','виймати'],
+['tomar','томАр','брати'],
+['buscar','бускАр','шукати'],
+['esperar','есперАр','чекати'],
+['mirar','мірАр','дивитися'],
+['escuchar','ескучАр','слухати'],
+['sentir','сентІр','відчувати'],
+['gustar','ґустАр','подобатися'],
+['encantar','енкантАр','дуже подобатися'],
+['importar','імпортАр','бути важливим'],
+['doler','долЕр','боліти'],
+['preguntar','преґунтАр','питати'],
+['responder','респондЕр','відповідати'],
+['entrar','ентрАр','входити'],
+['salir','салІр','виходити'],
+['subir','субІр','підніматися'],
+['bajar','бахАр','спускатися'],
+['empezar','емпесАр','починати'],
+['terminar','термінАр','закінчувати'],
+['acabar','акабАр','завершувати'],
+['volver','болбЕр','повертатися'],
+['devolver','деболбЕр','повертати (річ)'],
+['traer','траЕр','приносити'],
+['abrir','абрІр','відкривати'],
+['cerrar','серрАр','закривати'],
+['ponerse','понЕрсе','одягатися'],
+['quitarse','кітАрсе','знімати (одяг)'],
+['lavarse','лабАрсе','митися'],
+['ducharse','дучАрсе','приймати душ'],
+['levantarse','лебантАрсе','вставати'],
+['acostarse','акостАрсе','лягати спати'],
+['dormir','дормІр','спати'],
+['despertarse','десперТАрсе','прокидатися'],
+['jugar','хуґАр','грати'],
+['correr','корЕр','бігати'],
+['caminar','камінАр','ходити пішки'],
+['andar','андАр','ходити'],
+['venir','венІр','приходити'],
+['regresar','реґресАр','повертатися'],
+['quedarse','кедАрсе','залишатися'],
+['irse','Ірсе','йти геть'],
+['parecer','паресЕр','здаватися'],
+['conseguir','консеґІр','досягати'],
+['probar','пробАр','пробувати'],
+]},
+'100-adjetivos':{label:'🎨 100 прикметників',pairs:[
+['bueno','буЕно','добрий'],
+['malo','мАло','поганий'],
+['grande','ґрАнде','великий'],
+['pequeño','пекЕньо','маленький'],
+['nuevo','нуЕбо','новий'],
+['viejo','бьЕхо','старий'],
+['joven','хОбен','молодий'],
+['alto','Альто','високий'],
+['bajo','бАхо','низький'],
+['largo','лАрґо','довгий'],
+['corto','кОрто','короткий'],
+['difícil','діфІсіль','важкий'],
+['fácil','фАсіль','легкий'],
+['caro','кАро','дорогий'],
+['barato','барАто','дешевий'],
+['caliente','кальЕнте','гарячий'],
+['frío','фрІо','холодний'],
+['limpio','лІмпьо','чистий'],
+['sucio','сУсьо','брудний'],
+['rico','рІко','багатий'],
+['pobre','пОбре','бідний'],
+['feliz','фелІс','щасливий'],
+['triste','трІсте','сумний'],
+['contento','контЕнто','задоволений'],
+['enfermo','енфЕрмо','хворий'],
+['sano','сАно','здоровий'],
+['guapo','ґуАпо','гарний (про людину)'],
+['feo','фЕо','потворний'],
+['listo','лІсто','розумний'],
+['tonto','тОнто','дурний'],
+['interesante','інтересАнте','цікавий'],
+['aburrido','абуррІдо','нудний'],
+['divertido','дібертІдо','веселий'],
+['serio','серІо','серйозний'],
+['rápido','рАпідо','швидкий'],
+['lento','лЕнто','повільний'],
+['fuerte','фуЕрте','сильний'],
+['débil','дЕбіль','слабкий'],
+['libre','лІбре','вільний'],
+['ocupado','окупАдо','зайнятий'],
+['claro','клАро','ясний, світлий'],
+['oscuro','оскУро','темний'],
+['lleno','льЕно','повний'],
+['vacío','басІо','порожній'],
+['verdadero','бердадЕро','справжній'],
+['falso','фАлсо','фальшивий'],
+['último','Ултімо','останній'],
+['primero','прімЕро','перший'],
+['segundo','сеґУндо','другий'],
+['mejor','мехОр','кращий'],
+['peor','пеОр','гірший'],
+['mayor','маіОр','більший'],
+['menor','менОр','менший'],
+['dulce','дУлсе','солодкий'],
+['salado','салАдо','солоний'],
+['amargo','амАрґо','гіркий'],
+['ácido','Асідо','кислий'],
+['suave','суАбе','м\'який'],
+['duro','дУро','твердий'],
+['blando','блАндо','м\'який'],
+['cómodo','кОмодо','зручний'],
+['incómodo','інкОмодо','незручний'],
+['útil','Утіль','корисний'],
+['inútil','інУтіль','некорисний'],
+['normal','нормАль','нормальний'],
+['extraño','екстрАньо','дивний'],
+['raro','рАро','рідкісний'],
+['posible','посІбле','можливий'],
+['imposible','імпосІбле','неможливий'],
+['probable','пробАбле','ймовірний'],
+['seguro','сеґУро','певний'],
+['cierto','сіЕрто','вірний'],
+['completo','комплЕто','повний'],
+['solo','сОло','самотній'],
+['junto','хУнто','разом'],
+['siguiente','сіґіЕнте','наступний'],
+['anterior','антеріОр','попередній'],
+['favorito','фаборІто','улюблений'],
+['especial','еспесіАль','особливий'],
+['general','хенерАль','загальний'],
+]},
+'100-adverbios':{label:'⚡ 100 прислівників',pairs:[
+['sí','сІ','так'],
+['no','нО','ні'],
+['siempre','сьЕмпре','завжди'],
+['nunca','нУнка','ніколи'],
+['jamás','хамАс','ніколи'],
+['ahora','аОра','зараз'],
+['antes','Антес','раніше'],
+['después','деспуЕс','після'],
+['luego','луЕґо','потім'],
+['pronto','прОнто','скоро'],
+['tarde','тАрде','пізно'],
+['temprano','темпрАно','рано'],
+['ayer','аЄр','вчора'],
+['hoy','Ой','сьогодні'],
+['mañana','маньАна','завтра'],
+['aquí','акІ','тут'],
+['allí','альІ','там'],
+['ahí','аІ','там (ближче)'],
+['cerca','сЕрка','близько'],
+['lejos','лЕхос','далеко'],
+['dentro','дЕнтро','всередині'],
+['fuera','фуЕра','зовні'],
+['encima','енсІма','зверху'],
+['debajo','дебАхо','знизу'],
+['delante','делАнте','попереду'],
+['detrás','детрАс','позаду'],
+['alrededor','алредедОр','навколо'],
+['bien','бьЕн','добре'],
+['mal','мАль','погано'],
+['mejor','мехОр','краще'],
+['peor','пеОр','гірше'],
+['mucho','мУчо','багато'],
+['poco','пОко','мало'],
+['muy','мУі','дуже'],
+['bastante','бастАнте','достатньо'],
+['demasíado','демасІадо','занадто'],
+['suficiente','суфісіЕнте','достатньо'],
+['apenas','апЕнас','ледве'],
+['casí','касІ','майже'],
+['solo','сОло','тільки'],
+['solamente','соламЕнте','тільки'],
+['también','тамбьЕн','також'],
+['tampoco','тампОко','також ні'],
+['además','адемАс','крім того'],
+['incluso','інклУсо','навіть'],
+['sobre todo','сОбре тОдо','особливо'],
+['quizás','кісАс','можливо'],
+['tal vez','тАль бЕс','можливо'],
+['seguramente','сеґурамЕнте','напевно'],
+['claramente','кларамЕнте','ясно'],
+['fácilmente','фАсілменте','легко'],
+['difícilmente','діфІсілменте','важко'],
+['normalmente','нормалмЕнте','зазвичай'],
+['generalmente','хенералмЕнте','взагалі'],
+['exactamente','ексактамЕнте','точно'],
+['aproximadamente','апроксімадамЕнте','приблизно'],
+['al menos','Аль мЕнос','принаймні'],
+['por lo menos','пОр лО мЕнос','принаймні'],
+['entonces','ентОнсес','тоді'],
+['mientras','міЕнтрас','поки'],
+['durante','дурАнте','під час'],
+['hasta','Аста','до'],
+['desde','дЕсде','від'],
+['entre','Єнтре','між'],
+['contra','кОнтра','проти'],
+['según','сеґУн','згідно'],
+['sin','сІн','без'],
+['con','кОн','з'],
+['sobre','сОбре','над, про'],
+['bajo','бАхо','під'],
+['ante','Анте','перед'],
+['tras','трАс','після, за'],
+['mediante','медіАнте','за допомогою'],
+]},
+'cuerpo-humano':{label:'🫀 Тіло людини',pairs:[
+['la cabeza','лА кабЕса','голова'],
+['el pelo / el cabello','Ель пЕло / Ель кабЕлйо','волосся'],
+['la cara','лА кАра','обличчя'],
+['la frente','лА фрЕнте','лоб'],
+['el ojo','Ель Охо','око'],
+['la ceja','лА сЕха','брова'],
+['la pestaña','лА пестАньа','вія'],
+['la nariz','лА нарІс','ніс'],
+['la oreja','лА орЕха','вухо'],
+['la mejilla','лА мехІлйа','щока'],
+['la boca','лА бОка','рот'],
+['el labio','Ель лабІо','губа'],
+['el diente','Ель діЕнте','зуб'],
+['la lengua','лА ленґУа','язик'],
+['la barbilla','лА барбІлйа','підборіддя'],
+['el cuello','Ель куЕльо','шия'],
+['el hombro','Ель Омбро','плече'],
+['el pecho','Ель пЕчо','груди'],
+['la espalda','лА еспАльда','спина'],
+['el estómago','Ель естОмаґо','шлунок, живіт'],
+['la barriga','лА баррІґа','живіт, черево'],
+['el brazo','Ель брАсо','рука (від плеча)'],
+['el codo','Ель кОдо','лікоть'],
+['la muñeca','ла муньЕка','зап\'ясток'],
+['la mano','лА мАно','кисть, рука'],
+['el dedo','Ель дЕдо','палець'],
+['la uña','лА Уньа','ніготь'],
+['la pierna','лА піЕрна','нога (від стегна)'],
+['la rodilla','лА родІлйа','коліно'],
+['el tobillo','Ель тобІлйо','кісточка (нога)'],
+['el pie','Ель пІе','стопа'],
+['el dedo del pie','Ель дЕдо дЕль пІе','палець ноги'],
+['el corazón','Ель корасОн','серце'],
+['el pulmón','Ель пулмОн','легеня'],
+['el hígado','Ель Іґадо','печінка'],
+['el riñón','Ель ріньОн','нирка'],
+['el cerebro','Ель серЕбро','мозок'],
+['la sangre','лА сАнґре','кров'],
+['el hueso','Ель уЕсо','кістка'],
+['el músculo','ель мУскуло','м\'яз'],
+]},
+'ropa-v2':{label:'👗 Одяг',pairs:[
+['la camiseta','лА камісЕта','футболка'],
+['la camisa','лА камІса','сорочка'],
+['el pantalón','Ель панталОн','штани'],
+['los vaqueros','лОс бакЕрос','джинси'],
+['el vestido','Ель бестІдо','сукня'],
+['la falda','лА фАльда','спідниця'],
+['el abrigo','Ель абрІґо','пальто'],
+['la chaqueta','лА чакЕта','піджак, куртка'],
+['el jersey','Ель хЕрсей','светр'],
+['la sudadera','лА судадЕра','худі, світшот'],
+['los calcetines','лОс калсетІнес','шкарпетки'],
+['la ropa interior','лА рОпа інтеріОр','нижня білизна'],
+['los zapatos','лОс сапАтос','туфлі'],
+['las botas','лАс бОтас','чоботи'],
+['las zapatillas','лАс сапатІлйас','кросівки'],
+['las sandalias','лАс сандалІас','сандалі'],
+['el sombrero','Ель сомбрЕро','капелюх'],
+['la gorra','лА ґОрра','кепка'],
+['el cinturón','Ель сінтурОн','пояс'],
+['la bufanda','лА буфАнда','шарф'],
+['los guantes','лОс ґуАнтес','рукавиці'],
+['el bolso','Ель бОлсо','сумка'],
+['la mochila','лА мочІла','рюкзак'],
+['las gafas','лАс ґАфас','окуляри'],
+['el collar','Ель колйАр','намисто'],
+['los pendientes','лОс пендіЕнтес','сережки'],
+['el anillo','Ель анІлйо','каблучка'],
+['el reloj','Ель релОх','годинник'],
+['¿Qué talla usas?','кЕ тАлйа Усас?','Який розмір носиш?'],
+['Me queda bien / mal.','мЕ кЕда бІен / мАль.','Мені пасує / не пасує.'],
+['¿De qué color lo tienes?','дЕ кЕ колОр лО тіЕнес?','Якого кольору є?'],
+['Está de moda.','естА дЕ мОда.','Це модно.'],
+['Está pasado de moda.','естА пасАдо дЕ мОда.','Це вийшло з моди.'],
+['Me lo pongo mañana.','мЕ лО пОнґо маньанА.','Вдягну це завтра.'],
+]},
+'comida-completa':{label:'🍳 Їжа',pairs:[
+['la zanahoria','лА санаорІа','морква'],
+['el tomate','Ель томАте','помідор'],
+['la cebolla','лА себОлйа','цибуля'],
+['el ajo','Ель Ахо','часник'],
+['la patata','лА патАта','картопля (Іспанія)'],
+['el pimiento','Ель піміЕнто','перець'],
+['el pepino','Ель пепІно','огірок'],
+['la lechuga','лА лечУґа','салат'],
+['el brócoli','Ель брОколі','броколі'],
+['la coliflor','лА коліфлОр','цвітна капуста'],
+['la berenjena','лА беренхЕна','баклажан'],
+['el champiñón','Ель чампіньОн','гриб'],
+['la manzana','лА мансАна','яблуко'],
+['la pera','лА пЕра','груша'],
+['el plátano','Ель плАтано','банан'],
+['la naranja','лА нарАнха','апельсин'],
+['el limón','Ель лімОн','лимон'],
+['la uva','лА Уба','виноград'],
+['la fresa','лА фрЕса','полуниця'],
+['el melocotón','Ель мелокотОн','персик'],
+['la sandía','лА сандІа','кавун'],
+['el melón','Ель мелОн','диня'],
+['el mango','Ель мАнґо','манго'],
+['la piña','лА пІньа','ананас'],
+['cocinar','косінАр','готувати'],
+['freír','фреІр','смажити'],
+['hervir','ербІр','варити'],
+['hornear','орнеАр','пекти в духовці'],
+['asar','асАр','смажити на грилі'],
+['cortar','кортАр','різати'],
+['mezclar','месклАр','змішувати'],
+['añadir','аньадІр','додавати'],
+['pelar','пелАр','чистити (овочі)'],
+['probar','пробАр','пробувати на смак'],
+['servir','сербІр','подавати'],
+['salar','салАр','солити'],
+]},
+'ciudad-completo':{label:'🏙️ Місто',pairs:[
+['el banco','Ель бАнко','банк'],
+['el supermercado','Ель супермеркАдо','супермаркет'],
+['la panadería','лА панадерІа','пекарня'],
+['la carnicería','ла карнісерІа','м\'ясна крамниця'],
+['la frutería','лА фрутерІа','фруктова крамниця'],
+['la farmacia','лА фармАсья','аптека'],
+['el hospital','Ель оспітАль','лікарня'],
+['el médico / el centro de salud','Ель мЕдіко / Ель сЕнтро дЕ салУд','лікар / поліклініка'],
+['la biblioteca','лА бібліотЕка','бібліотека'],
+['la escuela / el colegio','лА ескуЕла / Ель колехІо','школа'],
+['la universidad','лА уніберсідАд','університет'],
+['la comisaría','лА комісарІа','поліція'],
+['el ayuntamiento','Ель аіунтаміЕнто','мерія'],
+['la iglesia','лА іґлесІа','церква'],
+['el museo','Ель мусЕо','музей'],
+['el teatro','Ель теАтро','театр'],
+['el cine','Ель сІне','кінотеатр'],
+['el estadio','Ель естадІо','стадіон'],
+['el parque','Ель пАрке','парк'],
+['la gasolinera','лА ґасолінЕра','автозаправка'],
+['el metro','Ель мЕтро','метро'],
+['el autobús','Ель аутобУс','автобус'],
+['el tranvía','Ель транбІа','трамвай'],
+['el tren','Ель трЕн','потяг'],
+['el avión','Ель абіОн','літак'],
+['el barco','Ель бАрко','корабель'],
+['la moto','лА мОто','мотоцикл'],
+['la bicicleta','лА бісіклЕта','велосипед'],
+['el taxi','Ель тАксі','таксі'],
+['la parada de autobús','лА парАда дЕ аутобУс','зупинка автобуса'],
+['la estación de metro','лА естасіОн дЕ мЕтро','станція метро'],
+['el aeropuerto','Ель аеропуЕрто','аеропорт'],
+['la terminal','лА термінАль','термінал'],
+['el carril bici','Ель каррІль бІсі','велодоріжка'],
+]},
+'casa-completa':{label:'🏠 Дім',pairs:[
+['el salón','Ель салОн','вітальня'],
+['el dormitorio','Ель дорміторІо','спальня'],
+['la cocina','лА косІна','кухня'],
+['el baño','Ель бАньо','ванна кімната'],
+['el aseo','Ель асЕо','туалет'],
+['el comedor','Ель комедОр','їдальня'],
+['el pasíllo','Ель пасІлйо','коридор'],
+['el recibidor','Ель ресібідОр','передпокій'],
+['el despacho','Ель деспАчо','кабінет'],
+['el garaje','Ель ґарАхе','гараж'],
+['el jardín','Ель хардІн','сад'],
+['la terraza','лА террАса','тераса'],
+['el balcón','Ель балкОн','балкон'],
+['el sótano','Ель сОтано','підвал'],
+['el ático','Ель Атіко','мансарда'],
+['el sofá','Ель софА','диван'],
+['la silla','лА сІлья','стілець'],
+['el sillón','Ель сілйОн','крісло'],
+['la mesa','лА мЕса','стіл'],
+['la cama','лА кАма','ліжко'],
+['el armario','Ель армарІо','шафа'],
+['la estantería','лА естантерІа','полиця'],
+['la lámpara','лА лАмпара','лампа'],
+['el televisor','Ель телебісОр','телевізор'],
+['el frigorífico','Ель фріґорІфіко','холодильник'],
+['el horno','Ель Орно','духовка'],
+['el microondas','Ель мікроОндас','мікрохвильовка'],
+['la lavadora','лА лабадОра','пральна машина'],
+['el lavavajillas','Ель лабабахІлйас','посудомийна машина'],
+['la aspiradora','лА аспірадОра','пилосос'],
+['la ducha','лА дУча','душ'],
+['la bañera','лА баньЕра','ванна'],
+['el espejo','Ель еспЕхо','дзеркало'],
+['la cortina','лА кортІна','штора'],
+['la alfombra','лА алфОмбра','килим'],
+]},
+'animales-v2':{label:'🐾 Тварини',pairs:[
+['el perro','Ель пЕрро','собака'],
+['el gato','Ель ґАто','кіт'],
+['el pájaro','Ель пАхаро','птах'],
+['el pez','Ель пЕс','риба (домашня)'],
+['el conejo','Ель конЕхо','кролик'],
+['el hámster','ель Амстер','хом\'як'],
+['el caballo','Ель кабАльо','кінь'],
+['la vaca','лА бАка','корова'],
+['el cerdo','Ель сЕрдо','свиня'],
+['la gallína / el gallo','лА ґалйІна / Ель ґАлйо','курка / півень'],
+['la oveja','лА обЕха','вівця'],
+['la cabra','лА кАбра','коза'],
+['el león','Ель леОн','лев'],
+['el tigre','Ель тІґре','тигр'],
+['el oso','Ель Осо','ведмідь'],
+['el lobo','Ель лОбо','вовк'],
+['el zorro','Ель сОрро','лисиця'],
+['el elefante','Ель елефАнте','слон'],
+['la jirafa','лА хірАфа','жираф'],
+['el mono','Ель мОно','мавпа'],
+['el cocodrilo','Ель кокодрІло','крокодил'],
+['la serpiente','лА серпіЕнте','змія'],
+['el delfín','Ель делфІн','дельфін'],
+['la ballena','лА балйЕна','кит'],
+['el águila','Ель Аґіла','орел'],
+['el pingüino','Ель пінґуІно','пінгвін'],
+['la abeja','лА абЕха','бджола'],
+['la mariposa','лА маріпОса','метелик'],
+]},
+'naturaleza':{label:'🌿 Природа',pairs:[
+['el árbol','Ель Арболь','дерево'],
+['la flor','лА флОр','квітка'],
+['la hierba','лА іЕрба','трава'],
+['el bosque','Ель бОске','ліс'],
+['el río','Ель рІо','річка'],
+['el lago','Ель лАґо','озеро'],
+['el mar','Ель мАр','море'],
+['el océano','Ель осЕано','океан'],
+['la montaña','лА монтАнья','гора'],
+['el volcán','Ель болкАн','вулкан'],
+['el desierto','Ель десіЕрто','пустеля'],
+['la selva','лА сЕлба','джунглі'],
+['el campo','Ель кАмпо','поле, село'],
+['la playa','лА плАя','пляж'],
+['la isla','лА Ісла','острів'],
+['el cielo','Ель сьЕло','небо'],
+['la nube','лА нУбе','хмара'],
+['la lluvia','лА льУбья','дощ'],
+['la nieve','лА ньЕбе','сніг'],
+['el trueno','Ель труЕно','грім'],
+['el relámpago','Ель релАмпаґо','блискавка'],
+['el arcoíris','Ель аркоІріс','веселка'],
+['el medio ambiente','Ель медІо амбіЕнте','навколишнє середовище'],
+['el reciclaje','Ель ресіклАхе','переробка'],
+]},
+'profesiones-v2':{label:'💼 Професії',pairs:[
+['médico/a','мЕдіко/а','лікар'],
+['enfermero/a','енфермерО/а','медсестра/брат'],
+['dentista','дентІста','стоматолог'],
+['farmacéutico/a','фармасЕутіко/а','фармацевт'],
+['maestro/a','маестрО/а','вчитель'],
+['profesor/a','професОр/а','викладач'],
+['abogado/a','абоґадО/а','адвокат'],
+['juez/jueza','хуес/хуЕса','суддя'],
+['policía','полісІа','поліцейський'],
+['bombero/a','бомберО/а','пожежник'],
+['ingeniero/a','інхеніерО/а','інженер'],
+['arquitecto/a','аркітектО/а','архітектор'],
+['programador/a','проґрамадОр/а','програміст'],
+['diseñador/a','дісеньадОр/а','дизайнер'],
+['periodista','періодІста','журналіст'],
+['escritor/a','ескрітОр/а','письменник'],
+['actor/actriz','актор/Актріс','актор/актриса'],
+['músico/a','мУсіко/а','музикант'],
+['cocinero/a','косінерО/а','кухар'],
+['camarero/a','камарерО/а','офіціант'],
+['conductor/a','кондуктОр/а','водій'],
+['piloto','пілОто','пілот'],
+['agricultor/a','аґрікултОр/а','фермер'],
+['electricista','електрісІста','електрик'],
+['fontanero/a','фонтанерО/а','сантехнік'],
+['peluquero/a','пелукерО/а','перукар'],
+['comerciante','комерсіАнте','торговець'],
+['empresario/a','емпресаріО/а','підприємець'],
+]},
+'calendario':{label:'📅 Календар',pairs:[
+['lunes','лУнес','понеділок'],
+['martes','мАртес','вівторок'],
+['miércoles','міЕрколес','середа'],
+['jueves','хуЕбес','четвер'],
+['viernes','біЕрнес','п\'ятниця'],
+['sábado','сАбадо','субота'],
+['domingo','домІнґо','неділя'],
+['enero','енЕро','січень'],
+['febrero','фебрЕро','лютий'],
+['marzo','мАрсо','березень'],
+['abril','абрІль','квітень'],
+['mayo','маІо','травень'],
+['junio','хунІо','червень'],
+['julio','хулІо','липень'],
+['agosto','аґОсто','серпень'],
+['septiembre','септіЕмбре','вересень'],
+['octubre','октУбре','жовтень'],
+['noviembre','нобіЕмбре','листопад'],
+['diciembre','дісіЕмбре','грудень'],
+['la primavera','лА прімабЕра','весна'],
+['el verano','Ель берАно','літо'],
+['el otoño','Ель отОньо','осінь'],
+['el invierno','Ель інбіЕрно','зима'],
+['¿Qué día es hoy?','кЕ дІа Ес Оі?','Який сьогодні день?'],
+['Hoy es lunes, 3 de marzo.','Оі Ес лУнес, 3 дЕ марсО.','Сьогодні понеділок, 3 березня.'],
+['¿Cuándo es tu cumpleaños?','куАндо Ес тУ кумплеАньос?','Коли твій день народження?'],
+['Nací el 15 de mayo de 1995.','насІ Ель 15 дЕ маІо дЕ 1995.','Народився 15 травня 1995.'],
+['El año pasado / el año que viene.','Ель Аньо пасАдо / Ель Аньо кЕ біенЕ.','Минулого / наступного року.'],
+['La semana pasada / próxima.','лА семАна пасАда / прОксіма.','Минулого / наступного тижня.'],
+['hace dos días','Асе дОс дІас','два дні тому'],
+['dentro de una semana','дЕнтро дЕ Уна семАна','через тиждень'],
+]},
+'internet-slang':{label:'💻 Інтернет',pairs:[
+['wasapear','басапеАр','писати в WhatsApp'],
+['stalkear','сталкеАр','стежити в соцмережах'],
+['postear','постеАр','постити, публікувати'],
+['trolear','тролеАр','тролити'],
+['el like','Ель лІке','лайк'],
+['el retweet / RT','Ель ретбеЕт / рт','ретвіт'],
+['un meme','Ун мЕме','мем'],
+['hacer streaming','асЕр стреамІнґ','стрімити'],
+['descargar','дескарґАр','завантажувати'],
+['subir (a la nube)','субІр (А лА нубЕ)','завантажити у хмару'],
+['el influencer','Ель інфлуенсЕр','інфлюенсер'],
+['el contenido','Ель контенІдо','контент'],
+['los seguidores','лОс сеґідОрес','підписники'],
+['la contraseña','лА контрасЕньа','пароль'],
+['iniciar sesión','інісіАр сесіОн','увійти в обліковий запис'],
+['cerrar sesión','серрАр сесіОн','вийти з облікового запису'],
+['la pantalla','лА пантАлйа','екран'],
+['el teclado','Ель теклАдо','клавіатура'],
+['el ratón','ель ратОн','комп\'ютерна миша'],
+['hacer clic','асЕр клІк','клікати'],
+['el archivo','Ель арчІбо','файл'],
+['el correo electrónico','Ель коррЕо електрОніко','електронна пошта'],
+['adjuntar','адхунтАр','прикріпити (файл)'],
+['reenviar','реенбіАр','переслати'],
+]},
+'cliches':{label:'🗣️ Кліше',pairs:[
+['A ver...','А бЕр...','Подивимось... / Ну...(пауза в думках)'],
+['Pues...','пуЕс...','Ну... / Отже...(дуже частий заповнювач)'],
+['Bueno...','буенО...','Ну добре... / Гаразд(початок думки)'],
+['O sea...','О сеА...','Тобто... / Значить...(пояснення)'],
+['Es que...','Ес кЕ...','Справа в тому що...(виправдання)'],
+['La verdad es que...','лА бердАд Ес кЕ...','Правда в тому що...'],
+['No sé...','нО сЕ...','Не знаю...(сумнів)'],
+['Hombre...','омбрЕ...','Ну... / Чоловіче...(здивування/незгода)'],
+['Vamos...','бамОс...','Ну... / Давай(підбадьорювання)'],
+['Total que...','тотАль кЕ...','Загалом...(резюме)'],
+['Al final...','Аль фінАль...','Врешті-решт...'],
+['La cosa es que...','лА кОса Ес кЕ...','Річ у тім що...'],
+['¿En serio?','Ен серіО?','Серйозно? (здивування)'],
+['¡No me digas!','нО мЕ діґАс!','Не кажи! (здивування)'],
+['¡Qué bien!','кЕ бІен!','Як добре! (радість)'],
+['¡Qué pena!','кЕ пЕна!','Як шкода! (співчуття)'],
+['¡Qué horror!','кЕ оррОр!','Жах! (жах)'],
+['¡Menos mal!','мЕнос мАль!','Слава богу! (полегшення)'],
+['¡Vaya!','баіА!','Ого! / Нічого собі! (здивування)'],
+['¡Madre mía!','мАдре мІа!','Боже мій! (сильний подив)'],
+['¡Qué fuerte!','кЕ фуЕрте!','Ого! / Ого що! (Іспанія, подив)'],
+['Ya te digo.','Іа тЕ діґО.','Ще б пак. / Точно. (згода)'],
+['Eso mismo.','Есо місмО.','Саме так. (підтвердження)'],
+['Me alegro.','мЕ алеґрО.','Радий це чути.'],
+]},
+'slang-extended':{label:'🔥 Сленг',pairs:[
+['¡Qué guay!','кЕ ґуАі!','Круто! (Іспанія)'],
+['molar','молАр','подобатися, бути класним'],
+['flipar','фліпАр','бути вражений, тащитися'],
+['tío / tía','тІо / тІа','чувак / чувиха'],
+['un rollo','Ун рОлйо','нудьга, морока'],
+['cutre','кУтре','убогий, дешевий, поганий'],
+['estar empanado','естАр емпанАдо','бути не в темі, загальмованим'],
+['flipar en colores','фліпАр Ен колОрес','бути дуже враженим'],
+['tener mala leche','тенЕр мАла лЕче','бути злим / мати невезіння'],
+['estar pedo','естар пЕдо','бути п\'яним'],
+['guiri','ґІрі','іноземець-турист'],
+['currante','куррАнте','трудяга, той хто вкалує'],
+['pasarse de la raya','пасАрсе дЕ лА раІа','перейти межу, переборщити'],
+['ser un pringado','сЕр Ун прінґАдо','бути невдахою, лохом'],
+['¡Órale!','Орале!','Ок! / Давай! / Точно!'],
+['¡Chido/a!','чідо/А!','Круто!'],
+['güey / wey','ґуЕі / бЕі','чувак (дуже часте)'],
+['neta','нЕта','правда, серйозно'],
+['ahorita','аорІта','зараз / потім / може колись'],
+['estar cañón','естАр каньОн','бути дуже складним / крутим'],
+['echar la hueva','ечАр лА уЕба','лінуватися'],
+['qué onda','кЕ Онда','як справи? / що відбувається?'],
+['che','чЕ','гей, чувак (звертання)'],
+['boludo/a','болудО/а','чувак (дружньо) / дурень (образа)'],
+['bárbaro','бАрбаро','чудово, відмінно'],
+['posta','пОста','правда, серйозно'],
+['laburo','лабУро','робота'],
+['mina','мІна','дівчина'],
+['pibe / piba','пІбе / пІба','хлопець / дівчина (молодь)'],
+]},
+'f-vdyaka':{label:'🙏 Вдячність',pairs:[
+['Estoy agradecido/a.','естОі аґрадесідо/А.','Я вдячний/а.'],
+['Muy apreciado.','мУі апресіадО.','Дуже ціную (вдячний).'],
+['Gracias por todo.','ґрасІас пОр тодО.','Дякую за все.'],
+['Te debo una.','тЕ дЕбо унА.','Я тобі винен/а.'],
+['Gracias por tu tiempo.','ґрасІас пОр тУ тьЕмпО.','Дякую за твій час.'],
+['Eso significa mucho para mí.','Есо сіґніфІка мУчо пАра мІ.','Це дуже багато для мене.'],
+['Gracias por entender.','ґрасІас пОр ентендЕр.','Дякую за розуміння.'],
+['Has sido muy útil.','Ас сІдо мУі Утіль.','Ти був дуже корисним.'],
+['Aprecio tu apoyo.','апресІо тУ апоіО.','Ціную твою підтримку.'],
+['No lo hubiera logrado sin ti.','нО лО убіЕра лоґрАдо сІн тІ.','Без тебе б не впорався/лась.'],
+['Eres un ángel.','Ерес Ун Анхель.','Ти ангел.'],
+['Me has salvado.','мЕ Ас салбадО.','Ти мене врятував/ла.'],
+['Lo siento mucho.','лО сіЕнто мучО.','Мені дуже шкода.'],
+['Fue mi culpa.','фУе мІ кулпА.','Це була моя провина.'],
+['No volverá a pasar.','нО болберА А пасАр.','Більше так не буде.'],
+['Te pido disculpas.','тЕ пІдо діскулпАс.','Прошу вибачення.'],
+['No era mi intención.','нО Ера мІ інтенсіОн.','Я не мав/ла такого наміру.'],
+['Me equivoqué.','мЕ екібокЕ.','Я помилився/лась.'],
+['Tienes razón.','тіЕнес расОн.','Ти маєш рацію.'],
+['No debí hacerlo.','нО дебІ асЕрло.','Мені не слід було це робити.'],
+['¿Me perdonas?','мЕ пердонАс?','Вибачиш мене?'],
+['No fue mi culpa.','нО фУе мІ кулпА.','Це не моя вина.'],
+['Se me fue de las manos.','сЕ мЕ фУе дЕ лАс манОс.','Вийшло з-під контролю.'],
+['No tuve otra opción.','нО тУбе Отра опсіОн.','У мене не було іншого вибору.'],
+['¿Has hecho la compra?','Ас Ечо лА компрА?','Ти зробив/ла покупки?'],
+['Hay que limpiar la casa.','Аі кЕ лімпіАр лА касА.','Треба прибрати в домі.'],
+['¿Puedes poner la lavadora?','пуЕдес понЕр лА лабадорА?','Можеш увімкнути пралку?'],
+['Se me olvidó sacar la basura.','сЕ мЕ олбідО сакАр лА басУра.','Я забув/ла винести сміття.'],
+['¿Dónde está el mando?','дОнде естА Ель мАндо?','Де пульт?'],
+['Baja el volumen, por favor.','бАха Ель болУмен, пОр фабОр.','Зменш гучність, будь ласка.'],
+['¿Qué hay para cenar?','кЕ Аі пАра сенАр?','Що є на вечерю?'],
+['Voy a hacer la cena.','бОі А асЕр лА сенА.','Я зроблю вечерю.'],
+['¿Has pagado las facturas?','Ас паґАдо лАс фактурАс?','Ти сплатив/ла рахунки?'],
+['Se ha ido la luz.','сЕ А Ідо лА лУс.','Вимкнули світло.'],
+['No hay agua caliente.','нО Аі аґУа каліентЕ.','Немає гарячої води.'],
+['Hay que llamar al fontanero.','Аі кЕ лйамАр Аль фонтанерО.','Треба викликати сантехніка.'],
+['¿Puedes tender la ropa?','пуЕдес тендЕр лА ропА?','Можеш розвісити одяг?'],
+['He fregado los platos.','Е фреґАдо лОс платОс.','Я помив/ла посуд.'],
+['Pon la mesa, por favor.','пОн лА мЕса, пОр фабОр.','Накрий на стіл, будь ласка.'],
+['Está recién hecho.','естА ресіЕн Ечо.','Щойно приготовлено.'],
+['Se me ha quemado la comida.','сЕ мЕ А кемАдо лА комідА.','У мене підгоріла їжа.'],
+['¿Dónde has puesto mis llaves?','дОнде Ас пуЕсто мІс лйАбес?','Куди ти поклав/ла мої ключі?'],
+['¿Cuánto cuesta esto?','куАнто куЕста Есто?','Скільки це коштує?'],
+['¿Tiene algo más barato?','тіЕне Алґо мАс барАто?','Є щось дешевше?'],
+['¿Puedo probármelo?','пуЕдо пробАрмело?','Можу це приміряти?'],
+['Me lo llevo.','мЕ лО лйебО.','Я це беру.'],
+['¿Aceptan tarjeta?','асЕптан тархетА?','Приймаєте картку?'],
+['Voy a pagar en efectivo.','бОі А паґАр Ен ефектібО.','Плачу готівкою.'],
+['¿Tiene bolsa?','тіЕне болсА?','Є пакет?'],
+['Me falta el cambio.','мЕ фАлта Ель камбіО.','Мені не вистачає решти.'],
+['¿Hay descuento?','Аі дескуентО?','Є знижка?'],
+['Está en oferta.','естА Ен офЕрта.','Це за акцією.'],
+['¿Puedo devolver esto?','пуЕдо деболбЕр естО?','Можу це повернути?'],
+['¿Dónde están los probadores?','дОнде естАн лОс пробадОрес?','Де примірювальні кабіни?'],
+['Me queda grande/pequeño.','мЕ кЕда ґранде/пекеньО.','Мені великий/маленький.'],
+['¿Tiene en otra talla?','тіЕне Ен Отра талйА?','Є в іншому розмірі?'],
+['Estoy solo mirando, gracias.','естОі сОло мірАндо, ґрасіАс.','Я просто дивлюся, дякую.'],
+['¿A qué hora cierra?','А кЕ Ора сіЕрра?','До котрої години зачиняєте?'],
+['Se me ha roto.','сЕ мЕ А ротО.','У мене це зламалося.'],
+['¿Tienen garantía?','тіЕнен ґарантІа?','Є гарантія?'],
+['Una mesa para dos, por favor.','Уна мЕса пАра дОс, пОр фабОр.','Столик на двох, будь ласка.'],
+['¿Tienen mesa libre?','тіЕнен мЕса лібрЕ?','Є вільний столик?'],
+['¿Me trae la carta?','мЕ трАе лА картА?','Принесіть меню, будь ласка.'],
+['¿Qué recomienda?','кЕ рекоміЕнда?','Що порекомендуєте?'],
+['Para mí, el menú del día.','пАра мІ, Ель менУ дЕль дІа.','Мені бізнес-ланч.'],
+['¿Está incluido el pan?','естА інклуІдо Ель пАн?','Хліб включено?'],
+['Sin gluten, por favor.','сІн ґлУтен, пОр фабОр.','Без глютену, будь ласка.'],
+['Soy vegetariano/a.','сОі бехетаріано/А.','Я вегетаріанець/ка.'],
+['Estoy a dieta.','естОі А діетА.','Я на дієті.'],
+['¿Me pone un poco más?','мЕ пОне Ун пОко мАс?','Додайте трохи більше?'],
+['¡Está riquísimo!','естА рікІсімо!','Це неймовірно смачно!'],
+['Está un poco frío.','естА Ун пОко фрІо.','Трохи холодне.'],
+['Nos falta un tenedor.','нОс фАлта Ун тенедОр.','Нам не вистачає виделки.'],
+['La cuenta, por favor.','лА куЕнта, пОр фабОр.','Рахунок, будь ласка.'],
+['¿Está todo incluido?','естА тОдо інклуІдо?','Все включено?'],
+['Pagamos por separado.','паґАмос пОр сепарадО.','Платимо окремо.'],
+['¿Hay propina incluida?','Аі пропІна інклуідА?','Чайові включені?'],
+['Quédese con el cambio.','кЕдесе кОн Ель камбІо.','Решту залиште собі.'],
+['Para llevar, por favor.','пАра лйебАр, пОр фабОр.','На виніс, будь ласка.'],
+['¿Tienen wifi?','тіЕнен біфІ?','Є вайфай?'],
+]},
+'f-vybac':{label:'😞 Вибачення',pairs:[
+['Lo siento mucho.','лО сіЕнто мучО.','Мені дуже шкода.'],
+['Fue mi culpa.','фУе мІ кулпА.','Це була моя провина.'],
+['No volverá a pasar.','нО болберА А пасАр.','Більше так не буде.'],
+['Te pido disculpas.','тЕ пІдо діскулпАс.','Прошу вибачення.'],
+['No era mi intención.','нО Ера мІ інтенсіОн.','Я не мав/ла такого наміру.'],
+['Me equivoqué.','мЕ екібокЕ.','Я помилився/лась.'],
+['Tienes razón.','тіЕнес расОн.','Ти маєш рацію.'],
+['No debí hacerlo.','нО дебІ асЕрло.','Мені не слід було це робити.'],
+['¿Me perdonas?','мЕ пердонАс?','Вибачиш мене?'],
+['No fue mi culpa.','нО фУе мІ кулпА.','Це не моя вина.'],
+['Se me fue de las manos.','сЕ мЕ фУе дЕ лАс манОс.','Вийшло з-під контролю.'],
+['No tuve otra opción.','нО тУбе Отра опсіОн.','У мене не було іншого вибору.'],
+['¿Has hecho la compra?','Ас Ечо лА компрА?','Ти зробив/ла покупки?'],
+['Hay que limpiar la casa.','Аі кЕ лімпіАр лА касА.','Треба прибрати в домі.'],
+['¿Puedes poner la lavadora?','пуЕдес понЕр лА лабадорА?','Можеш увімкнути пралку?'],
+['Se me olvidó sacar la basura.','сЕ мЕ олбідО сакАр лА басУра.','Я забув/ла винести сміття.'],
+['¿Dónde está el mando?','дОнде естА Ель мАндо?','Де пульт?'],
+['Baja el volumen, por favor.','бАха Ель болУмен, пОр фабОр.','Зменш гучність, будь ласка.'],
+['¿Qué hay para cenar?','кЕ Аі пАра сенАр?','Що є на вечерю?'],
+['Voy a hacer la cena.','бОі А асЕр лА сенА.','Я зроблю вечерю.'],
+['¿Has pagado las facturas?','Ас паґАдо лАс фактурАс?','Ти сплатив/ла рахунки?'],
+['Se ha ido la luz.','сЕ А Ідо лА лУс.','Вимкнули світло.'],
+['No hay agua caliente.','нО Аі аґУа каліентЕ.','Немає гарячої води.'],
+['Hay que llamar al fontanero.','Аі кЕ лйамАр Аль фонтанерО.','Треба викликати сантехніка.'],
+['¿Puedes tender la ropa?','пуЕдес тендЕр лА ропА?','Можеш розвісити одяг?'],
+['He fregado los platos.','Е фреґАдо лОс платОс.','Я помив/ла посуд.'],
+['Pon la mesa, por favor.','пОн лА мЕса, пОр фабОр.','Накрий на стіл, будь ласка.'],
+['Está recién hecho.','естА ресіЕн Ечо.','Щойно приготовлено.'],
+['Se me ha quemado la comida.','сЕ мЕ А кемАдо лА комідА.','У мене підгоріла їжа.'],
+['¿Dónde has puesto mis llaves?','дОнде Ас пуЕсто мІс лйАбес?','Куди ти поклав/ла мої ключі?'],
+['¿Cuánto cuesta esto?','куАнто куЕста Есто?','Скільки це коштує?'],
+['¿Tiene algo más barato?','тіЕне Алґо мАс барАто?','Є щось дешевше?'],
+['¿Puedo probármelo?','пуЕдо пробАрмело?','Можу це приміряти?'],
+['Me lo llevo.','мЕ лО лйебО.','Я це беру.'],
+['¿Aceptan tarjeta?','асЕптан тархетА?','Приймаєте картку?'],
+['Voy a pagar en efectivo.','бОі А паґАр Ен ефектібО.','Плачу готівкою.'],
+['¿Tiene bolsa?','тіЕне болсА?','Є пакет?'],
+['Me falta el cambio.','мЕ фАлта Ель камбіО.','Мені не вистачає решти.'],
+['¿Hay descuento?','Аі дескуентО?','Є знижка?'],
+['Está en oferta.','естА Ен офЕрта.','Це за акцією.'],
+['¿Puedo devolver esto?','пуЕдо деболбЕр естО?','Можу це повернути?'],
+['¿Dónde están los probadores?','дОнде естАн лОс пробадОрес?','Де примірювальні кабіни?'],
+['Me queda grande/pequeño.','мЕ кЕда ґранде/пекеньО.','Мені великий/маленький.'],
+['¿Tiene en otra talla?','тіЕне Ен Отра талйА?','Є в іншому розмірі?'],
+['Estoy solo mirando, gracias.','естОі сОло мірАндо, ґрасіАс.','Я просто дивлюся, дякую.'],
+['¿A qué hora cierra?','А кЕ Ора сіЕрра?','До котрої години зачиняєте?'],
+['Se me ha roto.','сЕ мЕ А ротО.','У мене це зламалося.'],
+['¿Tienen garantía?','тіЕнен ґарантІа?','Є гарантія?'],
+['Una mesa para dos, por favor.','Уна мЕса пАра дОс, пОр фабОр.','Столик на двох, будь ласка.'],
+['¿Tienen mesa libre?','тіЕнен мЕса лібрЕ?','Є вільний столик?'],
+['¿Me trae la carta?','мЕ трАе лА картА?','Принесіть меню, будь ласка.'],
+['¿Qué recomienda?','кЕ рекоміЕнда?','Що порекомендуєте?'],
+['Para mí, el menú del día.','пАра мІ, Ель менУ дЕль дІа.','Мені бізнес-ланч.'],
+['¿Está incluido el pan?','естА інклуІдо Ель пАн?','Хліб включено?'],
+['Sin gluten, por favor.','сІн ґлУтен, пОр фабОр.','Без глютену, будь ласка.'],
+['Soy vegetariano/a.','сОі бехетаріано/А.','Я вегетаріанець/ка.'],
+['Estoy a dieta.','естОі А діетА.','Я на дієті.'],
+['¿Me pone un poco más?','мЕ пОне Ун пОко мАс?','Додайте трохи більше?'],
+['¡Está riquísimo!','естА рікІсімо!','Це неймовірно смачно!'],
+['Está un poco frío.','естА Ун пОко фрІо.','Трохи холодне.'],
+['Nos falta un tenedor.','нОс фАлта Ун тенедОр.','Нам не вистачає виделки.'],
+['La cuenta, por favor.','лА куЕнта, пОр фабОр.','Рахунок, будь ласка.'],
+['¿Está todo incluido?','естА тОдо інклуІдо?','Все включено?'],
+['Pagamos por separado.','паґАмос пОр сепарадО.','Платимо окремо.'],
+['¿Hay propina incluida?','Аі пропІна інклуідА?','Чайові включені?'],
+['Quédese con el cambio.','кЕдесе кОн Ель камбІо.','Решту залиште собі.'],
+['Para llevar, por favor.','пАра лйебАр, пОр фабОр.','На виніс, будь ласка.'],
+['¿Tienen wifi?','тіЕнен біфІ?','Є вайфай?'],
+['¿Cómo llego a...?','кОмо лйЕґо А...?','Як дістатися до...?'],
+['Estoy perdido/a.','естОі пердідо/А.','Я загубився/лась.'],
+['¿A qué hora sale el próximo autobús?','А кЕ Ора сАле Ель прОксімо аутобУс?','Коли наступний автобус?'],
+['Un billete de ida y vuelta.','Ун білйЕте дЕ Іда І буелтА.','Квиток туди-назад.'],
+['¿Para en...?','пАра Ен...?','Зупиняється в...?'],
+['Me he perdido el tren.','мЕ Е пердІдо Ель трЕн.','Я пропустив/ла поїзд.'],
+['Hay mucho tráfico.','Аі мУчо трАфіко.','Великі пробки.'],
+['¿Hay aparcamiento cerca?','Аі апаркаміЕнто серкА?','Є паркування поблизу?'],
+['Me han puesto una multa.','мЕ Ан пуЕсто Уна мултА.','Мені виписали штраф.'],
+['Se me ha pinchado una rueda.','сЕ мЕ А пінчАдо Уна руедА.','У мене спустило колесо.'],
+['Llama a una grúa.','лйАма А Уна ґрУа.','Виклич евакуатор.'],
+['¿Cuánto tarda en llegar?','куАнто тАрда Ен лйеґАр?','Скільки їхати?'],
+]},
+'f-dim':{label:'🏠 Вдома/Побут',pairs:[
+['¿Has hecho la compra?','Ас Ечо лА компрА?','Ти зробив/ла покупки?'],
+['Hay que limpiar la casa.','Аі кЕ лімпіАр лА касА.','Треба прибрати в домі.'],
+['¿Puedes poner la lavadora?','пуЕдес понЕр лА лабадорА?','Можеш увімкнути пралку?'],
+['Se me olvidó sacar la basura.','сЕ мЕ олбідО сакАр лА басУра.','Я забув/ла винести сміття.'],
+['¿Dónde está el mando?','дОнде естА Ель мАндо?','Де пульт?'],
+['Baja el volumen, por favor.','бАха Ель болУмен, пОр фабОр.','Зменш гучність, будь ласка.'],
+['¿Qué hay para cenar?','кЕ Аі пАра сенАр?','Що є на вечерю?'],
+['Voy a hacer la cena.','бОі А асЕр лА сенА.','Я зроблю вечерю.'],
+['¿Has pagado las facturas?','Ас паґАдо лАс фактурАс?','Ти сплатив/ла рахунки?'],
+['Se ha ido la luz.','сЕ А Ідо лА лУс.','Вимкнули світло.'],
+['No hay agua caliente.','нО Аі аґУа каліентЕ.','Немає гарячої води.'],
+['Hay que llamar al fontanero.','Аі кЕ лйамАр Аль фонтанерО.','Треба викликати сантехніка.'],
+['¿Puedes tender la ropa?','пуЕдес тендЕр лА ропА?','Можеш розвісити одяг?'],
+['He fregado los platos.','Е фреґАдо лОс платОс.','Я помив/ла посуд.'],
+['Pon la mesa, por favor.','пОн лА мЕса, пОр фабОр.','Накрий на стіл, будь ласка.'],
+['Está recién hecho.','естА ресіЕн Ечо.','Щойно приготовлено.'],
+['Se me ha quemado la comida.','сЕ мЕ А кемАдо лА комідА.','У мене підгоріла їжа.'],
+['¿Dónde has puesto mis llaves?','дОнде Ас пуЕсто мІс лйАбес?','Куди ти поклав/ла мої ключі?'],
+['¿Cuánto cuesta esto?','куАнто куЕста Есто?','Скільки це коштує?'],
+['¿Tiene algo más barato?','тіЕне Алґо мАс барАто?','Є щось дешевше?'],
+['¿Puedo probármelo?','пуЕдо пробАрмело?','Можу це приміряти?'],
+['Me lo llevo.','мЕ лО лйебО.','Я це беру.'],
+['¿Aceptan tarjeta?','асЕптан тархетА?','Приймаєте картку?'],
+['Voy a pagar en efectivo.','бОі А паґАр Ен ефектібО.','Плачу готівкою.'],
+['¿Tiene bolsa?','тіЕне болсА?','Є пакет?'],
+['Me falta el cambio.','мЕ фАлта Ель камбіО.','Мені не вистачає решти.'],
+['¿Hay descuento?','Аі дескуентО?','Є знижка?'],
+['Está en oferta.','естА Ен офЕрта.','Це за акцією.'],
+['¿Puedo devolver esto?','пуЕдо деболбЕр естО?','Можу це повернути?'],
+['¿Dónde están los probadores?','дОнде естАн лОс пробадОрес?','Де примірювальні кабіни?'],
+['Me queda grande/pequeño.','мЕ кЕда ґранде/пекеньО.','Мені великий/маленький.'],
+['¿Tiene en otra talla?','тіЕне Ен Отра талйА?','Є в іншому розмірі?'],
+['Estoy solo mirando, gracias.','естОі сОло мірАндо, ґрасіАс.','Я просто дивлюся, дякую.'],
+['¿A qué hora cierra?','А кЕ Ора сіЕрра?','До котрої години зачиняєте?'],
+['Se me ha roto.','сЕ мЕ А ротО.','У мене це зламалося.'],
+['¿Tienen garantía?','тіЕнен ґарантІа?','Є гарантія?'],
+['Una mesa para dos, por favor.','Уна мЕса пАра дОс, пОр фабОр.','Столик на двох, будь ласка.'],
+['¿Tienen mesa libre?','тіЕнен мЕса лібрЕ?','Є вільний столик?'],
+['¿Me trae la carta?','мЕ трАе лА картА?','Принесіть меню, будь ласка.'],
+['¿Qué recomienda?','кЕ рекоміЕнда?','Що порекомендуєте?'],
+['Para mí, el menú del día.','пАра мІ, Ель менУ дЕль дІа.','Мені бізнес-ланч.'],
+['¿Está incluido el pan?','естА інклуІдо Ель пАн?','Хліб включено?'],
+['Sin gluten, por favor.','сІн ґлУтен, пОр фабОр.','Без глютену, будь ласка.'],
+['Soy vegetariano/a.','сОі бехетаріано/А.','Я вегетаріанець/ка.'],
+['Estoy a dieta.','естОі А діетА.','Я на дієті.'],
+['¿Me pone un poco más?','мЕ пОне Ун пОко мАс?','Додайте трохи більше?'],
+['¡Está riquísimo!','естА рікІсімо!','Це неймовірно смачно!'],
+['Está un poco frío.','естА Ун пОко фрІо.','Трохи холодне.'],
+['Nos falta un tenedor.','нОс фАлта Ун тенедОр.','Нам не вистачає виделки.'],
+['La cuenta, por favor.','лА куЕнта, пОр фабОр.','Рахунок, будь ласка.'],
+['¿Está todo incluido?','естА тОдо інклуІдо?','Все включено?'],
+['Pagamos por separado.','паґАмос пОр сепарадО.','Платимо окремо.'],
+['¿Hay propina incluida?','Аі пропІна інклуідА?','Чайові включені?'],
+['Quédese con el cambio.','кЕдесе кОн Ель камбІо.','Решту залиште собі.'],
+['Para llevar, por favor.','пАра лйебАр, пОр фабОр.','На виніс, будь ласка.'],
+['¿Tienen wifi?','тіЕнен біфІ?','Є вайфай?'],
+['¿Cómo llego a...?','кОмо лйЕґо А...?','Як дістатися до...?'],
+['Estoy perdido/a.','естОі пердідо/А.','Я загубився/лась.'],
+['¿A qué hora sale el próximo autobús?','А кЕ Ора сАле Ель прОксімо аутобУс?','Коли наступний автобус?'],
+['Un billete de ida y vuelta.','Ун білйЕте дЕ Іда І буелтА.','Квиток туди-назад.'],
+['¿Para en...?','пАра Ен...?','Зупиняється в...?'],
+['Me he perdido el tren.','мЕ Е пердІдо Ель трЕн.','Я пропустив/ла поїзд.'],
+['Hay mucho tráfico.','Аі мУчо трАфіко.','Великі пробки.'],
+['¿Hay aparcamiento cerca?','Аі апаркаміЕнто серкА?','Є паркування поблизу?'],
+['Me han puesto una multa.','мЕ Ан пуЕсто Уна мултА.','Мені виписали штраф.'],
+['Se me ha pinchado una rueda.','сЕ мЕ А пінчАдо Уна руедА.','У мене спустило колесо.'],
+['Llama a una grúa.','лйАма А Уна ґрУа.','Виклич евакуатор.'],
+['¿Cuánto tarda en llegar?','куАнто тАрда Ен лйеґАр?','Скільки їхати?'],
+['El vuelo tiene retraso.','Ель буЕло тіЕне ретрасО.','Рейс затримується.'],
+['¿Está libre el taxi?','естА лІбре Ель тАксі?','Таксі вільне?'],
+['¿Me puede llevar a...?','мЕ пуЕде лйебАр А...?','Можете відвезти до...?'],
+['Pare aquí, por favor.','пАре акІ, пОр фабОр.','Зупиніть тут, будь ласка.'],
+['No me encuentro bien.','нО мЕ енкуЕнтро біЕн.','Мені погано.'],
+['Me duele la cabeza.','мЕ дуЕле лА кабесА.','У мене болить голова.'],
+['Tengo fiebre.','тЕнґо фіебрЕ.','У мене жар.'],
+['Me duele el estómago.','мЕ дуЕле Ель естОмаґо.','Болить живіт.'],
+['Tengo tos.','тЕнґо тОс.','У мене кашель.'],
+['Me he torcido el tobillo.','мЕ Е торсІдо Ель тобілйО.','Я підвернув/ла ногу.'],
+['Necesito un médico urgente.','несесІто Ун мЕдіко урхЕнте.','Мені терміново потрібен лікар.'],
+['¿Tiene cita disponible?','тіЕне сІта діспоніблЕ?','Є вільний запис?'],
+]},
+'f-shop':{label:'🛒 Магазин',pairs:[
+['¿Cuánto cuesta esto?','куАнто куЕста Есто?','Скільки це коштує?'],
+['¿Tiene algo más barato?','тіЕне Алґо мАс барАто?','Є щось дешевше?'],
+['¿Puedo probármelo?','пуЕдо пробАрмело?','Можу це приміряти?'],
+['Me lo llevo.','мЕ лО лйебО.','Я це беру.'],
+['¿Aceptan tarjeta?','асЕптан тархетА?','Приймаєте картку?'],
+['Voy a pagar en efectivo.','бОі А паґАр Ен ефектібО.','Плачу готівкою.'],
+['¿Tiene bolsa?','тіЕне болсА?','Є пакет?'],
+['Me falta el cambio.','мЕ фАлта Ель камбіО.','Мені не вистачає решти.'],
+['¿Hay descuento?','Аі дескуентО?','Є знижка?'],
+['Está en oferta.','естА Ен офЕрта.','Це за акцією.'],
+['¿Puedo devolver esto?','пуЕдо деболбЕр естО?','Можу це повернути?'],
+['¿Dónde están los probadores?','дОнде естАн лОс пробадОрес?','Де примірювальні кабіни?'],
+['Me queda grande/pequeño.','мЕ кЕда ґранде/пекеньО.','Мені великий/маленький.'],
+['¿Tiene en otra talla?','тіЕне Ен Отра талйА?','Є в іншому розмірі?'],
+['Estoy solo mirando, gracias.','естОі сОло мірАндо, ґрасіАс.','Я просто дивлюся, дякую.'],
+['¿A qué hora cierra?','А кЕ Ора сіЕрра?','До котрої години зачиняєте?'],
+['Se me ha roto.','сЕ мЕ А ротО.','У мене це зламалося.'],
+['¿Tienen garantía?','тіЕнен ґарантІа?','Є гарантія?'],
+['Una mesa para dos, por favor.','Уна мЕса пАра дОс, пОр фабОр.','Столик на двох, будь ласка.'],
+['¿Tienen mesa libre?','тіЕнен мЕса лібрЕ?','Є вільний столик?'],
+['¿Me trae la carta?','мЕ трАе лА картА?','Принесіть меню, будь ласка.'],
+['¿Qué recomienda?','кЕ рекоміЕнда?','Що порекомендуєте?'],
+['Para mí, el menú del día.','пАра мІ, Ель менУ дЕль дІа.','Мені бізнес-ланч.'],
+['¿Está incluido el pan?','естА інклуІдо Ель пАн?','Хліб включено?'],
+['Sin gluten, por favor.','сІн ґлУтен, пОр фабОр.','Без глютену, будь ласка.'],
+['Soy vegetariano/a.','сОі бехетаріано/А.','Я вегетаріанець/ка.'],
+['Estoy a dieta.','естОі А діетА.','Я на дієті.'],
+['¿Me pone un poco más?','мЕ пОне Ун пОко мАс?','Додайте трохи більше?'],
+['¡Está riquísimo!','естА рікІсімо!','Це неймовірно смачно!'],
+['Está un poco frío.','естА Ун пОко фрІо.','Трохи холодне.'],
+['Nos falta un tenedor.','нОс фАлта Ун тенедОр.','Нам не вистачає виделки.'],
+['La cuenta, por favor.','лА куЕнта, пОр фабОр.','Рахунок, будь ласка.'],
+['¿Está todo incluido?','естА тОдо інклуІдо?','Все включено?'],
+['Pagamos por separado.','паґАмос пОр сепарадО.','Платимо окремо.'],
+['¿Hay propina incluida?','Аі пропІна інклуідА?','Чайові включені?'],
+['Quédese con el cambio.','кЕдесе кОн Ель камбІо.','Решту залиште собі.'],
+['Para llevar, por favor.','пАра лйебАр, пОр фабОр.','На виніс, будь ласка.'],
+['¿Tienen wifi?','тіЕнен біфІ?','Є вайфай?'],
+['¿Cómo llego a...?','кОмо лйЕґо А...?','Як дістатися до...?'],
+['Estoy perdido/a.','естОі пердідо/А.','Я загубився/лась.'],
+['¿A qué hora sale el próximo autobús?','А кЕ Ора сАле Ель прОксімо аутобУс?','Коли наступний автобус?'],
+['Un billete de ida y vuelta.','Ун білйЕте дЕ Іда І буелтА.','Квиток туди-назад.'],
+['¿Para en...?','пАра Ен...?','Зупиняється в...?'],
+['Me he perdido el tren.','мЕ Е пердІдо Ель трЕн.','Я пропустив/ла поїзд.'],
+['Hay mucho tráfico.','Аі мУчо трАфіко.','Великі пробки.'],
+['¿Hay aparcamiento cerca?','Аі апаркаміЕнто серкА?','Є паркування поблизу?'],
+['Me han puesto una multa.','мЕ Ан пуЕсто Уна мултА.','Мені виписали штраф.'],
+['Se me ha pinchado una rueda.','сЕ мЕ А пінчАдо Уна руедА.','У мене спустило колесо.'],
+['Llama a una grúa.','лйАма А Уна ґрУа.','Виклич евакуатор.'],
+['¿Cuánto tarda en llegar?','куАнто тАрда Ен лйеґАр?','Скільки їхати?'],
+['El vuelo tiene retraso.','Ель буЕло тіЕне ретрасО.','Рейс затримується.'],
+['¿Está libre el taxi?','естА лІбре Ель тАксі?','Таксі вільне?'],
+['¿Me puede llevar a...?','мЕ пуЕде лйебАр А...?','Можете відвезти до...?'],
+['Pare aquí, por favor.','пАре акІ, пОр фабОр.','Зупиніть тут, будь ласка.'],
+['No me encuentro bien.','нО мЕ енкуЕнтро біЕн.','Мені погано.'],
+['Me duele la cabeza.','мЕ дуЕле лА кабесА.','У мене болить голова.'],
+['Tengo fiebre.','тЕнґо фіебрЕ.','У мене жар.'],
+['Me duele el estómago.','мЕ дуЕле Ель естОмаґо.','Болить живіт.'],
+['Tengo tos.','тЕнґо тОс.','У мене кашель.'],
+['Me he torcido el tobillo.','мЕ Е торсІдо Ель тобілйО.','Я підвернув/ла ногу.'],
+['Necesito un médico urgente.','несесІто Ун мЕдіко урхЕнте.','Мені терміново потрібен лікар.'],
+['¿Tiene cita disponible?','тіЕне сІта діспоніблЕ?','Є вільний запис?'],
+['Soy alérgico/a a...','сОі алЕрхіко/а А...','У мене алергія на...'],
+['Tomo este medicamento.','тОмо Есте медікаментО.','Я приймаю цей препарат.'],
+['¿Tiene algo para el dolor?','тіЕне Алґо пАра Ель долОр?','Є щось від болю?'],
+['¿Cuántas pastillas debo tomar?','куАнтас пастІлйас дЕбо томАр?','Скільки таблеток приймати?'],
+['Me operaron el año pasado.','мЕ оперАрон Ель Аньо пасадО.','Мене оперували минулого року.'],
+['¿Necesito receta?','несесІто ресетА?','Потрібен рецепт?'],
+['Me mareo mucho.','мЕ марЕо мучО.','Мені дуже паморочиться голова.'],
+['Tengo náuseas.','тЕнґо нАусеас.','Мене нудить.'],
+['Tengo una reunión a las tres.','тЕнґо Уна реуніОн А лАс трЕс.','У мене зустріч о третій.'],
+['¿Podemos agendar una llamada?','подЕмос ахендАр Уна лйамадА?','Можемо запланувати дзвінок?'],
+['Te mando el archivo por correo.','тЕ мАндо Ель арчІбо пОр корреО.','Надішлю файл поштою.'],
+['El plazo vence mañana.','Ель плАсо бЕнсе маньанА.','Дедлайн завтра.'],
+['Estoy de baja.','естОі дЕ бахА.','Я на лікарняному.'],
+['Trabajo desde casa.','трабАхо дЕсде касА.','Я працюю вдома.'],
+['¿Puedo tomar el día libre?','пуЕдо томАр Ель дІа лІбре?','Можу взяти вихідний?'],
+['Me han ascendido.','мЕ Ан ассендідО.','Мене підвищили.'],
+['He pedido un aumento.','Е педІдо Ун аументО.','Я попросив/ла підвищення.'],
+['Me han despedido.','мЕ Ан деспедідО.','Мене звільнили.'],
+]},
+'f-cafe':{label:'🍽️ Кафе',pairs:[
+['Una mesa para dos, por favor.','Уна мЕса пАра дОс, пОр фабОр.','Столик на двох, будь ласка.'],
+['¿Tienen mesa libre?','тіЕнен мЕса лібрЕ?','Є вільний столик?'],
+['¿Me trae la carta?','мЕ трАе лА картА?','Принесіть меню, будь ласка.'],
+['¿Qué recomienda?','кЕ рекоміЕнда?','Що порекомендуєте?'],
+['Para mí, el menú del día.','пАра мІ, Ель менУ дЕль дІа.','Мені бізнес-ланч.'],
+['¿Está incluido el pan?','естА інклуІдо Ель пАн?','Хліб включено?'],
+['Sin gluten, por favor.','сІн ґлУтен, пОр фабОр.','Без глютену, будь ласка.'],
+['Soy vegetariano/a.','сОі бехетаріано/А.','Я вегетаріанець/ка.'],
+['Estoy a dieta.','естОі А діетА.','Я на дієті.'],
+['¿Me pone un poco más?','мЕ пОне Ун пОко мАс?','Додайте трохи більше?'],
+['¡Está riquísimo!','естА рікІсімо!','Це неймовірно смачно!'],
+['Está un poco frío.','естА Ун пОко фрІо.','Трохи холодне.'],
+['Nos falta un tenedor.','нОс фАлта Ун тенедОр.','Нам не вистачає виделки.'],
+['La cuenta, por favor.','лА куЕнта, пОр фабОр.','Рахунок, будь ласка.'],
+['¿Está todo incluido?','естА тОдо інклуІдо?','Все включено?'],
+['Pagamos por separado.','паґАмос пОр сепарадО.','Платимо окремо.'],
+['¿Hay propina incluida?','Аі пропІна інклуідА?','Чайові включені?'],
+['Quédese con el cambio.','кЕдесе кОн Ель камбІо.','Решту залиште собі.'],
+['Para llevar, por favor.','пАра лйебАр, пОр фабОр.','На виніс, будь ласка.'],
+['¿Tienen wifi?','тіЕнен біфІ?','Є вайфай?'],
+['¿Cómo llego a...?','кОмо лйЕґо А...?','Як дістатися до...?'],
+['Estoy perdido/a.','естОі пердідо/А.','Я загубився/лась.'],
+['¿A qué hora sale el próximo autobús?','А кЕ Ора сАле Ель прОксімо аутобУс?','Коли наступний автобус?'],
+['Un billete de ida y vuelta.','Ун білйЕте дЕ Іда І буелтА.','Квиток туди-назад.'],
+['¿Para en...?','пАра Ен...?','Зупиняється в...?'],
+['Me he perdido el tren.','мЕ Е пердІдо Ель трЕн.','Я пропустив/ла поїзд.'],
+['Hay mucho tráfico.','Аі мУчо трАфіко.','Великі пробки.'],
+['¿Hay aparcamiento cerca?','Аі апаркаміЕнто серкА?','Є паркування поблизу?'],
+['Me han puesto una multa.','мЕ Ан пуЕсто Уна мултА.','Мені виписали штраф.'],
+['Se me ha pinchado una rueda.','сЕ мЕ А пінчАдо Уна руедА.','У мене спустило колесо.'],
+['Llama a una grúa.','лйАма А Уна ґрУа.','Виклич евакуатор.'],
+['¿Cuánto tarda en llegar?','куАнто тАрда Ен лйеґАр?','Скільки їхати?'],
+['El vuelo tiene retraso.','Ель буЕло тіЕне ретрасО.','Рейс затримується.'],
+['¿Está libre el taxi?','естА лІбре Ель тАксі?','Таксі вільне?'],
+['¿Me puede llevar a...?','мЕ пуЕде лйебАр А...?','Можете відвезти до...?'],
+['Pare aquí, por favor.','пАре акІ, пОр фабОр.','Зупиніть тут, будь ласка.'],
+['No me encuentro bien.','нО мЕ енкуЕнтро біЕн.','Мені погано.'],
+['Me duele la cabeza.','мЕ дуЕле лА кабесА.','У мене болить голова.'],
+['Tengo fiebre.','тЕнґо фіебрЕ.','У мене жар.'],
+['Me duele el estómago.','мЕ дуЕле Ель естОмаґо.','Болить живіт.'],
+['Tengo tos.','тЕнґо тОс.','У мене кашель.'],
+['Me he torcido el tobillo.','мЕ Е торсІдо Ель тобілйО.','Я підвернув/ла ногу.'],
+['Necesito un médico urgente.','несесІто Ун мЕдіко урхЕнте.','Мені терміново потрібен лікар.'],
+['¿Tiene cita disponible?','тіЕне сІта діспоніблЕ?','Є вільний запис?'],
+['Soy alérgico/a a...','сОі алЕрхіко/а А...','У мене алергія на...'],
+['Tomo este medicamento.','тОмо Есте медікаментО.','Я приймаю цей препарат.'],
+['¿Tiene algo para el dolor?','тіЕне Алґо пАра Ель долОр?','Є щось від болю?'],
+['¿Cuántas pastillas debo tomar?','куАнтас пастІлйас дЕбо томАр?','Скільки таблеток приймати?'],
+['Me operaron el año pasado.','мЕ оперАрон Ель Аньо пасадО.','Мене оперували минулого року.'],
+['¿Necesito receta?','несесІто ресетА?','Потрібен рецепт?'],
+['Me mareo mucho.','мЕ марЕо мучО.','Мені дуже паморочиться голова.'],
+['Tengo náuseas.','тЕнґо нАусеас.','Мене нудить.'],
+['Tengo una reunión a las tres.','тЕнґо Уна реуніОн А лАс трЕс.','У мене зустріч о третій.'],
+['¿Podemos agendar una llamada?','подЕмос ахендАр Уна лйамадА?','Можемо запланувати дзвінок?'],
+['Te mando el archivo por correo.','тЕ мАндо Ель арчІбо пОр корреО.','Надішлю файл поштою.'],
+['El plazo vence mañana.','Ель плАсо бЕнсе маньанА.','Дедлайн завтра.'],
+['Estoy de baja.','естОі дЕ бахА.','Я на лікарняному.'],
+['Trabajo desde casa.','трабАхо дЕсде касА.','Я працюю вдома.'],
+['¿Puedo tomar el día libre?','пуЕдо томАр Ель дІа лІбре?','Можу взяти вихідний?'],
+['Me han ascendido.','мЕ Ан ассендідО.','Мене підвищили.'],
+['He pedido un aumento.','Е педІдо Ун аументО.','Я попросив/ла підвищення.'],
+['Me han despedido.','мЕ Ан деспедідО.','Мене звільнили.'],
+['Busco trabajo nuevo.','бУско трабАхо нуебО.','Шукаю нову роботу.'],
+['¿Cuál es tu sueldo?','куАль Ес тУ суЕлдо?','Яка твоя зарплата?'],
+['Tengo vacaciones la semana que viene.','тЕнґо бакасіОнес лА семАна кЕ біенЕ.','Наступного тижня у мене відпустка.'],
+['Hay que entregar el informe.','Аі кЕ ентреґАр Ель інформЕ.','Треба здати звіт.'],
+['Se me ha descargado el móvil.','сЕ мЕ А дескарґАдо Ель мОбіль.','У мене сів телефон.'],
+['¿Tienes cargador?','тіЕнес карґадОр?','Є зарядка?'],
+['¿Cuál es la contraseña del wifi?','куАль Ес лА контрасЕньа дЕль бІфі?','Який пароль від вайфаю?'],
+['No tengo cobertura.','нО тЕнґо кобертурА.','Немає сигналу.'],
+['Se me ha caído el teléfono.','сЕ мЕ А каІдо Ель телЕфоно.','Я впустив/ла телефон.'],
+['¿Me puedes llamar después?','мЕ пуЕдес лйамАр деспуЕс?','Можеш подзвонити пізніше?'],
+['Te mando un mensaje.','тЕ мАндо Ун менсахЕ.','Надішлю повідомлення.'],
+['¿Lo tienes en WhatsApp?','лО тіЕнес Ен батсАпп?','Є у вотсапі?'],
+['La aplicación no funciona.','лА аплікасіОн нО фунсіОна.','Застосунок не працює.'],
+['¿Puedes mandarme la ubicación?','пуЕдес мандАрме лА убікасіОн?','Можеш надіслати геолокацію?'],
+['He perdido todos mis contactos.','Е пердІдо тОдос мІс контактОс.','Я втратив/ла всі контакти.'],
+['¿Me haces una captura?','мЕ Асес Уна каптурА?','Зробиш скріншот?'],
+['Me gustas mucho.','мЕ ґУстас мучО.','Ти мені дуже подобаєшся.'],
+['Estoy enamorado/a de ti.','естОі енаморадО/а дЕ тІ.','Я закоханий/а в тебе.'],
+]},
+'f-transport':{label:'🚌 Транспорт',pairs:[
+['¿Cómo llego a...?','кОмо лйЕґо А...?','Як дістатися до...?'],
+['Estoy perdido/a.','естОі пердідо/А.','Я загубився/лась.'],
+['¿A qué hora sale el próximo autobús?','А кЕ Ора сАле Ель прОксімо аутобУс?','Коли наступний автобус?'],
+['Un billete de ida y vuelta.','Ун білйЕте дЕ Іда І буелтА.','Квиток туди-назад.'],
+['¿Para en...?','пАра Ен...?','Зупиняється в...?'],
+['Me he perdido el tren.','мЕ Е пердІдо Ель трЕн.','Я пропустив/ла поїзд.'],
+['Hay mucho tráfico.','Аі мУчо трАфіко.','Великі пробки.'],
+['¿Hay aparcamiento cerca?','Аі апаркаміЕнто серкА?','Є паркування поблизу?'],
+['Me han puesto una multa.','мЕ Ан пуЕсто Уна мултА.','Мені виписали штраф.'],
+['Se me ha pinchado una rueda.','сЕ мЕ А пінчАдо Уна руедА.','У мене спустило колесо.'],
+['Llama a una grúa.','лйАма А Уна ґрУа.','Виклич евакуатор.'],
+['¿Cuánto tarda en llegar?','куАнто тАрда Ен лйеґАр?','Скільки їхати?'],
+['El vuelo tiene retraso.','Ель буЕло тіЕне ретрасО.','Рейс затримується.'],
+['¿Está libre el taxi?','естА лІбре Ель тАксі?','Таксі вільне?'],
+['¿Me puede llevar a...?','мЕ пуЕде лйебАр А...?','Можете відвезти до...?'],
+['Pare aquí, por favor.','пАре акІ, пОр фабОр.','Зупиніть тут, будь ласка.'],
+['No me encuentro bien.','нО мЕ енкуЕнтро біЕн.','Мені погано.'],
+['Me duele la cabeza.','мЕ дуЕле лА кабесА.','У мене болить голова.'],
+['Tengo fiebre.','тЕнґо фіебрЕ.','У мене жар.'],
+['Me duele el estómago.','мЕ дуЕле Ель естОмаґо.','Болить живіт.'],
+['Tengo tos.','тЕнґо тОс.','У мене кашель.'],
+['Me he torcido el tobillo.','мЕ Е торсІдо Ель тобілйО.','Я підвернув/ла ногу.'],
+['Necesito un médico urgente.','несесІто Ун мЕдіко урхЕнте.','Мені терміново потрібен лікар.'],
+['¿Tiene cita disponible?','тіЕне сІта діспоніблЕ?','Є вільний запис?'],
+['Soy alérgico/a a...','сОі алЕрхіко/а А...','У мене алергія на...'],
+['Tomo este medicamento.','тОмо Есте медікаментО.','Я приймаю цей препарат.'],
+['¿Tiene algo para el dolor?','тіЕне Алґо пАра Ель долОр?','Є щось від болю?'],
+['¿Cuántas pastillas debo tomar?','куАнтас пастІлйас дЕбо томАр?','Скільки таблеток приймати?'],
+['Me operaron el año pasado.','мЕ оперАрон Ель Аньо пасадО.','Мене оперували минулого року.'],
+['¿Necesito receta?','несесІто ресетА?','Потрібен рецепт?'],
+['Me mareo mucho.','мЕ марЕо мучО.','Мені дуже паморочиться голова.'],
+['Tengo náuseas.','тЕнґо нАусеас.','Мене нудить.'],
+['Tengo una reunión a las tres.','тЕнґо Уна реуніОн А лАс трЕс.','У мене зустріч о третій.'],
+['¿Podemos agendar una llamada?','подЕмос ахендАр Уна лйамадА?','Можемо запланувати дзвінок?'],
+['Te mando el archivo por correo.','тЕ мАндо Ель арчІбо пОр корреО.','Надішлю файл поштою.'],
+['El plazo vence mañana.','Ель плАсо бЕнсе маньанА.','Дедлайн завтра.'],
+['Estoy de baja.','естОі дЕ бахА.','Я на лікарняному.'],
+['Trabajo desde casa.','трабАхо дЕсде касА.','Я працюю вдома.'],
+['¿Puedo tomar el día libre?','пуЕдо томАр Ель дІа лІбре?','Можу взяти вихідний?'],
+['Me han ascendido.','мЕ Ан ассендідО.','Мене підвищили.'],
+['He pedido un aumento.','Е педІдо Ун аументО.','Я попросив/ла підвищення.'],
+['Me han despedido.','мЕ Ан деспедідО.','Мене звільнили.'],
+['Busco trabajo nuevo.','бУско трабАхо нуебО.','Шукаю нову роботу.'],
+['¿Cuál es tu sueldo?','куАль Ес тУ суЕлдо?','Яка твоя зарплата?'],
+['Tengo vacaciones la semana que viene.','тЕнґо бакасіОнес лА семАна кЕ біенЕ.','Наступного тижня у мене відпустка.'],
+['Hay que entregar el informe.','Аі кЕ ентреґАр Ель інформЕ.','Треба здати звіт.'],
+['Se me ha descargado el móvil.','сЕ мЕ А дескарґАдо Ель мОбіль.','У мене сів телефон.'],
+['¿Tienes cargador?','тіЕнес карґадОр?','Є зарядка?'],
+['¿Cuál es la contraseña del wifi?','куАль Ес лА контрасЕньа дЕль бІфі?','Який пароль від вайфаю?'],
+['No tengo cobertura.','нО тЕнґо кобертурА.','Немає сигналу.'],
+['Se me ha caído el teléfono.','сЕ мЕ А каІдо Ель телЕфоно.','Я впустив/ла телефон.'],
+['¿Me puedes llamar después?','мЕ пуЕдес лйамАр деспуЕс?','Можеш подзвонити пізніше?'],
+['Te mando un mensaje.','тЕ мАндо Ун менсахЕ.','Надішлю повідомлення.'],
+['¿Lo tienes en WhatsApp?','лО тіЕнес Ен батсАпп?','Є у вотсапі?'],
+['La aplicación no funciona.','лА аплікасіОн нО фунсіОна.','Застосунок не працює.'],
+['¿Puedes mandarme la ubicación?','пуЕдес мандАрме лА убікасіОн?','Можеш надіслати геолокацію?'],
+['He perdido todos mis contactos.','Е пердІдо тОдос мІс контактОс.','Я втратив/ла всі контакти.'],
+['¿Me haces una captura?','мЕ Асес Уна каптурА?','Зробиш скріншот?'],
+['Me gustas mucho.','мЕ ґУстас мучО.','Ти мені дуже подобаєшся.'],
+['Estoy enamorado/a de ti.','естОі енаморадО/а дЕ тІ.','Я закоханий/а в тебе.'],
+['¿Salimos juntos?','салІмос хунтОс?','Ми зустрічаємося?'],
+['Hemos cortado.','Емос кортадО.','Ми розійшлися.'],
+['Echamos de menos.','ечАмос дЕ менОс.','Ми сумуємо один за одним.'],
+['¿Podemos hablar?','подЕмос аблАр?','Можемо поговорити?'],
+['Necesito espacio.','несесІто еспасіО.','Мені потрібен простір.'],
+['Me has decepcionado.','мЕ Ас десепсіонадО.','Ти мене розчарував/ла.'],
+['Estoy muy orgulloso/a de ti.','естОі мУі орґулйосО/а дЕ тІ.','Я дуже пишаюся тобою.'],
+['Eres lo mejor que me ha pasado.','Ерес лО мехОр кЕ мЕ А пасадО.','Ти найкраще, що зі мною сталось.'],
+['¿En qué estás pensando?','Ен кЕ естАс пенсАндо?','Про що ти думаєш?'],
+['Confío en ti.','конфІо Ен тІ.','Я тобі довіряю.'],
+['Me alegra tenerte.','мЕ алЕґра тенертЕ.','Радий/а, що ти є.'],
+['Siempre estaré aquí para ti.','сіЕмпре естарЕ акІ пАра тІ.','Я завжди буду тут для тебе.'],
+['¡Buenos días, dormilón!','буЕнос дІас, дормілОн!','Доброго ранку, соня!'],
+['¿Has dormido bien?','Ас дормІдо біЕн?','Ти добре спав/ла?'],
+['Estoy muerto/a de cansancio.','естОі муертО/а дЕ кансансіО.','Я мертвий/а від втоми.'],
+['¿Qué tienes pensado hacer hoy?','кЕ тіЕнес пенсАдо асЕр Оі?','Що плануєш сьогодні?'],
+['Hoy no tengo ganas de nada.','Оі нО тЕнґо ґАнас дЕ надА.','Сьогодні нічого не хочеться.'],
+['¡Por fin es viernes!','пор фін ес біернЕс!','Нарешті п\'ятниця!'],
+['¿A qué hora te levantas?','А кЕ Ора тЕ лебАнтас?','О котрій встаєш?'],
+['Me he quedado dormido/a.','мЕ Е кедАдо дормідо/А.','Я проспав/ла.'],
+]},
+'f-health':{label:'🏥 Здоров\'я',pairs:[
+['No me encuentro bien.','нО мЕ енкуЕнтро біЕн.','Мені погано.'],
+['Me duele la cabeza.','мЕ дуЕле лА кабесА.','У мене болить голова.'],
+['Tengo fiebre.','тЕнґо фіебрЕ.','У мене жар.'],
+['Me duele el estómago.','мЕ дуЕле Ель естОмаґо.','Болить живіт.'],
+['Tengo tos.','тЕнґо тОс.','У мене кашель.'],
+['Me he torcido el tobillo.','мЕ Е торсІдо Ель тобілйО.','Я підвернув/ла ногу.'],
+['Necesito un médico urgente.','несесІто Ун мЕдіко урхЕнте.','Мені терміново потрібен лікар.'],
+['¿Tiene cita disponible?','тіЕне сІта діспоніблЕ?','Є вільний запис?'],
+['Soy alérgico/a a...','сОі алЕрхіко/а А...','У мене алергія на...'],
+['Tomo este medicamento.','тОмо Есте медікаментО.','Я приймаю цей препарат.'],
+['¿Tiene algo para el dolor?','тіЕне Алґо пАра Ель долОр?','Є щось від болю?'],
+['¿Cuántas pastillas debo tomar?','куАнтас пастІлйас дЕбо томАр?','Скільки таблеток приймати?'],
+['Me operaron el año pasado.','мЕ оперАрон Ель Аньо пасадО.','Мене оперували минулого року.'],
+['¿Necesito receta?','несесІто ресетА?','Потрібен рецепт?'],
+['Me mareo mucho.','мЕ марЕо мучО.','Мені дуже паморочиться голова.'],
+['Tengo náuseas.','тЕнґо нАусеас.','Мене нудить.'],
+['Tengo una reunión a las tres.','тЕнґо Уна реуніОн А лАс трЕс.','У мене зустріч о третій.'],
+['¿Podemos agendar una llamada?','подЕмос ахендАр Уна лйамадА?','Можемо запланувати дзвінок?'],
+['Te mando el archivo por correo.','тЕ мАндо Ель арчІбо пОр корреО.','Надішлю файл поштою.'],
+['El plazo vence mañana.','Ель плАсо бЕнсе маньанА.','Дедлайн завтра.'],
+['Estoy de baja.','естОі дЕ бахА.','Я на лікарняному.'],
+['Trabajo desde casa.','трабАхо дЕсде касА.','Я працюю вдома.'],
+['¿Puedo tomar el día libre?','пуЕдо томАр Ель дІа лІбре?','Можу взяти вихідний?'],
+['Me han ascendido.','мЕ Ан ассендідО.','Мене підвищили.'],
+['He pedido un aumento.','Е педІдо Ун аументО.','Я попросив/ла підвищення.'],
+['Me han despedido.','мЕ Ан деспедідО.','Мене звільнили.'],
+['Busco trabajo nuevo.','бУско трабАхо нуебО.','Шукаю нову роботу.'],
+['¿Cuál es tu sueldo?','куАль Ес тУ суЕлдо?','Яка твоя зарплата?'],
+['Tengo vacaciones la semana que viene.','тЕнґо бакасіОнес лА семАна кЕ біенЕ.','Наступного тижня у мене відпустка.'],
+['Hay que entregar el informe.','Аі кЕ ентреґАр Ель інформЕ.','Треба здати звіт.'],
+['Se me ha descargado el móvil.','сЕ мЕ А дескарґАдо Ель мОбіль.','У мене сів телефон.'],
+['¿Tienes cargador?','тіЕнес карґадОр?','Є зарядка?'],
+['¿Cuál es la contraseña del wifi?','куАль Ес лА контрасЕньа дЕль бІфі?','Який пароль від вайфаю?'],
+['No tengo cobertura.','нО тЕнґо кобертурА.','Немає сигналу.'],
+['Se me ha caído el teléfono.','сЕ мЕ А каІдо Ель телЕфоно.','Я впустив/ла телефон.'],
+['¿Me puedes llamar después?','мЕ пуЕдес лйамАр деспуЕс?','Можеш подзвонити пізніше?'],
+['Te mando un mensaje.','тЕ мАндо Ун менсахЕ.','Надішлю повідомлення.'],
+['¿Lo tienes en WhatsApp?','лО тіЕнес Ен батсАпп?','Є у вотсапі?'],
+['La aplicación no funciona.','лА аплікасіОн нО фунсіОна.','Застосунок не працює.'],
+['¿Puedes mandarme la ubicación?','пуЕдес мандАрме лА убікасіОн?','Можеш надіслати геолокацію?'],
+['He perdido todos mis contactos.','Е пердІдо тОдос мІс контактОс.','Я втратив/ла всі контакти.'],
+['¿Me haces una captura?','мЕ Асес Уна каптурА?','Зробиш скріншот?'],
+['Me gustas mucho.','мЕ ґУстас мучО.','Ти мені дуже подобаєшся.'],
+['Estoy enamorado/a de ti.','естОі енаморадО/а дЕ тІ.','Я закоханий/а в тебе.'],
+['¿Salimos juntos?','салІмос хунтОс?','Ми зустрічаємося?'],
+['Hemos cortado.','Емос кортадО.','Ми розійшлися.'],
+['Echamos de menos.','ечАмос дЕ менОс.','Ми сумуємо один за одним.'],
+['¿Podemos hablar?','подЕмос аблАр?','Можемо поговорити?'],
+['Necesito espacio.','несесІто еспасіО.','Мені потрібен простір.'],
+['Me has decepcionado.','мЕ Ас десепсіонадО.','Ти мене розчарував/ла.'],
+['Estoy muy orgulloso/a de ti.','естОі мУі орґулйосО/а дЕ тІ.','Я дуже пишаюся тобою.'],
+['Eres lo mejor que me ha pasado.','Ерес лО мехОр кЕ мЕ А пасадО.','Ти найкраще, що зі мною сталось.'],
+['¿En qué estás pensando?','Ен кЕ естАс пенсАндо?','Про що ти думаєш?'],
+['Confío en ti.','конфІо Ен тІ.','Я тобі довіряю.'],
+['Me alegra tenerte.','мЕ алЕґра тенертЕ.','Радий/а, що ти є.'],
+['Siempre estaré aquí para ti.','сіЕмпре естарЕ акІ пАра тІ.','Я завжди буду тут для тебе.'],
+['¡Buenos días, dormilón!','буЕнос дІас, дормілОн!','Доброго ранку, соня!'],
+['¿Has dormido bien?','Ас дормІдо біЕн?','Ти добре спав/ла?'],
+['Estoy muerto/a de cansancio.','естОі муертО/а дЕ кансансіО.','Я мертвий/а від втоми.'],
+['¿Qué tienes pensado hacer hoy?','кЕ тіЕнес пенсАдо асЕр Оі?','Що плануєш сьогодні?'],
+['Hoy no tengo ganas de nada.','Оі нО тЕнґо ґАнас дЕ надА.','Сьогодні нічого не хочеться.'],
+['¡Por fin es viernes!','пор фін ес біернЕс!','Нарешті п\'ятниця!'],
+['¿A qué hora te levantas?','А кЕ Ора тЕ лебАнтас?','О котрій встаєш?'],
+['Me he quedado dormido/a.','мЕ Е кедАдо дормідо/А.','Я проспав/ла.'],
+['Voy a darme una ducha.','бОі А дАрме Уна дучА.','Піду прийму душ.'],
+['¿Qué hay de desayuno?','кЕ Аі дЕ десаіУно?','Що є на сніданок?'],
+['Me voy, hasta luego.','мЕ бОі, Аста луеґО.','Я пішов/пішла, до побачення.'],
+['¿A qué hora llegas hoy?','А кЕ Ора лйЕґас Оі?','Коли сьогодні повертаєшся?'],
+['Estoy agotado/a.','естОі аґотадо/А.','Я виснажений/а.'],
+['¡Que descanses!','кЕ дескансЕс!','Відпочивай!'],
+['Me voy a dormir.','мЕ бОі А дормІр.','Я йду спати.'],
+['¡Buenas noches y que sueñes bien!','буЕнас нОчес І кЕ суЕньес біЕн!','На добраніч і солодких снів!'],
+['¡Qué gracioso/a!','кЕ ґрасіосО/а!','Як смішно!'],
+['¡Me parto de risa!','мЕ пАрто дЕ рісА!','Я вмираю зі сміху!'],
+['No me lo puedo creer.','нО мЕ лО пуЕдо креЕр.','Не можу повірити.'],
+['¿Me estás tomando el pelo?','мЕ естАс томАндо Ель пЕло?','Ти мене розіграєш?'],
+['¡Ni de broma!','нІ дЕ бромА!','Ні за що! Навіть не думай!'],
+['¡Qué mala suerte!','кЕ мАла суЕрте!','Яке невезіння!'],
+['¡Que suerte tienes!','кЕ суЕрте тіенЕс!','Як тобі везе!'],
+['¡Toca madera!','тОка мадерА!','Постукай по дереву!'],
+]},
+'f-work':{label:'💼 Робота',pairs:[
+['Tengo una reunión a las tres.','тЕнґо Уна реуніОн А лАс трЕс.','У мене зустріч о третій.'],
+['¿Podemos agendar una llamada?','подЕмос ахендАр Уна лйамадА?','Можемо запланувати дзвінок?'],
+['Te mando el archivo por correo.','тЕ мАндо Ель арчІбо пОр корреО.','Надішлю файл поштою.'],
+['El plazo vence mañana.','Ель плАсо бЕнсе маньанА.','Дедлайн завтра.'],
+['Estoy de baja.','естОі дЕ бахА.','Я на лікарняному.'],
+['Trabajo desde casa.','трабАхо дЕсде касА.','Я працюю вдома.'],
+['¿Puedo tomar el día libre?','пуЕдо томАр Ель дІа лІбре?','Можу взяти вихідний?'],
+['Me han ascendido.','мЕ Ан ассендідО.','Мене підвищили.'],
+['He pedido un aumento.','Е педІдо Ун аументО.','Я попросив/ла підвищення.'],
+['Me han despedido.','мЕ Ан деспедідО.','Мене звільнили.'],
+['Busco trabajo nuevo.','бУско трабАхо нуебО.','Шукаю нову роботу.'],
+['¿Cuál es tu sueldo?','куАль Ес тУ суЕлдо?','Яка твоя зарплата?'],
+['Tengo vacaciones la semana que viene.','тЕнґо бакасіОнес лА семАна кЕ біенЕ.','Наступного тижня у мене відпустка.'],
+['Hay que entregar el informe.','Аі кЕ ентреґАр Ель інформЕ.','Треба здати звіт.'],
+['Se me ha descargado el móvil.','сЕ мЕ А дескарґАдо Ель мОбіль.','У мене сів телефон.'],
+['¿Tienes cargador?','тіЕнес карґадОр?','Є зарядка?'],
+['¿Cuál es la contraseña del wifi?','куАль Ес лА контрасЕньа дЕль бІфі?','Який пароль від вайфаю?'],
+['No tengo cobertura.','нО тЕнґо кобертурА.','Немає сигналу.'],
+['Se me ha caído el teléfono.','сЕ мЕ А каІдо Ель телЕфоно.','Я впустив/ла телефон.'],
+['¿Me puedes llamar después?','мЕ пуЕдес лйамАр деспуЕс?','Можеш подзвонити пізніше?'],
+['Te mando un mensaje.','тЕ мАндо Ун менсахЕ.','Надішлю повідомлення.'],
+['¿Lo tienes en WhatsApp?','лО тіЕнес Ен батсАпп?','Є у вотсапі?'],
+['La aplicación no funciona.','лА аплікасіОн нО фунсіОна.','Застосунок не працює.'],
+['¿Puedes mandarme la ubicación?','пуЕдес мандАрме лА убікасіОн?','Можеш надіслати геолокацію?'],
+['He perdido todos mis contactos.','Е пердІдо тОдос мІс контактОс.','Я втратив/ла всі контакти.'],
+['¿Me haces una captura?','мЕ Асес Уна каптурА?','Зробиш скріншот?'],
+['Me gustas mucho.','мЕ ґУстас мучО.','Ти мені дуже подобаєшся.'],
+['Estoy enamorado/a de ti.','естОі енаморадО/а дЕ тІ.','Я закоханий/а в тебе.'],
+['¿Salimos juntos?','салІмос хунтОс?','Ми зустрічаємося?'],
+['Hemos cortado.','Емос кортадО.','Ми розійшлися.'],
+['Echamos de menos.','ечАмос дЕ менОс.','Ми сумуємо один за одним.'],
+['¿Podemos hablar?','подЕмос аблАр?','Можемо поговорити?'],
+['Necesito espacio.','несесІто еспасіО.','Мені потрібен простір.'],
+['Me has decepcionado.','мЕ Ас десепсіонадО.','Ти мене розчарував/ла.'],
+['Estoy muy orgulloso/a de ti.','естОі мУі орґулйосО/а дЕ тІ.','Я дуже пишаюся тобою.'],
+['Eres lo mejor que me ha pasado.','Ерес лО мехОр кЕ мЕ А пасадО.','Ти найкраще, що зі мною сталось.'],
+['¿En qué estás pensando?','Ен кЕ естАс пенсАндо?','Про що ти думаєш?'],
+['Confío en ti.','конфІо Ен тІ.','Я тобі довіряю.'],
+['Me alegra tenerte.','мЕ алЕґра тенертЕ.','Радий/а, що ти є.'],
+['Siempre estaré aquí para ti.','сіЕмпре естарЕ акІ пАра тІ.','Я завжди буду тут для тебе.'],
+['¡Buenos días, dormilón!','буЕнос дІас, дормілОн!','Доброго ранку, соня!'],
+['¿Has dormido bien?','Ас дормІдо біЕн?','Ти добре спав/ла?'],
+['Estoy muerto/a de cansancio.','естОі муертО/а дЕ кансансіО.','Я мертвий/а від втоми.'],
+['¿Qué tienes pensado hacer hoy?','кЕ тіЕнес пенсАдо асЕр Оі?','Що плануєш сьогодні?'],
+['Hoy no tengo ganas de nada.','Оі нО тЕнґо ґАнас дЕ надА.','Сьогодні нічого не хочеться.'],
+['¡Por fin es viernes!','пор фін ес біернЕс!','Нарешті п\'ятниця!'],
+['¿A qué hora te levantas?','А кЕ Ора тЕ лебАнтас?','О котрій встаєш?'],
+['Me he quedado dormido/a.','мЕ Е кедАдо дормідо/А.','Я проспав/ла.'],
+['Voy a darme una ducha.','бОі А дАрме Уна дучА.','Піду прийму душ.'],
+['¿Qué hay de desayuno?','кЕ Аі дЕ десаіУно?','Що є на сніданок?'],
+['Me voy, hasta luego.','мЕ бОі, Аста луеґО.','Я пішов/пішла, до побачення.'],
+['¿A qué hora llegas hoy?','А кЕ Ора лйЕґас Оі?','Коли сьогодні повертаєшся?'],
+['Estoy agotado/a.','естОі аґотадо/А.','Я виснажений/а.'],
+['¡Que descanses!','кЕ дескансЕс!','Відпочивай!'],
+['Me voy a dormir.','мЕ бОі А дормІр.','Я йду спати.'],
+['¡Buenas noches y que sueñes bien!','буЕнас нОчес І кЕ суЕньес біЕн!','На добраніч і солодких снів!'],
+['¡Qué gracioso/a!','кЕ ґрасіосО/а!','Як смішно!'],
+['¡Me parto de risa!','мЕ пАрто дЕ рісА!','Я вмираю зі сміху!'],
+['No me lo puedo creer.','нО мЕ лО пуЕдо креЕр.','Не можу повірити.'],
+['¿Me estás tomando el pelo?','мЕ естАс томАндо Ель пЕло?','Ти мене розіграєш?'],
+['¡Ni de broma!','нІ дЕ бромА!','Ні за що! Навіть не думай!'],
+['¡Qué mala suerte!','кЕ мАла суЕрте!','Яке невезіння!'],
+['¡Que suerte tienes!','кЕ суЕрте тіенЕс!','Як тобі везе!'],
+['¡Toca madera!','тОка мадерА!','Постукай по дереву!'],
+['¡Esto es el colmo!','Есто Ес Ель колмО!','Це вже занадто!'],
+['¿Qué me estás contando?','кЕ мЕ естАс контАндо?','Що ти мені розповідаєш? (здивування)'],
+['¡Cuánto tiempo sin verte!','куАнто тьЕмпо сІн бЕрте!','Скільки часу не бачились!'],
+['¡Qué mundo tan pequeño!','кЕ мУндо тАн пекЕньо!','Який маленький світ!'],
+['Cambia de tema.','камбІа дЕ темА.','Зміни тему.'],
+['¡A ver si quedamos pronto!','А бЕр сІ кедАмос пронтО!','Треба скоро зустрітися!'],
+['Quisiera hacer el check-in.','кісіЕра асЕр Ель чекк-Ін.','Я хочу зареєструватись.'],
+['¿A qué hora es el check-out?','А кЕ Ора Ес Ель чекк-оУт?','До котрої години виселення?'],
+['¿Está incluido el desayuno?','естА інклуІдо Ель десаіУно?','Сніданок включено?'],
+['Hay ruido en la habitación de al lado.','Аі руІдо Ен лА абітасіОн дЕ Аль лАдо.','У сусідньому номері шум.'],
+['¿Tienen habitación con vistas al mar?','тіЕнен абітасіОн кОн бІстас Аль мАр?','Є кімната з видом на море?'],
+['Me han perdido la maleta.','мЕ Ан пердІдо лА малетА.','Мій багаж загубили.'],
+['¿Dónde está la consigna?','дОнде естА лА консІґна?','Де камера схову?'],
+['¿A qué hora sale el vuelo?','А кЕ Ора сАле Ель буЕло?','Коли відправляється рейс?'],
+['¿Cuál es la puerta de embarque?','куАль Ес лА пуЕрта дЕ ембАрке?','Який вихід на посадку?'],
+['¿Hay excursiones disponibles?','Аі екскурсіОнес діспоніблЕс?','Є доступні екскурсії?'],
+]},
+'f-phone':{label:'📱 Телефон',pairs:[
+['Se me ha descargado el móvil.','сЕ мЕ А дескарґАдо Ель мОбіль.','У мене сів телефон.'],
+['¿Tienes cargador?','тіЕнес карґадОр?','Є зарядка?'],
+['¿Cuál es la contraseña del wifi?','куАль Ес лА контрасЕньа дЕль бІфі?','Який пароль від вайфаю?'],
+['No tengo cobertura.','нО тЕнґо кобертурА.','Немає сигналу.'],
+['Se me ha caído el teléfono.','сЕ мЕ А каІдо Ель телЕфоно.','Я впустив/ла телефон.'],
+['¿Me puedes llamar después?','мЕ пуЕдес лйамАр деспуЕс?','Можеш подзвонити пізніше?'],
+['Te mando un mensaje.','тЕ мАндо Ун менсахЕ.','Надішлю повідомлення.'],
+['¿Lo tienes en WhatsApp?','лО тіЕнес Ен батсАпп?','Є у вотсапі?'],
+['La aplicación no funciona.','лА аплікасіОн нО фунсіОна.','Застосунок не працює.'],
+['¿Puedes mandarme la ubicación?','пуЕдес мандАрме лА убікасіОн?','Можеш надіслати геолокацію?'],
+['He perdido todos mis contactos.','Е пердІдо тОдос мІс контактОс.','Я втратив/ла всі контакти.'],
+['¿Me haces una captura?','мЕ Асес Уна каптурА?','Зробиш скріншот?'],
+['Me gustas mucho.','мЕ ґУстас мучО.','Ти мені дуже подобаєшся.'],
+['Estoy enamorado/a de ti.','естОі енаморадО/а дЕ тІ.','Я закоханий/а в тебе.'],
+['¿Salimos juntos?','салІмос хунтОс?','Ми зустрічаємося?'],
+['Hemos cortado.','Емос кортадО.','Ми розійшлися.'],
+['Echamos de menos.','ечАмос дЕ менОс.','Ми сумуємо один за одним.'],
+['¿Podemos hablar?','подЕмос аблАр?','Можемо поговорити?'],
+['Necesito espacio.','несесІто еспасіО.','Мені потрібен простір.'],
+['Me has decepcionado.','мЕ Ас десепсіонадО.','Ти мене розчарував/ла.'],
+['Estoy muy orgulloso/a de ti.','естОі мУі орґулйосО/а дЕ тІ.','Я дуже пишаюся тобою.'],
+['Eres lo mejor que me ha pasado.','Ерес лО мехОр кЕ мЕ А пасадО.','Ти найкраще, що зі мною сталось.'],
+['¿En qué estás pensando?','Ен кЕ естАс пенсАндо?','Про що ти думаєш?'],
+['Confío en ti.','конфІо Ен тІ.','Я тобі довіряю.'],
+['Me alegra tenerte.','мЕ алЕґра тенертЕ.','Радий/а, що ти є.'],
+['Siempre estaré aquí para ti.','сіЕмпре естарЕ акІ пАра тІ.','Я завжди буду тут для тебе.'],
+['¡Buenos días, dormilón!','буЕнос дІас, дормілОн!','Доброго ранку, соня!'],
+['¿Has dormido bien?','Ас дормІдо біЕн?','Ти добре спав/ла?'],
+['Estoy muerto/a de cansancio.','естОі муертО/а дЕ кансансіО.','Я мертвий/а від втоми.'],
+['¿Qué tienes pensado hacer hoy?','кЕ тіЕнес пенсАдо асЕр Оі?','Що плануєш сьогодні?'],
+['Hoy no tengo ganas de nada.','Оі нО тЕнґо ґАнас дЕ надА.','Сьогодні нічого не хочеться.'],
+['¡Por fin es viernes!','пор фін ес біернЕс!','Нарешті п\'ятниця!'],
+['¿A qué hora te levantas?','А кЕ Ора тЕ лебАнтас?','О котрій встаєш?'],
+['Me he quedado dormido/a.','мЕ Е кедАдо дормідо/А.','Я проспав/ла.'],
+['Voy a darme una ducha.','бОі А дАрме Уна дучА.','Піду прийму душ.'],
+['¿Qué hay de desayuno?','кЕ Аі дЕ десаіУно?','Що є на сніданок?'],
+['Me voy, hasta luego.','мЕ бОі, Аста луеґО.','Я пішов/пішла, до побачення.'],
+['¿A qué hora llegas hoy?','А кЕ Ора лйЕґас Оі?','Коли сьогодні повертаєшся?'],
+['Estoy agotado/a.','естОі аґотадо/А.','Я виснажений/а.'],
+['¡Que descanses!','кЕ дескансЕс!','Відпочивай!'],
+['Me voy a dormir.','мЕ бОі А дормІр.','Я йду спати.'],
+['¡Buenas noches y que sueñes bien!','буЕнас нОчес І кЕ суЕньес біЕн!','На добраніч і солодких снів!'],
+['¡Qué gracioso/a!','кЕ ґрасіосО/а!','Як смішно!'],
+['¡Me parto de risa!','мЕ пАрто дЕ рісА!','Я вмираю зі сміху!'],
+['No me lo puedo creer.','нО мЕ лО пуЕдо креЕр.','Не можу повірити.'],
+['¿Me estás tomando el pelo?','мЕ естАс томАндо Ель пЕло?','Ти мене розіграєш?'],
+['¡Ni de broma!','нІ дЕ бромА!','Ні за що! Навіть не думай!'],
+['¡Qué mala suerte!','кЕ мАла суЕрте!','Яке невезіння!'],
+['¡Que suerte tienes!','кЕ суЕрте тіенЕс!','Як тобі везе!'],
+['¡Toca madera!','тОка мадерА!','Постукай по дереву!'],
+['¡Esto es el colmo!','Есто Ес Ель колмО!','Це вже занадто!'],
+['¿Qué me estás contando?','кЕ мЕ естАс контАндо?','Що ти мені розповідаєш? (здивування)'],
+['¡Cuánto tiempo sin verte!','куАнто тьЕмпо сІн бЕрте!','Скільки часу не бачились!'],
+['¡Qué mundo tan pequeño!','кЕ мУндо тАн пекЕньо!','Який маленький світ!'],
+['Cambia de tema.','камбІа дЕ темА.','Зміни тему.'],
+['¡A ver si quedamos pronto!','А бЕр сІ кедАмос пронтО!','Треба скоро зустрітися!'],
+['Quisiera hacer el check-in.','кісіЕра асЕр Ель чекк-Ін.','Я хочу зареєструватись.'],
+['¿A qué hora es el check-out?','А кЕ Ора Ес Ель чекк-оУт?','До котрої години виселення?'],
+['¿Está incluido el desayuno?','естА інклуІдо Ель десаіУно?','Сніданок включено?'],
+['Hay ruido en la habitación de al lado.','Аі руІдо Ен лА абітасіОн дЕ Аль лАдо.','У сусідньому номері шум.'],
+['¿Tienen habitación con vistas al mar?','тіЕнен абітасіОн кОн бІстас Аль мАр?','Є кімната з видом на море?'],
+['Me han perdido la maleta.','мЕ Ан пердІдо лА малетА.','Мій багаж загубили.'],
+['¿Dónde está la consigna?','дОнде естА лА консІґна?','Де камера схову?'],
+['¿A qué hora sale el vuelo?','А кЕ Ора сАле Ель буЕло?','Коли відправляється рейс?'],
+['¿Cuál es la puerta de embarque?','куАль Ес лА пуЕрта дЕ ембАрке?','Який вихід на посадку?'],
+['¿Hay excursiones disponibles?','Аі екскурсіОнес діспоніблЕс?','Є доступні екскурсії?'],
+['¿Qué se puede visitar aquí?','кЕ сЕ пуЕде бісітАр акІ?','Що тут можна відвідати?'],
+['¿Está lejos del centro?','естА лЕхос дЕль сЕнтро?','Далеко від центру?'],
+['¿Cómo se dice en español?','кОмо сЕ дІсе Ен еспаньОль?','Як це по-іспанськи?'],
+['¿Puede hablar más despacio?','пуЕде аблАр мАс деспасІо?','Можете говорити повільніше?'],
+['¿Puede repetir, por favor?','пуЕде репетІр, пОр фабОр?','Повторіть, будь ласка.'],
+['No entiendo lo que dices.','нО ентіЕндо лО кЕ дісЕс.','Я не розумію, що ти кажеш.'],
+['¿Qué significa esta palabra?','кЕ сіґніфІка Еста палАбра?','Що означає це слово?'],
+['¿Cómo se pronuncia?','кОмо сЕ пронунсІа?','Як це вимовляється?'],
+['Estoy aprendiendo español.','естОі апрендіЕндо еспаньОль.','Я вчу іспанську.'],
+['¿Me puedes corregir?','мЕ пуЕдес коррехІр?','Можеш мене виправляти?'],
+['¿Cómo está mi español?','кОмо естА мІ еспаньОль?','Як моя іспанська?'],
+['¡Tu español está muy bien!','тУ еспаньОль естА мУі бІен!','Твоя іспанська дуже гарна!'],
+['Cometo muchos errores.','комЕто мУчос еррорЕс.','Я роблю багато помилок.'],
+['¿Tienes diccionario?','тіЕнес діксіонаріО?','Є словник?'],
+]},
+'f-love':{label:'❤️ Стосунки',pairs:[
+['Me gustas mucho.','мЕ ґУстас мучО.','Ти мені дуже подобаєшся.'],
+['Estoy enamorado/a de ti.','естОі енаморадО/а дЕ тІ.','Я закоханий/а в тебе.'],
+['¿Salimos juntos?','салІмос хунтОс?','Ми зустрічаємося?'],
+['Hemos cortado.','Емос кортадО.','Ми розійшлися.'],
+['Echamos de menos.','ечАмос дЕ менОс.','Ми сумуємо один за одним.'],
+['¿Podemos hablar?','подЕмос аблАр?','Можемо поговорити?'],
+['Necesito espacio.','несесІто еспасіО.','Мені потрібен простір.'],
+['Me has decepcionado.','мЕ Ас десепсіонадО.','Ти мене розчарував/ла.'],
+['Estoy muy orgulloso/a de ti.','естОі мУі орґулйосО/а дЕ тІ.','Я дуже пишаюся тобою.'],
+['Eres lo mejor que me ha pasado.','Ерес лО мехОр кЕ мЕ А пасадО.','Ти найкраще, що зі мною сталось.'],
+['¿En qué estás pensando?','Ен кЕ естАс пенсАндо?','Про що ти думаєш?'],
+['Confío en ti.','конфІо Ен тІ.','Я тобі довіряю.'],
+['Me alegra tenerte.','мЕ алЕґра тенертЕ.','Радий/а, що ти є.'],
+['Siempre estaré aquí para ti.','сіЕмпре естарЕ акІ пАра тІ.','Я завжди буду тут для тебе.'],
+['¡Buenos días, dormilón!','буЕнос дІас, дормілОн!','Доброго ранку, соня!'],
+['¿Has dormido bien?','Ас дормІдо біЕн?','Ти добре спав/ла?'],
+['Estoy muerto/a de cansancio.','естОі муертО/а дЕ кансансіО.','Я мертвий/а від втоми.'],
+['¿Qué tienes pensado hacer hoy?','кЕ тіЕнес пенсАдо асЕр Оі?','Що плануєш сьогодні?'],
+['Hoy no tengo ganas de nada.','Оі нО тЕнґо ґАнас дЕ надА.','Сьогодні нічого не хочеться.'],
+['¡Por fin es viernes!','пор фін ес біернЕс!','Нарешті п\'ятниця!'],
+['¿A qué hora te levantas?','А кЕ Ора тЕ лебАнтас?','О котрій встаєш?'],
+['Me he quedado dormido/a.','мЕ Е кедАдо дормідо/А.','Я проспав/ла.'],
+['Voy a darme una ducha.','бОі А дАрме Уна дучА.','Піду прийму душ.'],
+['¿Qué hay de desayuno?','кЕ Аі дЕ десаіУно?','Що є на сніданок?'],
+['Me voy, hasta luego.','мЕ бОі, Аста луеґО.','Я пішов/пішла, до побачення.'],
+['¿A qué hora llegas hoy?','А кЕ Ора лйЕґас Оі?','Коли сьогодні повертаєшся?'],
+['Estoy agotado/a.','естОі аґотадо/А.','Я виснажений/а.'],
+['¡Que descanses!','кЕ дескансЕс!','Відпочивай!'],
+['Me voy a dormir.','мЕ бОі А дормІр.','Я йду спати.'],
+['¡Buenas noches y que sueñes bien!','буЕнас нОчес І кЕ суЕньес біЕн!','На добраніч і солодких снів!'],
+['¡Qué gracioso/a!','кЕ ґрасіосО/а!','Як смішно!'],
+['¡Me parto de risa!','мЕ пАрто дЕ рісА!','Я вмираю зі сміху!'],
+['No me lo puedo creer.','нО мЕ лО пуЕдо креЕр.','Не можу повірити.'],
+['¿Me estás tomando el pelo?','мЕ естАс томАндо Ель пЕло?','Ти мене розіграєш?'],
+['¡Ni de broma!','нІ дЕ бромА!','Ні за що! Навіть не думай!'],
+['¡Qué mala suerte!','кЕ мАла суЕрте!','Яке невезіння!'],
+['¡Que suerte tienes!','кЕ суЕрте тіенЕс!','Як тобі везе!'],
+['¡Toca madera!','тОка мадерА!','Постукай по дереву!'],
+['¡Esto es el colmo!','Есто Ес Ель колмО!','Це вже занадто!'],
+['¿Qué me estás contando?','кЕ мЕ естАс контАндо?','Що ти мені розповідаєш? (здивування)'],
+['¡Cuánto tiempo sin verte!','куАнто тьЕмпо сІн бЕрте!','Скільки часу не бачились!'],
+['¡Qué mundo tan pequeño!','кЕ мУндо тАн пекЕньо!','Який маленький світ!'],
+['Cambia de tema.','камбІа дЕ темА.','Зміни тему.'],
+['¡A ver si quedamos pronto!','А бЕр сІ кедАмос пронтО!','Треба скоро зустрітися!'],
+['Quisiera hacer el check-in.','кісіЕра асЕр Ель чекк-Ін.','Я хочу зареєструватись.'],
+['¿A qué hora es el check-out?','А кЕ Ора Ес Ель чекк-оУт?','До котрої години виселення?'],
+['¿Está incluido el desayuno?','естА інклуІдо Ель десаіУно?','Сніданок включено?'],
+['Hay ruido en la habitación de al lado.','Аі руІдо Ен лА абітасіОн дЕ Аль лАдо.','У сусідньому номері шум.'],
+['¿Tienen habitación con vistas al mar?','тіЕнен абітасіОн кОн бІстас Аль мАр?','Є кімната з видом на море?'],
+['Me han perdido la maleta.','мЕ Ан пердІдо лА малетА.','Мій багаж загубили.'],
+['¿Dónde está la consigna?','дОнде естА лА консІґна?','Де камера схову?'],
+['¿A qué hora sale el vuelo?','А кЕ Ора сАле Ель буЕло?','Коли відправляється рейс?'],
+['¿Cuál es la puerta de embarque?','куАль Ес лА пуЕрта дЕ ембАрке?','Який вихід на посадку?'],
+['¿Hay excursiones disponibles?','Аі екскурсіОнес діспоніблЕс?','Є доступні екскурсії?'],
+['¿Qué se puede visitar aquí?','кЕ сЕ пуЕде бісітАр акІ?','Що тут можна відвідати?'],
+['¿Está lejos del centro?','естА лЕхос дЕль сЕнтро?','Далеко від центру?'],
+['¿Cómo se dice en español?','кОмо сЕ дІсе Ен еспаньОль?','Як це по-іспанськи?'],
+['¿Puede hablar más despacio?','пуЕде аблАр мАс деспасІо?','Можете говорити повільніше?'],
+['¿Puede repetir, por favor?','пуЕде репетІр, пОр фабОр?','Повторіть, будь ласка.'],
+['No entiendo lo que dices.','нО ентіЕндо лО кЕ дісЕс.','Я не розумію, що ти кажеш.'],
+['¿Qué significa esta palabra?','кЕ сіґніфІка Еста палАбра?','Що означає це слово?'],
+['¿Cómo se pronuncia?','кОмо сЕ пронунсІа?','Як це вимовляється?'],
+['Estoy aprendiendo español.','естОі апрендіЕндо еспаньОль.','Я вчу іспанську.'],
+['¿Me puedes corregir?','мЕ пуЕдес коррехІр?','Можеш мене виправляти?'],
+['¿Cómo está mi español?','кОмо естА мІ еспаньОль?','Як моя іспанська?'],
+['¡Tu español está muy bien!','тУ еспаньОль естА мУі бІен!','Твоя іспанська дуже гарна!'],
+['Cometo muchos errores.','комЕто мУчос еррорЕс.','Я роблю багато помилок.'],
+['¿Tienes diccionario?','тіЕнес діксіонаріО?','Є словник?'],
+['No estoy de acuerdo.','нО естОі дЕ акуердО.','Я не згоден/на.'],
+['Eso no es justo.','Есо нО Ес хустО.','Це несправедливо.'],
+['¡Eso es mentira!','Есо Ес ментірА!','Це брехня!'],
+['No me hagas esto.','нО мЕ Аґас естО.','Не роби мені цього.'],
+['Estás exagerando.','естАс ексахерАндо.','Ти перебільшуєш.'],
+['No me metas en esto.','нО мЕ мЕтас Ен естО.','Не втягуй мене в це.'],
+['¡No me interrumpas!','нО мЕ інтеррумпАс!','Не перебивай мене!'],
+['¡Déjame en paz!','дЕхаме Ен пАс!','Залиш мене в спокої!'],
+['¡Basta ya!','бАста іА!','Досить вже!'],
+['No es asunto tuyo.','нО Ес асУнто туіО.','Це не твоя справа.'],
+['¡Cállate!','кАлйате!','Замовкни!'],
+['¡Escúchame!','ескУчаме!','Послухай мене!'],
+]},
+'f-svyata':{label:'🎉 Свята',pairs:[
+['¡Feliz cumpleaños!','фЕліс кумплеаньОс!','З днем народження!'],
+['¡Que cumplas muchos más!','кЕ кУмплас мУчос мАс!','Щоб ще багато років!'],
+['¡Feliz Navidad!','фЕліс набідАд!','З Різдвом!'],
+['¡Feliz Año Nuevo!','фЕліс Аньо нуебО!','З Новим роком!'],
+['¡Enhorabuena!','енорабуенА!','Вітаю! (з успіхом)'],
+['¡Mucha suerte!','мУча суертЕ!','Удачі!'],
+['¡Que te vaya bien!','кЕ тЕ баІа біЕн!','Нехай усе буде добре!'],
+['¡Que te mejores!','кЕ тЕ мехорЕс!','Одужуй!'],
+['¡Felicidades!','фелісідадЕс!','Вітання! Щиро вітаю!'],
+['¡Buen viaje!','бУен біахЕ!','Щасливої дороги!'],
+['¡Bienvenido/a!','біенбенідо/А!','Ласкаво просимо!'],
+['¡A tu salud!','а ту салУд!','За твоє здоров\'я!'],
+['¡Que sea para bien!','кЕ сЕа пАра біЕн!','Хай все буде на краще!'],
+]},
+};
+
+
+/* ════ СТАН ════ */
+var AR = {
+  q:[], idx:0, playing:false, repeat:false,
+  lang:0, mode:0,
+  ttsRate:0.85, gapMs:700, pauseMs:1200, showMs:2000,
+  audio:null, timer:null, revealed:false,
+  repEs:1, repUk:1,   /* повтори ES і UKR */
+  repEsCur:0, repUkCur:0,  /* поточний лічильник */
+  sessCount:0,   /* 0=всі */
+  shuffle:false,
+  sessPlayed:0,  /* скільки зіграно в сесії */
+  curSid:''
+};
+
+var LANGS = ['🇪🇸🇺🇦 Обидві','🇪🇸 ЛишЕ ES','🇺🇦 Лише UKR'];
+var MODES = ['📖 Читання','🧠 Вгадай ES'];
+var FAV = {};
+var ALL = [];
+
+/* ════ УТИЛІТИ ════ */
+function escH(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fKey(s){ return (s||'').slice(0,32); }
+function fmtTr(tr){
+  if(!tr) return '';
+  return escH(tr).replace(/([АЕЄИІЇОУЮЯЁЭ])/g,'<span class="S">$1</span>');
+}
+
+/* ════ TABS ════ */
+function showTab(t){
+  ['player','list','themes','fav','settings','add'].forEach(function(n,i){
+    document.getElementById('scr-'+n).classList.toggle('on',n===t);
+    document.querySelectorAll('.tab')[i].classList.toggle('on',n===t);
+  });
+  if(t==='list')    { buildAll(); renderList(); }
+  if(t==='themes')  { buildAll(); renderThemes(); }
+  if(t==='fav')     { buildAll(); renderFav(); }
+}
+
+/* ════ FAV ════ */
+function loadFav(){ try{ var s=localStorage.getItem('es_fav2'); if(s) FAV=JSON.parse(s); }catch(e){} }
+function saveFav(){ try{ localStorage.setItem('es_fav2',JSON.stringify(FAV)); }catch(e){} }
+
+/* ════ ЧЕРГА ════ */
+function buildQ(sid){
+  var q=[];
+  if(sid==='all'){
+    Object.keys(DATA).forEach(function(s){
+      DATA[s].pairs.forEach(function(p){ q.push({es:p[0],tr:p[1],uk:p[2],sid:s}); });
+    });
+  } else if(sid==='fav'){
+    Object.keys(DATA).forEach(function(s){
+      DATA[s].pairs.forEach(function(p){
+        if(FAV[fKey(p[0])]) q.push({es:p[0],tr:p[1],uk:p[2],sid:s});
+      });
+    });
+  } else if(DATA[sid]){
+    DATA[sid].pairs.forEach(function(p){ q.push({es:p[0],tr:p[1],uk:p[2],sid:sid}); });
+  }
+  return q;
+}
+
+function applySessionSettings(q){
+  /* Залишаємо для сумісності — реальна логіка тепер в startQ */
+  return q;
+}
+
+function startQ(sid, startIdx){
+  doStop();
+  AR.curSid = sid;
+  /* Будуємо повний список для SESS навігації */
+  buildAll();
+  var full = buildQ(sid);
+  /* Зберігаємо в SESS */
+  SESS.sid = sid;
+  SESS.total = full.length;
+  SESS.start = startIdx||0;
+  SESS.size = AR.sessCount>0 ? AR.sessCount : full.length;
+  /* Беремо зріз */
+  var raw = AR.sessCount>0 ? full.slice(SESS.start, SESS.start+SESS.size) : full;
+  AR.q = AR.shuffle ? shuffleArr(raw.slice()) : raw;
+  AR.idx = 0;
+  AR.repEsCur=0; AR.repUkCur=0; AR.sessPlayed=0;
+  if(!AR.q.length){ showToast('Список порожній'); return; }
+  /* Хлібні крихти */
+  var lbl = sid==='all'?'Всі слова':sid==='fav'?'Вибрані':(DATA[sid]?DATA[sid].label:'');
+  document.getElementById('bc-theme').textContent = lbl;
+  updDisp(); showTab('player'); doPlay();
+}
+
+function shuffleArr(a){
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+  return a;
+}
+
+/* ════ СЕСІЯ — ПОВТОРИ ════ */
+function setCnt(n){
+  AR.sessCount=n;
+  document.querySelectorAll('.cnt-btn').forEach(function(b){
+    b.classList.toggle('on', parseInt(b.dataset.cnt)===n);
+  });
+}
+
+function setRep(lang, n){
+  if(lang==='es') AR.repEs=n;
+  else AR.repUk=n;
+  var id = lang==='es'?'rep-es-btns':'rep-ukr-btns';
+  document.getElementById(id).querySelectorAll('.rep-btn').forEach(function(b){
+    b.classList.toggle('on', parseInt(b.dataset.r)===n);
+  });
+}
+
+function toggleShuffle(){
+  AR.shuffle=!AR.shuffle;
+  document.getElementById('shuf-btn').classList.toggle('on',AR.shuffle);
+}
+
+function applyNumInput(){
+  buildAll();
+  var val = document.getElementById('num-input').value.trim();
+  if(!val){ showToast('Введіть номери'); return; }
+  var indices=[];
+  /* Формат: 1-20 або 5,12,34 */
+  if(val.indexOf('-')!==-1 && val.indexOf(',')===-1){
+    var parts=val.split('-');
+    var from=parseInt(parts[0])-1, to=parseInt(parts[1])-1;
+    for(var i=from;i<=to&&i<ALL.length;i++) indices.push(i);
+  } else {
+    val.split(',').forEach(function(s){
+      var n=parseInt(s.trim())-1;
+      if(!isNaN(n)&&n>=0&&n<ALL.length) indices.push(n);
+    });
+  }
+  if(!indices.length){ showToast('Невірний формат'); return; }
+  doStop();
+  AR.q = indices.map(function(i){ return ALL[i]; });
+  AR.idx=0; AR.repEsCur=0; AR.repUkCur=0; AR.sessPlayed=0;
+  document.getElementById('bc-theme').textContent = 'За номерами';
+  updDisp(); showTab('player');
+  toggleSessPanel();
+  showToast('✓ '+AR.q.length+' слів обрано');
+}
+
+/* ════ ВІДОБРАЖЕННЯ ════ */
+function updDisp(){
+  if(!AR.q.length) return;
+  var it=AR.q[AR.idx]||{};
+  document.getElementById('c-es').innerHTML=escH(it.es||'—');
+  document.getElementById('c-tr').innerHTML=fmtTr(it.tr||'');
+  document.getElementById('c-uk').textContent=it.uk||'—';
+
+  /* Показ поточного повтору */
+  var repTxt='';
+  if(AR.repEs>1||AR.repUk>1){
+    repTxt='ES: '+(AR.repEsCur+1)+'/'+AR.repEs+' · UKR: '+(AR.repUkCur+1)+'/'+AR.repUk;
+  }
+  document.getElementById('c-rep').textContent=repTxt;
+
+  var ca=document.getElementById('card-area');
+  ca.className='card-area';
+  if(AR.mode===1){ ca.classList.add('mode-quiz'); AR.revealed=false; }
+
+  var pct=AR.q.length>1?AR.idx/(AR.q.length-1)*100:100;
+  document.getElementById('pfill').style.width=pct+'%';
+  document.getElementById('pnum').textContent=(AR.idx+1)+' / '+AR.q.length;
+  document.getElementById('pstat').textContent=AR.sessPlayed>0?'✓'+AR.sessPlayed:'';
+
+  var fk=fKey(it.es||'');
+  document.getElementById('fav-btn').textContent=FAV[fk]?'⭐':'☆';
+  document.getElementById('fav-btn').classList.toggle('on',!!FAV[fk]);
+  document.getElementById('pstar').textContent=FAV[fk]?'⭐':'';
+
+  /* Навігаційне вікно сесії */
+  var sw=document.getElementById('sess-window');
+  if(sw){
+    var show = SESS.total>0 && SESS.size>0 && SESS.size<SESS.total;
+    sw.style.display = show?'flex':'none';
+    if(show) updSessWindow();
+  }
+}
+
+function setLit(state){
+  var ca=document.getElementById('card-area');
+  ca.classList.remove('lit-es','lit-uk');
+  if(state) ca.classList.add(state);
+}
+
+function ttsPlay(text, lang, cb){
+  if(AR.audio){try{AR.audio.pause();}catch(e){} AR.audio=null;}
+  var clean=(text||'')
+    .replace(/[¿¡↔]/g,'')
+    .replace(/[.,!?;:]/g,' ')
+    .replace(/\s+/g,' ').trim();
+  if(!clean){if(cb)cb(false);return;}
+
+  var spd = AR.ttsRate || 0.85;
+
+  /* ── Спробуємо Google TTS ── */
+  function tryGoogle(){
+    var url='https://translate.googleapis.com/translate_tts?ie=UTF-8&client=gtx'
+      +'&q='+encodeURIComponent(clean)
+      +'&tl='+encodeURIComponent(lang)
+      +'&ttsspeed='+spd;
+    var a=new Audio(url);
+    AR.audio=a;
+    var done=false;
+    function fin(ok){ if(done)return; done=true; AR.audio=null; if(cb)cb(ok); }
+    a.onended=function(){fin(true);};
+    a.onerror=function(){ tryWebSpeech(); }; /* Якщо помилка — Web Speech */
+    var p=a.play();
+    if(p&&typeof p.catch==='function') p.catch(function(){ tryWebSpeech(); });
+    var timeout=Math.round(12000/spd);
+    setTimeout(function(){
+      if(AR.audio===a&&!done){try{a.pause();}catch(e){} fin(true);}
+    },timeout);
+  }
+
+  /* ── Web Speech API (офлайн резерв) ── */
+  function tryWebSpeech(){
+    AR.audio=null;
+    if(!window.speechSynthesis){if(cb)cb(false);return;}
+    speechSynthesis.cancel();
+    var utt=new SpeechSynthesisUtterance(clean);
+    /* Підбираємо голос по мові */
+    var voices=speechSynthesis.getVoices();
+    var voice=voices.find(function(v){
+      return v.lang.toLowerCase().indexOf(lang.toLowerCase())===0;
+    });
+    if(!voice) voice=voices.find(function(v){
+      return v.lang.toLowerCase().indexOf(lang.split('-')[0])===0;
+    });
+    if(voice) utt.voice=voice;
+    utt.lang = lang==='es'?'es-ES':'uk-UA';
+    utt.rate = lang==='es'?spd:1.0;
+    utt.pitch=1;
+    var done=false;
+    function fin(ok){if(done)return;done=true;if(cb)cb(ok);}
+    utt.onend=function(){fin(true);};
+    utt.onerror=function(){fin(false);};
+    speechSynthesis.speak(utt);
+    /* Таймаут на випадок зависання */
+    setTimeout(function(){fin(true);}, clean.length*120+2000);
+  }
+
+  tryGoogle();
+}
+
+function showToast(m){
+  var t=document.getElementById('toast');
+  t.textContent=m||'⚠️ Немає інтернету — показ без звуку';
+  t.style.cssText='display:block;background:#240808;border:1px solid var(--red);color:#fbb;padding:7px 15px;border-radius:10px;font-size:.76em;z-index:99;white-space:nowrap;box-shadow:0 4px 18px #0009;position:fixed;bottom:76px;left:50%;transform:translateX(-50%)';
+  clearTimeout(t._t);
+  t._t=setTimeout(function(){ t.style.display='none'; },3500);
+}
+
+/* ════ ВІДТВОРЕННЯ З ПОВТОРАМИ ════ */
+function playItem(){
+  if(!AR.playing||AR.idx>=AR.q.length){ doStop(); return; }
+  var it=AR.q[AR.idx];
+  updDisp();
+
+  function nextWord(){
+    if(!AR.playing) return;
+    AR.repEsCur=0; AR.repUkCur=0;
+    AR.sessPlayed++;
+    AR.timer=setTimeout(function(){
+      if(!AR.playing) return;
+      AR.idx++;
+      if(AR.idx>=AR.q.length){
+        if(AR.repeat){ AR.idx=0; AR.sessPlayed=0; playItem(); }
+        else { doStop(); document.getElementById('c-es').textContent='✅ Завершено!';
+               document.getElementById('c-tr').innerHTML='';
+               document.getElementById('c-uk').textContent='Сесія закінчена — '+AR.sessPlayed+' слів'; }
+      } else { playItem(); }
+    },AR.pauseMs);
+  }
+
+  function playUkRep(){
+    if(!AR.playing) return;
+    setLit('lit-uk');
+    if(AR.lang===1){ nextWord(); return; } /* тільки ES */
+    ttsPlay(it.uk,'uk',function(ok){
+      if(!AR.playing) return;
+      AR.repUkCur++;
+      if(AR.repUkCur<AR.repUk){
+        /* ще повтори UK */
+        AR.timer=setTimeout(function(){
+          if(!AR.playing) return;
+          updDisp(); playUkRep();
+        },AR.gapMs*0.5);
+      } else {
+        nextWord();
+      }
+    });
+  }
+
+  function playEsRep(){
+    if(!AR.playing) return;
+    setLit('lit-es');
+    if(AR.lang===2){ /* тільки UK */
+      AR.repEsCur=AR.repEs; playUkRep(); return;
+    }
+    ttsPlay(it.es,'es',function(ok){
+      if(!AR.playing) return;
+      AR.repEsCur++;
+      if(AR.repEsCur<AR.repEs){
+        /* ще повтори ES */
+        AR.timer=setTimeout(function(){
+          if(!AR.playing) return;
+          updDisp(); playEsRep();
+        },AR.gapMs*0.4);
+      } else {
+        /* переходимо до UK */
+        if(AR.lang===0){
+          AR.timer=setTimeout(function(){
+            if(!AR.playing) return;
+            playUkRep();
+          },AR.gapMs);
+        } else {
+          nextWord();
+        }
+      }
+    });
+  }
+
+  playEsRep();
+}
+
+function doPlay(){
+  AR.playing=true;
+  document.getElementById('play-btn').textContent='⏸';
+  playItem();
+}
+function doStop(){
+  AR.playing=false;
+  clearTimeout(AR.timer);
+  if(AR.audio){try{AR.audio.pause();}catch(e){} AR.audio=null;}
+  document.getElementById('play-btn').textContent='▶';
+  setLit('');
+}
+function doToggle(){ AR.playing?doStop():doPlay(); }
+function doNext(){
+  doStop();
+  AR.repEsCur=0; AR.repUkCur=0;
+  if(AR.idx<AR.q.length-1){ AR.idx++; updDisp(); }
+}
+function doPrev(){
+  doStop();
+  AR.repEsCur=0; AR.repUkCur=0;
+  if(AR.idx>0){ AR.idx--; updDisp(); }
+}
+function doRestart(){ doStop(); AR.idx=0; AR.repEsCur=0; AR.repUkCur=0; AR.sessPlayed=0; updDisp(); }
+
+function cycleLang(){
+  AR.lang=(AR.lang+1)%3;
+  document.getElementById('lang-btn').textContent=LANGS[AR.lang];
+}
+function cycleMode(){
+  AR.mode=(AR.mode+1)%2;
+  document.getElementById('mode-btn').textContent=MODES[AR.mode];
+  updDisp();
+}
+function toggleRepeat(){
+  AR.repeat=!AR.repeat;
+  document.getElementById('rep-btn').classList.toggle('on',AR.repeat);
+}
+function toggleCurFav(){
+  if(!AR.q.length) return;
+  var fk=fKey(AR.q[AR.idx].es);
+  FAV[fk]=!FAV[fk]; if(!FAV[fk]) delete FAV[fk];
+  saveFav(); updDisp();
+}
+function toggleSpeedPanel(){
+  var p=document.getElementById('spd-panel');
+  p.classList.toggle('open');
+  document.getElementById('spd-btn').classList.toggle('on',p.classList.contains('open'));
+  if(document.getElementById('sess-panel').classList.contains('open')){
+    document.getElementById('sess-panel').classList.remove('open');
+    document.getElementById('sess-btn').classList.remove('on');
+  }
+}
+function toggleSessPanel(){
+  var p=document.getElementById('sess-panel');
+  p.classList.toggle('open');
+  document.getElementById('sess-btn').classList.toggle('on',p.classList.contains('open'));
+  if(document.getElementById('spd-panel').classList.contains('open')){
+    document.getElementById('spd-panel').classList.remove('open');
+    document.getElementById('spd-btn').classList.remove('on');
+  }
+}
+
+/* Клік по картці — відкрити у режимі вгадай */
+document.addEventListener('click',function(e){
+  if(e.target.closest('#card-area')&&AR.mode===1&&!AR.revealed){
+    AR.revealed=true;
+    document.getElementById('card-area').classList.remove('mode-quiz');
+  }
+});
+
+/* ════ ВСІ СЛОВА ════ */
+function buildAll(){
+  if(ALL.length) return;
+  Object.keys(DATA).forEach(function(sid){
+    DATA[sid].pairs.forEach(function(p){
+      ALL.push({es:p[0],tr:p[1],uk:p[2],sid:sid,gi:ALL.length});
+    });
+  });
+  var sel=document.getElementById('fl-th');
+  Object.keys(DATA).forEach(function(sid){
+    var o=document.createElement('option');
+    o.value=sid; o.textContent=DATA[sid].label; sel.appendChild(o);
+  });
+}
+
+function filterList(){
+  var q=(document.getElementById('srch').value||'').toLowerCase();
+  var th=document.getElementById('fl-th').value;
+  var res=ALL.filter(function(it){
+    if(th&&it.sid!==th) return false;
+    if(q&&!it.es.toLowerCase().includes(q)&&
+          !it.uk.toLowerCase().includes(q)&&
+          !(it.tr||'').toLowerCase().includes(q)) return false;
+    return true;
+  });
+  renderItems(res);
+}
+function renderList(){ filterList(); }
+
+function renderItems(items){
+  var body=document.getElementById('list-body');
+  if(!items.length){
+    body.innerHTML='<div style="padding:28px;text-align:center;color:var(--bord)">Нічого не знайдено</div>';
+    return;
+  }
+  var rows='';
+  items.slice(0,500).forEach(function(it,i){
+    var fk=fKey(it.es);
+    rows+='<div class="li">'
+      +'<span class="li-n">'+(it.gi+1)+'</span>'
+      +'<div class="li-body" data-gi="'+it.gi+'">'
+        +'<div class="li-es">'+escH(it.es)+'</div>'
+        +(it.tr?'<div class="li-tr">'+fmtTr(it.tr)+'</div>':'')
+        +'<div class="li-uk">'+escH(it.uk)+'</div>'
+      +'</div>'
+      +'<span class="li-fav" data-fk="'+escH(fk)+'">'+(FAV[fk]?'⭐':'☆')+'</span>'
+      +'</div>';
+  });
+  if(items.length>500)
+    rows+='<div style="padding:10px;text-align:center;color:var(--bord);font-size:.72em">...ще '+(items.length-500)+' — уточніть пошук</div>';
+  body.innerHTML=rows;
+  body.onclick=function(e){
+    var lb=e.target.closest('.li-body');
+    var fv=e.target.closest('.li-fav');
+    if(lb){
+      var gi=parseInt(lb.dataset.gi);
+      doStop(); AR.q=ALL.slice(); AR.idx=gi;
+      document.getElementById('bc-theme').textContent='Всі слова';
+      updDisp(); showTab('player'); doPlay();
+    }
+    if(fv){
+      var fk=fv.dataset.fk;
+      FAV[fk]=!FAV[fk]; if(!FAV[fk]) delete FAV[fk]; saveFav();
+      fv.textContent=FAV[fk]?'⭐':'☆';
+    }
+  };
+}
+
+/* ════ ТЕМИ ════ */
+function renderThemes(){
+  var b=document.getElementById('th-body');
+  var h='<div style="padding:5px 10px 2px;font-size:.66em;color:var(--bord)">▶ грати · назва = список · № = глобальний номер</div>';
+
+  h+='<div class="th" style="border-color:var(--acc)">'
+    +'<div class="th-i" data-sid="all"><div class="th-lbl">🌐 Всі слова</div><div class="th-cnt">'+ALL.length+' пар</div></div>'
+    +'<div class="th-actions"><button class="th-play" data-sid="all">▶</button></div></div>';
+
+  var fc=Object.keys(FAV).length;
+  h+='<div class="th"><div class="th-i" data-sid="fav"><div class="th-lbl">⭐ Вибрані</div><div class="th-cnt">'+fc+' слів</div></div>'
+    +'<div class="th-actions"><button class="th-play" data-sid="fav">▶</button></div></div>';
+
+  Object.keys(DATA).forEach(function(sid){
+    var s=DATA[sid];
+    h+='<div class="th"><div class="th-i" data-sid="'+escH(sid)+'">'
+      +'<div class="th-lbl">'+escH(s.label)+'</div>'
+      +'<div class="th-cnt">'+s.pairs.length+' пар</div></div>'
+      +'<div class="th-actions">'
+      +'<button class="th-play" data-sid="'+escH(sid)+'">▶</button>'
+      +'</div></div>';
+  });
+  b.innerHTML=h;
+  b.onclick=function(e){
+    var pl=e.target.closest('.th-play');
+    var ti=e.target.closest('.th-i');
+    if(pl){ startQ(pl.dataset.sid); return; }
+    if(ti){
+      /* Перехід до списку слів цієї теми */
+      buildAll();
+      document.getElementById('fl-th').value=ti.dataset.sid;
+      filterList();
+      showTab('list');
+    }
+  };
+}
+
+/* ════ ВИБРАНІ ════ */
+function renderFav(){
+  buildAll();
+  var b=document.getElementById('fav-body');
+  var items=ALL.filter(function(it){ return FAV[fKey(it.es)]; });
+  if(!items.length){
+    b.innerHTML='<div class="fav-empty">☆ Немає вибраних<br><br>У вкладці <b>Слова</b> натисни ☆ біля слова</div>';
+    return;
+  }
+  var h='<div style="padding:7px 12px;display:flex;justify-content:space-between;align-items:center">'
+    +'<span style="font-size:.76em;color:var(--uk)">'+items.length+' вибраних</span>'
+    +"<button class=\"btn sm\" onclick=\"startQ('fav')\">▶ Слухати всі</button></div>";
+  items.forEach(function(it,i){
+    var fk=fKey(it.es);
+    h+='<div class="li">'
+      +'<span class="li-n">'+(it.gi+1)+'</span>'
+      +'<div class="li-body" data-gi="'+it.gi+'">'
+        +'<div class="li-es">'+escH(it.es)+'</div>'
+        +(it.tr?'<div class="li-tr">'+fmtTr(it.tr)+'</div>':'')
+        +'<div class="li-uk">'+escH(it.uk)+'</div>'
+      +'</div>'
+      +'<span class="li-fav on" data-fk="'+escH(fk)+'">⭐</span></div>';
+  });
+  b.innerHTML=h;
+  b.onclick=function(e){
+    var lb=e.target.closest('.li-body');
+    var fv=e.target.closest('.li-fav');
+    if(lb){
+      var gi=parseInt(lb.dataset.gi);
+      doStop();
+      AR.q=buildQ('fav');
+      AR.idx=Math.max(0,AR.q.findIndex(function(x){return x.gi===gi;}));
+      document.getElementById('bc-theme').textContent='Вибрані';
+      updDisp(); showTab('player'); doPlay();
+    }
+    if(fv){ var fk=fv.dataset.fk; delete FAV[fk]; saveFav(); renderFav(); }
+  };
+}
+
+/* ════════════════════════════════════
+   ТЕМИ / КОЛЬОРИ
+════════════════════════════════════ */
+var THEMES = {
+  dark:   {bg:'#18100a',surf:'#22160c',card:'#2c1e10',bord:'#4a3520',txt:'#f2ead8',es:'#FFD84D',tr:'#6FFFEE',uk:'#FF9F6B',acc:'#F0A040',str:'#FFCC00'},
+  coffee: {bg:'#120c06',surf:'#1c1208',card:'#261810',bord:'#3d2a18',txt:'#f5e8d0',es:'#FFCC44',tr:'#50E8C0',uk:'#FFB07A',acc:'#E8900A',str:'#FFD000'},
+  night:  {bg:'#080818',surf:'#10102a',card:'#181838',bord:'#303060',txt:'#e0e8ff',es:'#88CCFF',tr:'#88FFDD',uk:'#FFAA88',acc:'#6688FF',str:'#FFDD44'},
+  forest: {bg:'#081408',surf:'#101e0c',card:'#182810',bord:'#2a4020',txt:'#e8f0d8',es:'#CCEE44',tr:'#44FFAA',uk:'#FFCC66',acc:'#66CC44',str:'#FFEE00'},
+  light:  {bg:'#f8f4ee',surf:'#ede8e0',card:'#e0d8cc',bord:'#c8b898',txt:'#302010',es:'#8B4400',tr:'#006644',uk:'#AA3300',acc:'#C06000',str:'#AA5500'},
+  ocean:  {bg:'#040c18',surf:'#081428',card:'#0c1e38',bord:'#142e50',txt:'#d0e8ff',es:'#66DDFF',tr:'#44FFCC',uk:'#FFBB66',acc:'#44AAFF',str:'#FFDD44'},
+};
+
+var CFG = {};
+
+function setVar(name, val){
+  document.documentElement.style.setProperty(name, val);
+  CFG[name] = val;
+  var map = {'--bg':'c-bg','--surf':'c-surf','--es':'c-es','--tr':'c-tr','--str':'c-str','--uk':'c-uk','--acc':'c-acc'};
+  if(map[name]){
+    var el = document.getElementById(map[name]);
+    if(el){ try{ el.value = (val.length===4) ? '#'+val[1]+val[1]+val[2]+val[2]+val[3]+val[3] : val; }catch(e){} }
+  }
+}
+
+function setFontSize(varName, val, labelId){
+  document.documentElement.style.setProperty(varName, val+'em');
+  CFG[varName] = val+'em';
+  var lbl = document.getElementById(labelId);
+  if(lbl) lbl.textContent = parseFloat(val).toFixed(2);
+}
+
+function applyTheme(name){
+  var t = THEMES[name]; if(!t) return;
+  Object.keys(t).forEach(function(k){ setVar('--'+k, t[k]); });
+  document.querySelectorAll('.tpre').forEach(function(b){
+    b.classList.toggle('on', b.dataset.theme===name);
+  });
+  syncColorPickers();
+  CFG['_theme'] = name;
+  trySave();
+}
+
+function syncColorPickers(){
+  var style = getComputedStyle(document.documentElement);
+  var map = {'--bg':'c-bg','--surf':'c-surf','--es':'c-es','--tr':'c-tr','--str':'c-str','--uk':'c-uk','--acc':'c-acc'};
+  Object.keys(map).forEach(function(v){
+    var el = document.getElementById(map[v]); if(!el) return;
+    var val = style.getPropertyValue(v).trim();
+    if(val.length===4) val='#'+val[1]+val[1]+val[2]+val[2]+val[3]+val[3];
+    try{ el.value = val; }catch(e){}
+  });
+}
+
+function trySave(){
+  try{ localStorage.setItem('es_cfg', JSON.stringify(CFG)); }catch(e){}
+}
+
+function saveSettings(){
+  trySave();
+  var t = document.getElementById('toast');
+  t.textContent = '💾 Збережено!';
+  t.style.cssText += ';background:#082808;border-color:#50c878;color:#8fe8a0;display:block';
+  clearTimeout(t._t);
+  t._t = setTimeout(function(){ t.style.display='none'; }, 2500);
+}
+
+function loadSettings(){
+  try{
+    var s = JSON.parse(localStorage.getItem('es_cfg')||'null');
+    if(s){
+      Object.keys(s).forEach(function(v){
+        if(v==='_theme') return;
+        document.documentElement.style.setProperty(v, s[v]);
+        CFG[v] = s[v];
+      });
+      if(s['_theme']) applyTheme(s['_theme']);
+    }
+  }catch(e){}
+  var style = getComputedStyle(document.documentElement);
+  ['es','tr','uk'].forEach(function(n){
+    var el=document.getElementById('fs-'+n), vl=document.getElementById('fv-'+n);
+    if(!el||!vl) return;
+    var v=parseFloat(style.getPropertyValue('--fs-'+n));
+    if(!isNaN(v)){ el.value=v; vl.textContent=v.toFixed(2); }
+  });
+  setTimeout(syncColorPickers, 50);
+}
+
+function resetSettings(){
+  CFG={};
+  applyTheme('dark');
+  var defs={'--fs-es':'1.55em','--fs-tr':'1.2em','--fs-uk':'1.05em','--fw-es':'800','--fw-tr':'600','--fw-uk':'500'};
+  Object.keys(defs).forEach(function(v){ document.documentElement.style.setProperty(v,defs[v]); });
+  ['es','tr','uk'].forEach(function(n){
+    var def={es:'1.55',tr:'1.20',uk:'1.05'}[n];
+    var el=document.getElementById('fs-'+n); if(el) el.value=def;
+    var vl=document.getElementById('fv-'+n); if(vl) vl.textContent=parseFloat(def).toFixed(2);
+  });
+  try{ localStorage.removeItem('es_cfg'); }catch(e){}
+  showToast('↺ Скинуто до стандарту');
+}
+
+/* ════ INIT ════ */
+window.addEventListener('DOMContentLoaded',function(){
+  loadFav(); loadMyData(); loadSettings(); setTimeout(syncColorPickers,100);
+  document.addEventListener('keydown',function(e){
+    if(e.code==='Space'){e.preventDefault();doToggle();}
+    if(e.code==='ArrowRight') doNext();
+    if(e.code==='ArrowLeft')  doPrev();
+    if(e.code==='ArrowUp')    cycleLang();
+  });
+});
+
+/* ════════════════════════════════════
+   ВІКНО СЕСІЇ (навігація +10/-10)
+════════════════════════════════════ */
+var SESS = { start:0, size:10, total:0, sid:'' };
+
+function startSessWindow(sid, start, size){
+  buildAll();
+  var full = sid==='all' ? ALL : sid==='fav' ? ALL.filter(function(x){return FAV[fKey(x.es)];})
+    : ALL.filter(function(x){return x.sid===sid;});
+  SESS.sid=sid; SESS.total=full.length; SESS.start=start||0; SESS.size=size||AR.sessCount||10;
+  if(SESS.size===0) SESS.size=full.length;
+  var slice = full.slice(SESS.start, SESS.start+SESS.size);
+  if(!slice.length){ showToast('Немає слів'); return; }
+  AR.q=slice; AR.idx=0; AR.repEsCur=0; AR.repUkCur=0;
+  updSessWindow();
+  updDisp(); showTab('player'); doPlay();
+}
+
+function updSessWindow(){
+  var el = document.getElementById('sess-win-info');
+  if(!el) return;
+  var from = SESS.start+1;
+  var to = Math.min(SESS.start+SESS.size, SESS.total);
+  el.textContent = from+'-'+to+' / '+SESS.total;
+  /* Оновлюємо текст кнопок з актуальним кроком */
+  var size = SESS.size;
+  var btns = document.querySelectorAll('#sess-window .sw-btn');
+  if(btns[0]) btns[0].textContent='⏮';
+  if(btns[1]) btns[1].textContent='◀ -'+size;
+  if(btns[2]) btns[2].textContent='+'+size+' ▶';
+  if(btns[3]) btns[3].textContent='⏭';
+}
+
+function sessMoveBy(delta){
+  doStop();
+  var full = buildQ(SESS.sid);
+  SESS.total = full.length;
+  SESS.start = Math.max(0, Math.min(SESS.start+delta, full.length-SESS.size));
+  var slice = full.slice(SESS.start, SESS.start+SESS.size);
+  if(!slice.length){ showToast('Більше немає слів'); return; }
+  AR.q = AR.shuffle ? shuffleArr(slice.slice()) : slice;
+  AR.idx=0; AR.repEsCur=0; AR.repUkCur=0; AR.sessPlayed=0;
+  var lbl = SESS.sid==='all'?'Всі слова':SESS.sid==='fav'?'Вибрані':(DATA[SESS.sid]?DATA[SESS.sid].label:'');
+  document.getElementById('bc-theme').textContent = lbl;
+  updSessWindow(); updDisp(); doPlay();
+}
+
+/* ════════════════════════════════════
+   AI ТРАНСКРИПЦІЯ (вбудований алгоритм)
+════════════════════════════════════ */
+var TR_MANUAL = {
+  'ser':'сЕр','estar':'естАр','tener':'тенЕр','hacer':'асЕр','ir':'Ір',
+  'venir':'венІр','decir':'десІр','poder':'подЕр','querer':'керЕр',
+  'saber':'сабЕр','ver':'бЕр','dar':'дАр','hablar':'аблАр','comer':'комЕр',
+  'beber':'бебЕр','dormir':'дормІр','trabajar':'трабахАр','vivir':'вібІр',
+  'hola':'Ола','gracias':'ґрАсьяс','bien':'бьЕн','mal':'мАль',
+  'por favor':'пор фабОр','de nada':'де нАда',
+};
+
+function jsAutoTr(word){
+  var w = (word||'').toLowerCase().trim();
+  if(TR_MANUAL[w]) return TR_MANUAL[w];
+
+  // Артиклі
+  var art = '';
+  var artMap = [['el ','ель '],['la ','ла '],['los ','лос '],['las ','лас '],
+                ['un ','ун '],['una ','уна ']];
+  for(var i=0;i<artMap.length;i++){
+    if(w.indexOf(artMap[i][0])===0){ art=artMap[i][1]; w=w.slice(artMap[i][0].length); break; }
+  }
+
+  var r = w;
+  // Акцентовані → ВЕЛИКІ
+  r=r.replace(/á/g,'А').replace(/é/g,'Е').replace(/í/g,'І')
+     .replace(/ó/g,'О').replace(/ú/g,'У').replace(/ü/g,'у');
+
+  // Поєднання
+  r=r.replace(/gu(?=[eiеіЕІ])/g,'ґ').replace(/qu(?=[eiеіЕІ])/g,'к');
+  r=r.replace(/ch/g,'ч').replace(/ll/g,'лй').replace(/rr/g,'рр');
+  r=r.replace(/ci[oо]n/g,'сьОн').replace(/si[oо]n/g,'сьОн').replace(/[іi][oо]n/g,'йОн');
+  r=r.replace(/ñ/g,'нь');
+  r=r.replace(/g(?=[eiеіЕІ])/g,'х').replace(/j/g,'х').replace(/h/g,'');
+  r=r.replace(/[vbw]/g,'б').replace(/z/g,'с');
+  r=r.replace(/c(?=[eiеіЕІ])/g,'с').replace(/c/g,'к');
+  r=r.replace(/y(?=[aeiouаеіоуАЕІОУ])/g,'й').replace(/y/g,'і');
+  r=r.replace(/x/g,'кс').replace(/qu/g,'к').replace(/g/g,'ґ');
+
+  var mp={'p':'п','t':'т','k':'к','f':'ф','s':'с','n':'н','m':'м',
+          'd':'д','r':'р','l':'л','a':'а','e':'е','i':'і','o':'о','u':'у',
+          'A':'А','E':'Е','I':'І','O':'О','U':'У'};
+  var out='';
+  for(var c=0;c<r.length;c++) out += mp[r[c]]||r[c];
+  r=out;
+
+  // Фінальне л → ль
+  r = r.replace(/([аеіоуАЕІОУ])л$/,'$1ль');
+  // н на кінці — без пом'якшення (іспанська фонетика)
+  
+  // Автонаголос
+  if(!/[АЕІОУ]/.test(r)){
+    var vi=[];
+    for(var c=0;c<r.length;c++) if('аеіоу'.indexOf(r[c])>=0) vi.push(c);
+    if(vi.length){
+      var idx = (vi.length>=2 && /[аеіоунс]$/.test(r.trim())) ? vi[vi.length-2] : vi[vi.length-1];
+      r = r.slice(0,idx)+r[idx].toUpperCase()+r.slice(idx+1);
+    }
+  }
+  return art+r;
+}
+
+function autoGenTr(){
+  var es = document.getElementById('add-es');
+  var tr = document.getElementById('add-tr');
+  if(!es||!tr) return;
+  var val = (es.value||'').trim();
+  if(val) tr.value = jsAutoTr(val);
+}
+
+/* ════════════════════════════════════
+   МОЇ СЛОВА — CRUD
+════════════════════════════════════ */
+var MY_DATA = {};  /* { themeName: { label, pairs:[[es,tr,uk],...] } } */
+
+function loadMyData(){
+  try{
+    var s = JSON.parse(localStorage.getItem('es_my_data')||'null');
+    if(s) MY_DATA = s;
+  }catch(e){}
+  // Завжди є базова тема
+  if(!MY_DATA['my_words']) MY_DATA['my_words']={label:'⭐ Мої слова',pairs:[]};
+  injectMyData();
+}
+
+function saveMyData(){
+  try{ localStorage.setItem('es_my_data', JSON.stringify(MY_DATA)); }catch(e){}
+  injectMyData();
+}
+
+function injectMyData(){
+  // Вставляємо мої теми в DATA щоб вони були доступні в плеєрі
+  Object.keys(MY_DATA).forEach(function(sid){
+    DATA[sid] = MY_DATA[sid];
+  });
+  ALL = []; // Перебудуємо ALL
+  buildAll();
+}
+
+function addOneWord(){
+  var es = (document.getElementById('add-es').value||'').trim();
+  var tr = (document.getElementById('add-tr').value||'').trim();
+  var uk = (document.getElementById('add-uk').value||'').trim();
+  if(!es||!uk){ showToast('Введіть іспанське і переклад'); return; }
+  if(!tr) tr = jsAutoTr(es);
+
+  var newTheme = (document.getElementById('add-new-theme').value||'').trim();
+  var sid, label;
+  if(newTheme){
+    sid = 'my_'+newTheme.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+    label = '✍️ '+newTheme;
+  } else {
+    sid = document.getElementById('add-theme-sel').value || 'my_words';
+    label = MY_DATA[sid] ? MY_DATA[sid].label : '⭐ Мої слова';
+  }
+
+  if(!MY_DATA[sid]) MY_DATA[sid]={label:label,pairs:[]};
+  MY_DATA[sid].pairs.push([es,tr,uk]);
+  saveMyData();
+  renderMyThemesList();
+
+  // Очищаємо форму
+  document.getElementById('add-es').value='';
+  document.getElementById('add-tr').value='';
+  document.getElementById('add-uk').value='';
+  document.getElementById('add-new-theme').value='';
+
+  showToast('✅ Слово додано: '+es);
+}
+
+function importWords(){
+  var txt = (document.getElementById('import-txt').value||'').trim();
+  var themeName = (document.getElementById('import-theme').value||'Мій імпорт').trim();
+  if(!txt){ showToast('Вставте слова для імпорту'); return; }
+
+  var sid = 'my_'+themeName.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+  var label = '📥 '+themeName;
+  if(!MY_DATA[sid]) MY_DATA[sid]={label:label,pairs:[]};
+
+  var lines = txt.split('\n');
+  var count=0;
+  lines.forEach(function(line){
+    line=line.trim(); if(!line) return;
+    // Розбиваємо по = | — : (в такому порядку)
+    var parts = line.split(/\s*[=|—:]\s*/);
+    if(parts.length>=2){
+      var es=(parts[0]||'').trim(), uk=(parts[1]||'').trim();
+      var tr=(parts[2]||jsAutoTr(es)).trim();
+      if(es&&uk){ MY_DATA[sid].pairs.push([es,tr,uk]); count++; }
+    }
+  });
+
+  saveMyData();
+  renderMyThemesList();
+  document.getElementById('import-txt').value='';
+  showToast('✅ Імпортовано: '+count+' слів у тему "'+themeName+'"');
+}
+
+function renderMyThemesList(){
+  var el = document.getElementById('my-themes-list');
+  if(!el) return;
+  var keys = Object.keys(MY_DATA);
+  if(!keys.length){ el.innerHTML='<div style="color:var(--bord);font-size:.8em;padding:8px">Поки що немає власних слів</div>'; return; }
+  var h='';
+  keys.forEach(function(sid){
+    var t=MY_DATA[sid];
+    h+='<div class="my-theme-row">'
+      +'<div class="my-theme-info">'
+        +'<div class="my-theme-lbl">'+escH(t.label)+'</div>'
+        +'<div class="my-theme-cnt">'+t.pairs.length+' слів</div>'
+      +'</div>'
+      +'<button class="btn sm" onclick="startQ(\''+escH(sid)+'\')" style="font-size:.75em">▶</button>'
+      +'<button class="btn sm danger" onclick="deleteMyTheme(\''+escH(sid)+'\')" style="font-size:.75em">🗑</button>'
+    +'</div>';
+  });
+  el.innerHTML=h;
+  // Оновлюємо select тем
+  var sel=document.getElementById('add-theme-sel');
+  if(sel){
+    var cur=sel.value;
+    sel.innerHTML='<option value="my_words">⭐ Мої слова</option>';
+    keys.forEach(function(sid){
+      if(sid==='my_words') return;
+      var o=document.createElement('option');
+      o.value=sid; o.textContent=MY_DATA[sid].label; sel.appendChild(o);
+    });
+    sel.value=cur;
+  }
+}
+
+function deleteMyTheme(sid){
+  if(!MY_DATA[sid]) return;
+  delete MY_DATA[sid];
+  delete DATA[sid];
+  ALL=[];
+  saveMyData();
+  renderMyThemesList();
+  showToast('🗑 Тему видалено');
+}
+
+function clearMyWords(){
+  MY_DATA={'my_words':{label:'⭐ Мої слова',pairs:[]}};
+  Object.keys(DATA).forEach(function(k){ if(k.indexOf('my_')===0) delete DATA[k]; });
+  ALL=[];
+  saveMyData();
+  renderMyThemesList();
+  showToast('🗑 Всі власні слова видалено');
+}
+
+</script>
+
+<!-- ══ ДОДАТИ СЛОВА ══ -->
+<div class="scr" id="scr-add">
+<div style="overflow-y:auto;flex:1;padding:10px 12px 30px">
+
+  <div class="set-section">✍️ Додати одне слово / фразу</div>
+  <div class="add-field">
+    <label class="add-lbl">🇪🇸 Іспанська</label>
+    <input class="add-inp" id="add-es" placeholder="напр: hacer"
+      oninput="autoGenTr()"
+      autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
+  </div>
+  <div class="add-field">
+    <label class="add-lbl">🔤 Транскрипція <span style="color:var(--bord);font-size:.85em">(автогенерується)</span></label>
+    <input class="add-inp" id="add-tr" placeholder="напр: асЕр"
+      autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
+    <button class="btn sm" style="margin-top:4px" onclick="autoGenTr()">🔄 Згенерувати</button>
+  </div>
+  <div class="add-field">
+    <label class="add-lbl">🇺🇦 Переклад</label>
+    <input class="add-inp" id="add-uk" placeholder="напр: робити"
+      autocomplete="off" spellcheck="false">
+  </div>
+  <div class="add-field">
+    <label class="add-lbl">📁 Тема</label>
+    <select class="add-inp" id="add-theme-sel" style="padding:9px">
+      <option value="my_words">⭐ Мої слова</option>
+    </select>
+    <input class="add-inp" id="add-new-theme" placeholder="або введи назву нової теми..."
+      style="margin-top:4px" autocomplete="off" spellcheck="false">
+  </div>
+  <button class="btn play" onclick="addOneWord()" style="width:100%;margin-top:8px;font-size:1em;padding:12px">
+    ➕ Додати слово
+  </button>
+
+  <div class="set-section" style="margin-top:20px">📋 Масовий імпорт тексту</div>
+  <div style="font-size:.78em;color:var(--uk);margin-bottom:8px;line-height:1.7">
+    Вставляй по одному рядку в будь-якому форматі:<br>
+    <span style="color:var(--acc)">hacer = робити</span><br>
+    <span style="color:var(--acc)">hacer | робити</span><br>
+    <span style="color:var(--acc)">hacer — робити</span><br>
+    <span style="color:var(--acc)">hacer : робити</span><br>
+    Транскрипція генерується автоматично.
+  </div>
+  <textarea class="add-inp" id="import-txt" rows="8"
+    placeholder="hacer = робити&#10;hablar = говорити&#10;ser = бути&#10;..."
+    style="font-size:.82em;resize:vertical"></textarea>
+  <div class="add-field" style="margin-top:6px">
+    <label class="add-lbl">📁 Тема для імпорту</label>
+    <input class="add-inp" id="import-theme" placeholder="назва теми (напр: Мої дієслова)"
+      autocomplete="off" spellcheck="false" value="Мій імпорт">
+  </div>
+  <button class="btn play" onclick="importWords()" style="width:100%;margin-top:8px;font-size:1em;padding:12px">
+    📥 Імпортувати
+  </button>
+
+  <div class="set-section" style="margin-top:20px">📂 Мої теми</div>
+  <div id="my-themes-list"></div>
+  <div style="margin-top:10px;display:flex;gap:8px">
+    <button class="btn sm danger" onclick="clearMyWords()">🗑 Очистити всі мої слова</button>
+  </div>
+
+</div>
+</div>
+
+
+<script>
+/* ═══ SERVICE WORKER ═══ */
+var SW_REG = null;
+var CACHE_RUNNING = false;
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js')
+    .then(function(r){
+      SW_REG = r;
+      console.log('SW OK scope:', r.scope);
+      if(r.installing) r.installing.addEventListener('statechange', function(e){
+        if(e.target.state==='activated') checkCacheStatus();
+      });
+      if(r.active) checkCacheStatus();
+      setTimeout(checkCacheStatus, 2000);
+      navigator.serviceWorker.addEventListener('message', function(e){
+        if(e.data.type === 'CACHE_PROGRESS'){
+          updCacheBtn(e.data.done, e.data.total);
+        }
+        if(e.data.type === 'CACHE_SIZE'){
+          var el = document.getElementById('cache-count');
+          if(el) el.textContent = e.data.count + ' файлів';
+        }
+      });
+    })
+    .catch(function(err){ console.log('SW помилка:', err); });
+}
+
+if(false && 'serviceWorker' in navigator){
+  (function(){
+    var code = `/* ═══════════════════════════════════════════════
+   Service Worker — офлайн кеш для Spanish Player
+   Версія: 1.0
+═══════════════════════════════════════════════ */
+
+const CACHE_NAME = 'spanish-v1';
+const TTS_CACHE  = 'spanish-tts-v1';
+
+/* Файли додатку — кешуємо одразу */
+const APP_FILES = [
+  './',
+  './index.html',
+];
+
+/* ── Встановлення ── */
+self.addEventListener('install', function(e){
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(function(cache){
+      return cache.addAll(APP_FILES);
+    }).then(function(){
+      return self.skipWaiting();
+    })
+  );
+});
+
+/* ── Активація ── */
+self.addEventListener('activate', function(e){
+  e.waitUntil(
+    caches.keys().then(function(keys){
+      return Promise.all(
+        keys.filter(function(k){ return k !== CACHE_NAME && k !== TTS_CACHE; })
+            .map(function(k){ return caches.delete(k); })
+      );
+    }).then(function(){ return self.clients.claim(); })
+  );
+});
+
+/* ── Перехоплення запитів ── */
+self.addEventListener('fetch', function(e){
+  var url = e.request.url;
+  
+  /* TTS запити — кешуємо назавжди */
+  if(url.includes('translate.googleapis.com/translate_tts')){
+    e.respondWith(
+      caches.open(TTS_CACHE).then(function(cache){
+        return cache.match(e.request).then(function(cached){
+          if(cached){
+            return cached; /* з кешу */
+          }
+          /* Завантажуємо і зберігаємо */
+          return fetch(e.request).then(function(response){
+            if(response && response.status === 200){
+              cache.put(e.request, response.clone());
+            }
+            return response;
+          }).catch(function(){
+            /* Офлайн і немає в кеші */
+            return new Response('', {status: 503});
+          });
+        });
+      })
+    );
+    return;
+  }
+  
+  /* HTML/CSS/JS — спочатку кеш потім мережа */
+  e.respondWith(
+    caches.match(e.request).then(function(cached){
+      return cached || fetch(e.request).then(function(response){
+        if(response && response.status === 200){
+          var clone = response.clone();
+          caches.open(CACHE_NAME).then(function(cache){
+            cache.put(e.request, clone);
+          });
+        }
+        return response;
+      });
+    })
+  );
+});
+
+/* ── Повідомлення від сторінки ── */
+self.addEventListener('message', function(e){
+  if(e.data && e.data.type === 'CACHE_TTS'){
+    /* Попереднє кешування TTS */
+    var urls = e.data.urls || [];
+    caches.open(TTS_CACHE).then(function(cache){
+      var done = 0;
+      var total = urls.length;
+      
+      function next(i){
+        if(i >= urls.length) return;
+        cache.match(urls[i]).then(function(exists){
+          if(exists){
+            done++;
+            e.source.postMessage({type:'CACHE_PROGRESS', done:done, total:total});
+            next(i+1);
+          } else {
+            fetch(urls[i]).then(function(r){
+              if(r && r.status===200) cache.put(urls[i], r);
+              done++;
+              e.source.postMessage({type:'CACHE_PROGRESS', done:done, total:total});
+              /* Невелика затримка щоб не перевантажити */
+              setTimeout(function(){ next(i+1); }, 150);
+            }).catch(function(){
+              done++;
+              e.source.postMessage({type:'CACHE_PROGRESS', done:done, total:total});
+              setTimeout(function(){ next(i+1); }, 150);
+            });
+          }
+        });
+      }
+      
+      /* Паралельно 3 потоки */
+      next(0); next(Math.floor(total/3)); next(Math.floor(total*2/3));
+    });
+  }
+  
+  if(e.data && e.data.type === 'CACHE_STATUS'){
+    caches.open(TTS_CACHE).then(function(cache){
+      cache.keys().then(function(keys){
+        e.source.postMessage({type:'CACHE_SIZE', count: keys.length});
+      });
+    });
+  }
+});
+`;
+    var blob = new Blob([code], {type: 'text/javascript'});
+    var url  = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(url, {scope: '/'})
+      .then(function(r){ 
+        SW_REG = r;
+        console.log('SW OK scope:', r.scope);
+        // Форсуємо активацію
+        if(r.installing) r.installing.addEventListener('statechange', function(e){
+          if(e.target.state==='activated') checkCacheStatus();
+        });
+        if(r.active) checkCacheStatus();
+        setTimeout(checkCacheStatus, 2000);
+      })
+      .catch(function(e){ console.log('SW fail:', e); });
+  })();
+} /* end if(false) */
+
+function checkCacheStatus(){
+  var sw = navigator.serviceWorker.controller || 
+           (SW_REG && (SW_REG.active || SW_REG.installing));
+  if(sw && sw.postMessage){
+    sw.postMessage({type:'CACHE_STATUS'});
+  } else {
+    setTimeout(checkCacheStatus, 1000);
+  }
+}
+
+function buildTtsUrls(){
+  var urls = [];
+  var spd = 0.85;
+  if(typeof ALL === 'undefined') buildAll();
+  ALL.forEach(function(it){
+    /* ES */
+    var esClean = (it.es||'').replace(/[¿¡↔]/g,'').replace(/[.,!?;:]/g,' ').trim();
+    if(esClean) urls.push(
+      'https://translate.googleapis.com/translate_tts?ie=UTF-8&client=gtx&q='
+      +encodeURIComponent(esClean)+'&tl=es&ttsspeed='+spd
+    );
+    /* UK */
+    var ukClean = (it.uk||'').replace(/[↔]/g,'').replace(/[.,!?;:]/g,' ').trim();
+    if(ukClean) urls.push(
+      'https://translate.googleapis.com/translate_tts?ie=UTF-8&client=gtx&q='
+      +encodeURIComponent(ukClean)+'&tl=uk&ttsspeed=1'
+    );
+  });
+  /* Унікальні */
+  return urls.filter(function(u,i,a){ return a.indexOf(u)===i; });
+}
+
+function startCaching(){
+  if(CACHE_RUNNING){ showToast('Кешування вже йде...'); return; }
+  var sw = navigator.serviceWorker.controller ||
+             (SW_REG && (SW_REG.active || SW_REG.installing));
+  if(!sw || !sw.postMessage){
+    showToast('Зачекай 5 секунд і спробуй ще раз');
+    return;
+  }
+  CACHE_RUNNING = true;
+  buildAll();
+  var urls = buildTtsUrls();
+  showToast('⬇️ Завантаження ' + urls.length + ' аудіо файлів...');
+  sw.postMessage({type: 'CACHE_TTS', urls: urls});
+}
+
+function updCacheBtn(done, total){
+  var btn = document.getElementById('cache-btn');
+  var pct = Math.round(done/total*100);
+  if(btn) btn.textContent = '⬇️ ' + pct + '% (' + done + '/' + total + ')';
+  if(done >= total){
+    CACHE_RUNNING = false;
+    if(btn) btn.textContent = '✅ Офлайн готово!';
+    showToast('✅ Всі ' + total + ' аудіо збережено офлайн!');
+    checkCacheStatus();
+  }
+}
+</script>
+
+</body>
+</html>
