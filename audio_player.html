@@ -2892,30 +2892,57 @@ function ttsPlay(text, lang, cb){
     .replace(/[.,!?;:]/g,' ')
     .replace(/\s+/g,' ').trim();
   if(!clean){if(cb)cb(false);return;}
-  if(navigator && navigator.onLine===false){showToast();if(cb)cb(false);return;}
-  var spd = AR.ttsRate || 0.9;
-  /* q= перед tl= — саме так працює у робочому файлі */
-  var url='https://translate.googleapis.com/translate_tts?ie=UTF-8&client=gtx'
-    +'&q='+encodeURIComponent(clean)
-    +'&tl='+encodeURIComponent(lang)
-    +'&ttsspeed='+spd;
-  var a=new Audio(url);
-  AR.audio=a;
-  a.playbackRate=spd;
-  var done=false;
-  function fin(ok){
-    if(done)return; done=true; AR.audio=null;
-    if(!ok)showToast();
-    if(cb)cb(ok);
+
+  var spd = AR.ttsRate || 0.85;
+
+  /* ── Спробуємо Google TTS ── */
+  function tryGoogle(){
+    var url='https://translate.googleapis.com/translate_tts?ie=UTF-8&client=gtx'
+      +'&q='+encodeURIComponent(clean)
+      +'&tl='+encodeURIComponent(lang)
+      +'&ttsspeed='+spd;
+    var a=new Audio(url);
+    AR.audio=a;
+    var done=false;
+    function fin(ok){ if(done)return; done=true; AR.audio=null; if(cb)cb(ok); }
+    a.onended=function(){fin(true);};
+    a.onerror=function(){ tryWebSpeech(); }; /* Якщо помилка — Web Speech */
+    var p=a.play();
+    if(p&&typeof p.catch==='function') p.catch(function(){ tryWebSpeech(); });
+    var timeout=Math.round(12000/spd);
+    setTimeout(function(){
+      if(AR.audio===a&&!done){try{a.pause();}catch(e){} fin(true);}
+    },timeout);
   }
-  a.onended=function(){fin(true);};
-  a.onerror=function(){fin(false);};
-  var p=a.play();
-  if(p&&typeof p.catch==='function') p.catch(function(){fin(false);});
-  var timeout=Math.round(12000/spd);
-  setTimeout(function(){
-    if(AR.audio===a&&!done){try{a.pause();}catch(e){} fin(false);}
-  },timeout);
+
+  /* ── Web Speech API (офлайн резерв) ── */
+  function tryWebSpeech(){
+    AR.audio=null;
+    if(!window.speechSynthesis){if(cb)cb(false);return;}
+    speechSynthesis.cancel();
+    var utt=new SpeechSynthesisUtterance(clean);
+    /* Підбираємо голос по мові */
+    var voices=speechSynthesis.getVoices();
+    var voice=voices.find(function(v){
+      return v.lang.toLowerCase().indexOf(lang.toLowerCase())===0;
+    });
+    if(!voice) voice=voices.find(function(v){
+      return v.lang.toLowerCase().indexOf(lang.split('-')[0])===0;
+    });
+    if(voice) utt.voice=voice;
+    utt.lang = lang==='es'?'es-ES':'uk-UA';
+    utt.rate = lang==='es'?spd:1.0;
+    utt.pitch=1;
+    var done=false;
+    function fin(ok){if(done)return;done=true;if(cb)cb(ok);}
+    utt.onend=function(){fin(true);};
+    utt.onerror=function(){fin(false);};
+    speechSynthesis.speak(utt);
+    /* Таймаут на випадок зависання */
+    setTimeout(function(){fin(true);}, clean.length*120+2000);
+  }
+
+  tryGoogle();
 }
 
 function showToast(m){
@@ -3657,7 +3684,8 @@ var SW_REG = null;
 var CACHE_RUNNING = false;
 
 if('serviceWorker' in navigator){
-  var swCode = `/* ═══════════════════════════════════════════════
+  (function(){
+    var code = `/* ═══════════════════════════════════════════════
    Service Worker — офлайн кеш для Spanish Player
    Версія: 1.0
 ═══════════════════════════════════════════════ */
@@ -3784,9 +3812,21 @@ self.addEventListener('message', function(e){
   }
 });
 `;
-  var swBlob = new Blob([swCode], {type:'application/javascript'});
-  var swUrl  = URL.createObjectURL(swBlob);
-  navigator.serviceWorker.register(swUrl).then(function(reg){
+    var blob = new Blob([code], {type: 'text/javascript'});
+    var url  = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(url, {scope: '/'})
+      .then(function(r){ 
+        SW_REG = r;
+        console.log('SW OK scope:', r.scope);
+        // Форсуємо активацію
+        if(r.installing) r.installing.addEventListener('statechange', function(e){
+          if(e.target.state==='activated') checkCacheStatus();
+        });
+        if(r.active) checkCacheStatus();
+        setTimeout(checkCacheStatus, 2000);
+      })
+      .catch(function(e){ console.log('SW fail:', e); });
+  })().then(function(reg){
     SW_REG = reg;
     console.log('SW зареєстровано');
     /* Слухаємо повідомлення від SW */
@@ -3806,8 +3846,12 @@ self.addEventListener('message', function(e){
 }
 
 function checkCacheStatus(){
-  if(navigator.serviceWorker.controller){
-    navigator.serviceWorker.controller.postMessage({type:'CACHE_STATUS'});
+  var sw = navigator.serviceWorker.controller || 
+           (SW_REG && (SW_REG.active || SW_REG.installing));
+  if(sw && sw.postMessage){
+    sw.postMessage({type:'CACHE_STATUS'});
+  } else {
+    setTimeout(checkCacheStatus, 1000);
   }
 }
 
@@ -3835,17 +3879,17 @@ function buildTtsUrls(){
 
 function startCaching(){
   if(CACHE_RUNNING){ showToast('Кешування вже йде...'); return; }
-  if(!navigator.serviceWorker.controller){
-    showToast('Оновіть сторінку і спробуй ще раз');
+  var sw = navigator.serviceWorker.controller ||
+             (SW_REG && (SW_REG.active || SW_REG.installing));
+  if(!sw || !sw.postMessage){
+    showToast('Зачекай 5 секунд і спробуй ще раз');
     return;
   }
   CACHE_RUNNING = true;
   buildAll();
   var urls = buildTtsUrls();
   showToast('⬇️ Завантаження ' + urls.length + ' аудіо файлів...');
-  navigator.serviceWorker.controller.postMessage({
-    type: 'CACHE_TTS', urls: urls
-  });
+  sw.postMessage({type: 'CACHE_TTS', urls: urls});
 }
 
 function updCacheBtn(done, total){
